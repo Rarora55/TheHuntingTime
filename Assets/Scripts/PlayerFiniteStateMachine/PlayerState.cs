@@ -22,13 +22,15 @@ public class PlayerState
     public virtual void Enter()
     {
         DoChecks();
+        player.Anim.SetBool(animBoolName, true);
         //Set startTime to actual time to know wich one is.
-        startTime = Time.time;  
+        startTime = Time.time;
+        Debug.Log(animBoolName);
     }
 
     public virtual void Exit()
     {
-
+        player.Anim.SetBool(animBoolName, false);
     }
 
     public virtual void LogicUpdate()

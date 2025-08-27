@@ -70,7 +70,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -84,7 +84,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -108,7 +108,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -175,12 +175,12 @@ TextureImporter:
       name: human_run_animation_0
       rect:
         serializedVersion: 2
-        x: 45
-        y: 287
-        width: 30
-        height: 63
+        x: 46
+        y: 288
+        width: 28
+        height: 61
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: human_run_animation_1
       rect:
         serializedVersion: 2
-        x: 166
-        y: 287
-        width: 42
-        height: 62
+        x: 167
+        y: 288
+        width: 40
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -219,12 +219,12 @@ TextureImporter:
       name: human_run_animation_2
       rect:
         serializedVersion: 2
-        x: 289
-        y: 293
-        width: 50
-        height: 55
+        x: 290
+        y: 294
+        width: 48
+        height: 53
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -241,12 +241,12 @@ TextureImporter:
       name: human_run_animation_3
       rect:
         serializedVersion: 2
-        x: 417
-        y: 287
-        width: 50
-        height: 60
+        x: 418
+        y: 288
+        width: 48
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -263,12 +263,12 @@ TextureImporter:
       name: human_run_animation_4
       rect:
         serializedVersion: 2
-        x: 39
-        y: 159
-        width: 45
-        height: 56
+        x: 40
+        y: 160
+        width: 43
+        height: 54
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -285,12 +285,12 @@ TextureImporter:
       name: human_run_animation_5
       rect:
         serializedVersion: 2
-        x: 180
-        y: 159
-        width: 20
-        height: 58
+        x: 181
+        y: 160
+        width: 18
+        height: 56
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -307,12 +307,12 @@ TextureImporter:
       name: human_run_animation_6
       rect:
         serializedVersion: 2
-        x: 301
-        y: 159
-        width: 30
-        height: 63
+        x: 302
+        y: 160
+        width: 28
+        height: 61
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -329,12 +329,12 @@ TextureImporter:
       name: human_run_animation_7
       rect:
         serializedVersion: 2
-        x: 422
-        y: 159
-        width: 42
-        height: 62
+        x: 423
+        y: 160
+        width: 40
+        height: 60
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -351,12 +351,12 @@ TextureImporter:
       name: human_run_animation_8
       rect:
         serializedVersion: 2
-        x: 33
-        y: 37
-        width: 50
-        height: 55
+        x: 34
+        y: 38
+        width: 48
+        height: 53
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -373,12 +373,12 @@ TextureImporter:
       name: human_run_animation_9
       rect:
         serializedVersion: 2
-        x: 161
-        y: 31
-        width: 49
-        height: 60
+        x: 162
+        y: 32
+        width: 47
+        height: 58
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -395,12 +395,12 @@ TextureImporter:
       name: human_run_animation_10
       rect:
         serializedVersion: 2
-        x: 295
-        y: 31
-        width: 45
-        height: 56
+        x: 296
+        y: 32
+        width: 43
+        height: 54
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -417,12 +417,12 @@ TextureImporter:
       name: human_run_animation_11
       rect:
         serializedVersion: 2
-        x: 436
-        y: 31
-        width: 20
-        height: 58
+        x: 437
+        y: 32
+        width: 18
+        height: 56
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -439,7 +439,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 73b5cae8cfaa58a4aa6f3197d9deb75f
     internalID: 0
     vertices: []
     indices: 
@@ -447,7 +447,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       human_run_animation_0: 2393164003594808719
       human_run_animation_1: 8784486340113060066
