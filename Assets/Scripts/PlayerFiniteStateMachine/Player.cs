@@ -11,6 +11,7 @@ public class Player: MonoBehaviour
     #endregion
 
     public Animator Anim {  get; private set; }
+    public PlayerInputHandler InputHandler { get; private set; }
 
     [SerializeField] private PlayerData playerData;
 
@@ -26,6 +27,7 @@ public class Player: MonoBehaviour
     {
         
         Anim = GetComponent<Animator>();
+        InputHandler = GetComponent<PlayerInputHandler>();
 
         StateMachine.Initialize(idleState);
     }
