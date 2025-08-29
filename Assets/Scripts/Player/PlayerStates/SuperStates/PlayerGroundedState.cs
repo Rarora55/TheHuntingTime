@@ -4,6 +4,7 @@ public class PlayerGroundedState : PlayerState
 {
 
     protected int xInput;
+    private bool jumpInput;
     public PlayerGroundedState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
 
@@ -30,6 +31,13 @@ public class PlayerGroundedState : PlayerState
         base.LogicUpdate();
 
         xInput = player.InputHandler.NormalizeInputX;
+        jumpInput = player.InputHandler.JumpInput;
+
+        if (jumpInput)
+        {
+            player.InputHandler.UseJumpInput();
+            stateMachine.ChangeState(player.jumpState);
+        }
     }
 
     public override void PhysicsUpdate()

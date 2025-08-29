@@ -6,6 +6,10 @@ public class Player : MonoBehaviour
     public PlayerStateMachine StateMachine { get; private set; }
     public PlayerIdleState idleState { get; private set; }
     public PlayerMoveState moveState { get; private set; }
+    public PlayerJumpState jumpState { get; private set; }
+    public PlayerInAirState inAirState { get; private set; }
+    public PlayerLandedState landedState { get; private set; }
+
     [SerializeField] private PlayerData playerData;
     #endregion
 
@@ -15,10 +19,15 @@ public class Player : MonoBehaviour
     public Rigidbody2D RB { get; private set; }
     #endregion
 
+    #region Check Transforms
+    [SerializeField] private Transform groundCheck;
+    #endregion
+
     #region Others Variables
     private Vector2 workSpace;
     public Vector2 currentVelocity { get; private set; }
     public int FacingDirection { get; private set; }
+
     #endregion
 
 
@@ -28,6 +37,9 @@ public class Player : MonoBehaviour
         StateMachine = new PlayerStateMachine();
         idleState = new PlayerIdleState(this, StateMachine, playerData, "idle");
         moveState = new PlayerMoveState(this, StateMachine, playerData, "move");
+        jumpState = new PlayerJumpState(this, StateMachine, playerData, "inAir");
+        inAirState = new PlayerInAirState(this, StateMachine, playerData, "inAir");
+        landedState = new PlayerLandedState(this, StateMachine, playerData, "land");
     }
 
     private void Start()
@@ -61,6 +73,13 @@ public class Player : MonoBehaviour
         RB.linearVelocity = workSpace;
         currentVelocity = workSpace;
     }
+
+    public void SetVelocityY(float velocity)
+    {
+        workSpace.Set(currentVelocity.x, velocity);
+        RB.linearVelocity = workSpace;
+        currentVelocity = workSpace;
+    }
     #endregion
 
     #region Checks
@@ -70,6 +89,11 @@ public class Player : MonoBehaviour
         {
             Flip();
         }
+    }
+
+    public bool CheckIfGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, playerData.checkIfGrounded, playerData.whatIsGround);
     }
     #endregion
 
