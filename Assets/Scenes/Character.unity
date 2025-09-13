@@ -434,12 +434,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2102128581}
   - component: {fileID: 2102128580}
-  - component: {fileID: 2102128586}
+  - component: {fileID: 2102128589}
   - component: {fileID: 2102128585}
   - component: {fileID: 2102128579}
   - component: {fileID: 2102128583}
-  - component: {fileID: 2102128582}
-  - component: {fileID: 2102128584}
+  - component: {fileID: 2102128588}
+  - component: {fileID: 2102128587}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -543,18 +543,6 @@ Transform:
   - {fileID: 504113106}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2102128582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2102128578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 519cebcce0f0db540836e5ace82e55e1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
 --- !u!114 &2102128583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,7 +570,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2102128582}
+      - m_Target: {fileID: 2102128588}
         m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
         m_MethodName: OnMoveInput
         m_Mode: 0
@@ -598,7 +586,7 @@ MonoBehaviour:
     m_ActionName: 'GamePlay/Movement[/XInputControllerWindows1/dpad,/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2102128582}
+      - m_Target: {fileID: 2102128588}
         m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
         m_MethodName: OnJumpInput
         m_Mode: 0
@@ -617,20 +605,6 @@ MonoBehaviour:
   m_DefaultActionMap: GamePlay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &2102128584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2102128578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14701cad8e4d4bf4391edf829f1b5bcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  playerData: {fileID: 11400000, guid: 3d60f42525d4aa44b988518d1ccca4b0, type: 2}
-  groundCheck: {fileID: 504113106}
 --- !u!61 &2102128585
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -677,7 +651,32 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.8125, y: 3.676323}
   m_EdgeRadius: 0
---- !u!50 &2102128586
+--- !u!114 &2102128587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102128578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14701cad8e4d4bf4391edf829f1b5bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  PlayerData: {fileID: 11400000, guid: cf66d22a15493e84595cf9baebcaea16, type: 2}
+--- !u!114 &2102128588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102128578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a14a9c3f63db9f1438570be0a43beda4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInputHandler
+--- !u!50 &2102128589
 Rigidbody2D:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -692,7 +691,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 5
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -702,7 +701,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
