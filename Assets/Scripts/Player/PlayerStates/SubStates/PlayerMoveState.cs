@@ -27,9 +27,11 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.LogicUpdate();
 
-        player.SetVelocityX(playerData.movementVelocity * input.x);
+        player.CheckFlip(xInput);
 
-        if(input.x == 0)
+        player.SetVelocityX(playerData.movementVelocity * xInput);
+
+        if(xInput == 0)
         {
             stateMachine.ChangeState(player.IdleState); 
         }
