@@ -31,6 +31,7 @@ public class PlayerMoveState : PlayerGroundState
 
         player.SetVelocityX(playerData.movementVelocity * xInput);
 
+        //Logic of drifting here
         if(xInput == 0)
         {
             stateMachine.ChangeState(player.IdleState); 
