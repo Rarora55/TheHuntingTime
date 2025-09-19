@@ -21,7 +21,7 @@ public class PlayerInputHandler: MonoBehaviour
     public void OnJumpInput(InputAction.CallbackContext context)
     {
 
-        if (context.started)
+        if (context.started)  
         {
             JumpInput = true;
         }
