@@ -35,7 +35,8 @@ public class PlayerAirState : PlayerState
         if(isGrounded && player.CurrentVelocity.y < 0.01f)
         {
             stateMachine.ChangeState(player.LandState);
-        } else
+        }
+         else
         {
             player.CheckFlip(xInput);
             player.SetVelocityX(playerData.movementVelocity * xInput);
