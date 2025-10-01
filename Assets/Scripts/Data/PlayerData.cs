@@ -17,6 +17,12 @@ public class PlayerData: ScriptableObject
     public LayerMask WhatIsGround;
 
 
+    [Header("Wall Checks")]
+    public float WallCheckDistance = 0.5f;
+    public float WallSlicedVelocity = 3f;
+
+    [Header("Wall Climb State")]
+    public float WallClimbVelocity = 3f;
      
     
 }
