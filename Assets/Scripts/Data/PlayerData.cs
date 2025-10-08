@@ -23,6 +23,14 @@ public class PlayerData: ScriptableObject
 
     [Header("Wall Climb State")]
     public float WallClimbVelocity = 3f;
-     
+
+    [Header("Ledge State")]
+    public Vector2 startOffSet;
+    public Vector2 stopOffSet;
+
+    [Header("Couch")]
+    public float crouchMovementVelocity = 5f;
+    public float crouchColliderHeight = 0.8f;
+    public float standColliderHeight = 1.6f;
     
 }

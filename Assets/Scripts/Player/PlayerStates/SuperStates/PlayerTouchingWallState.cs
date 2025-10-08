@@ -8,6 +8,7 @@ public class PlayerTouchingWallState : PlayerState
     protected bool isGrounded;
     protected bool isTouchingWall;
     protected bool grabInput;
+    protected bool isTouchingLedge;
     protected int xInput;
     protected int yInput;
     
@@ -30,6 +31,12 @@ public class PlayerTouchingWallState : PlayerState
         base.DoChecks();
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
+        isTouchingLedge = player.CheckTouchingLedge();
+
+        if(isTouchingWall && !isTouchingLedge)
+        {
+            player.WallLedgeState.SetDetectedPosition(player.transform.position);
+        }
     }
 
     public override void Enter()
@@ -49,13 +56,22 @@ public class PlayerTouchingWallState : PlayerState
         yInput = player.InputHandler.NormInputY;
         grabInput = player.InputHandler.GrabInput;
 
-        if (isGrounded || !grabInput)
+        if (isGrounded && !grabInput)
         {
             stateMachine.ChangeState(player.IdleState);
-        } else if(!isTouchingWall || (xInput != player.FacingRight && !grabInput))
+        }
+        else if(!isTouchingWall || (xInput != player.FacingRight && !grabInput))
         {
             stateMachine.ChangeState(player.AirState);
         }
+       /* else if (xInput == -player.FacingRight && !grabInput)
+        {
+            stateMachine.ChangeState(player.AirState);
+        }
+        else if (isTouchingWall && !isTouchingLedge && grabInput)
+        {
+            stateMachine.ChangeState(player.WallLedgeState);
+        }*/
     }
 
     public override void PhysicsUpdate()

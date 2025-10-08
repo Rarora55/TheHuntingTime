@@ -5,6 +5,9 @@ using System.Collections.Generic;
 public class PlayerGroundState : PlayerState
 {
     protected int xInput;
+    protected int yInput;
+
+    protected bool isTouchingCeiling;
 
     private bool JumpInput;
     private bool isTouchingWall;
@@ -20,6 +23,7 @@ public class PlayerGroundState : PlayerState
         base.DoChecks();
 
         isTouchingWall = player.CheckIfTouchingWall();
+        isTouchingCeiling = player.CheckForCeiling();
     }
     public override void Enter()
     {
@@ -36,14 +40,17 @@ public class PlayerGroundState : PlayerState
         base.LogicUpdate();
 
         xInput = player.InputHandler.NormInputX;
+        yInput = player.InputHandler.NormInputY;
         JumpInput = player.InputHandler.JumpInput;
         GrabInput = player.InputHandler.GrabInput;
+
 
         if (JumpInput)
         {
             player.InputHandler.JumpEnded();
             stateMachine.ChangeState(player.JumpState);
-        } else if (isTouchingWall && GrabInput)
+        } 
+        else if (isTouchingWall && GrabInput)
         {
             stateMachine.ChangeState(player.WallGrapState);
         }

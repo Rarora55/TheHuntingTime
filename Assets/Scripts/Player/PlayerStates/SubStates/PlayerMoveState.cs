@@ -34,7 +34,11 @@ public class PlayerMoveState : PlayerGroundState
         //Logic of drifting here
         if(xInput == 0)
         {
-            stateMachine.ChangeState(player.IdleState); 
+            stateMachine.ChangeState(player.IdleState);
+        }
+        else if (yInput == -1)
+        {
+            stateMachine.ChangeState(player.CrouchMoveState);
         }
     }
 

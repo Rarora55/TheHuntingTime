@@ -12,9 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad02a75ac697c444c872f7f8d00c970f, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
-  movementVelocity: 20
-  JumpVelocity: 15
+  movementVelocity: 10
+  JumpVelocity: 20
   GroundCheckRadius: 0.3
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 128
+  WallCheckDistance: 0.5
+  WallSlicedVelocity: 2
+  WallClimbVelocity: 3
+  startOffSet: {x: 0.5, y: 0.8}
+  stopOffSet: {x: 0, y: 0}
+  crouchMovementVelocity: 5
+  crouchColliderHeight: 0.8
+  standColliderHeight: 1.6
