@@ -52,20 +52,20 @@ public class PlayerAirState : PlayerState
             stateMachine.ChangeState(player.LandState);
 
         }
+        else if (isTouchingWall && !isTouchingLedge)
+        {
+
+            stateMachine.ChangeState(player.WallLedgeState);
+
+        }
         else if (isTouchingWall && GrabInput)
         {
             stateMachine.ChangeState(player.WallGrapState);
         }
 
-        else if (isTouchingWall && xInput == player.FacingRight && player.CurrentVelocity.y <= 0 )
+        else if (isTouchingWall && xInput == player.FacingRight && player.CurrentVelocity.y <= 0)
         {
             stateMachine.ChangeState(player.WallSlicedState);
-        }
-
-        else if (isTouchingWall && !isTouchingLedge)
-        {
-            player.WallLedgeState.SetDetectedPosition(player.transform.position);
-            stateMachine.ChangeState(player.WallLedgeState);
         }
         else
         {

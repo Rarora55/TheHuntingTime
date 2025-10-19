@@ -133,6 +133,7 @@ public class Player : MonoBehaviour
     {
         return Physics2D.Raycast(LedgeCheck.position , Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
     }
+   
     public bool CheckForCeiling()
     {
         return Physics2D.OverlapCircle(ceilingCheck.position, PlayerData.GroundCheckRadius, PlayerData.WhatIsGround);

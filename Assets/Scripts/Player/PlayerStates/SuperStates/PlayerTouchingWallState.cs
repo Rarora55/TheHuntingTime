@@ -33,10 +33,11 @@ public class PlayerTouchingWallState : PlayerState
         isTouchingWall = player.CheckIfTouchingWall();
         isTouchingLedge = player.CheckTouchingLedge();
 
-        if(isTouchingWall && !isTouchingLedge)
+       /* if(isTouchingWall && !isTouchingLedge)
         {
             player.WallLedgeState.SetDetectedPosition(player.transform.position);
         }
+       */
     }
 
     public override void Enter()
@@ -62,6 +63,7 @@ public class PlayerTouchingWallState : PlayerState
         }
         else if(!isTouchingWall || (xInput != player.FacingRight && !grabInput))
         {
+         
             stateMachine.ChangeState(player.AirState);
         }
        /* else if (xInput == -player.FacingRight && !grabInput)
