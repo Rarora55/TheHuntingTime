@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   movementVelocity: 10
-  JumpVelocity: 20
+  JumpVelocity: 14
   GroundCheckRadius: 0.3
   WhatIsGround:
     serializedVersion: 2
@@ -21,8 +21,8 @@ MonoBehaviour:
   WallCheckDistance: 0.5
   WallSlicedVelocity: 2
   WallClimbVelocity: 3
-  startOffSet: {x: 0.4, y: 0.9}
+  startOffSet: {x: 0.4, y: 0.97}
   stopOffSet: {x: 0.4, y: 0.7}
-  crouchMovementVelocity: 5
+  crouchMovementVelocity: 4
   crouchColliderHeight: 0.8
   standColliderHeight: 1.6

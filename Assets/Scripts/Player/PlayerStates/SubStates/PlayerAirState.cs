@@ -37,6 +37,7 @@ public class PlayerAirState : PlayerState
     public override void Exit()
     {
         base.Exit();
+        player.anim.SetBool("ledge", false);
     }
 
     public override void LogicUpdate()

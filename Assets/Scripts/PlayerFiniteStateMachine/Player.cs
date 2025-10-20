@@ -152,8 +152,9 @@ public class Player : MonoBehaviour
     {
         Vector2 center = moveCollider.offset;
         workSpace.Set(moveCollider.size.x, height);
-        center.y += height - (moveCollider.size.y) / 2;
+        center.y += (height - moveCollider.size.y) / 2;
         moveCollider.size = workSpace;
+        moveCollider.offset = center;
     }
     public Vector2 DeterminetCornerPos()
     {
