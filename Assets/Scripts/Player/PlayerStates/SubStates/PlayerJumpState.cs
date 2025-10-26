@@ -31,8 +31,12 @@ public class PlayerJumpState : PlayerAbilityState
             if(player.CurrentVelocity.y <= 0f || Time.time >= startTime + 0.1f)
             isAbilityDone = true;
         }
-
+       
         if (timeSinceJump > 1f && player.CurrentVelocity.y <= 0f)
+        {
             isAbilityDone = true;
+           
+
+        }
     }
 }

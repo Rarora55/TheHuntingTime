@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class PlayerIdleState : PlayerGroundState
 {
+   
+
     public PlayerIdleState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
@@ -11,6 +13,7 @@ public class PlayerIdleState : PlayerGroundState
     public override void DoChecks()
     {
         base.DoChecks();
+        
     }
     public override void Enter()
     {
@@ -27,9 +30,7 @@ public class PlayerIdleState : PlayerGroundState
     {
         base.LogicUpdate();
 
-        
-
-        if(xInput != 0)
+        if (xInput != 0)
         {
             stateMachine.ChangeState(player.MoveState);
         }

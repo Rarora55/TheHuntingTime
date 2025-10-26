@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public PlayerMoveState MoveState { get; private set; }
     public PlayerAirState AirState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
+
     public PlayerLandState LandState { get; private set; }
     public PlayerWallClimbState WallClimbState { get; private set; }
     public PlayerWallGrapState WallGrapState { get; private set; }
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
     public PlayerLedgeClimbState WallLedgeState { get; private set; }
     public PlayerCrouchIdleState CrouchIdleState { get; private set; }
     public PlayerCrouchMoveState CrouchMoveState { get; private set; }
+   
 
 
 
@@ -64,6 +66,8 @@ public class Player : MonoBehaviour
         WallLedgeState = new PlayerLedgeClimbState(this, StateMachine, PlayerData, "ledge");
         CrouchIdleState = new PlayerCrouchIdleState(this, StateMachine, PlayerData, "crouchIdle");
         CrouchMoveState = new PlayerCrouchMoveState(this, StateMachine, PlayerData, "crouchMove");
+        
+        
 
     }
 

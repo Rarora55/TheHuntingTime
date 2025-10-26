@@ -1,6 +1,3 @@
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 public class PlayerAbilityState : PlayerState
 {
 
@@ -31,17 +28,22 @@ public class PlayerAbilityState : PlayerState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-
+        //Si no funciona, que vuelva a englosar el resto de la condición
         if (isAbilityDone)
         {
-            if(isGrounded && player.CurrentVelocity.y < 0.01f)
+
+            if (isGrounded && player.CurrentVelocity.y < 0.01f)
             {
                 stateMachine.ChangeState(player.IdleState);
-            }else
+            }
+          
+            else
             {
                 stateMachine.ChangeState(player.AirState);
             }
         }
+
+
     }
 
     public override void PhysicsUpdate()

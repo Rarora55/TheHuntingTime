@@ -4,9 +4,12 @@ using System.Collections.Generic;
 
 public class PlayerMoveState : PlayerGroundState
 {
+    private bool isTurning;
     public PlayerMoveState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
+
+   
 
     public override void DoChecks()
     {
@@ -16,20 +19,27 @@ public class PlayerMoveState : PlayerGroundState
     public override void Enter()
     {
         base.Enter();
+        isTurning = false;
+        player.anim.SetBool("turnIt", false);
     }
 
     public override void Exit()
     {
         base.Exit();
+        player.anim.SetBool("turnIt", false);
+        isTurning = false;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
 
-        player.CheckFlip(xInput);
+        if (isTurning)
+        {
+            return;
+        }
 
-        player.SetVelocityX(playerData.movementVelocity * xInput);
+        
 
         //Logic of drifting here
         if(xInput == 0)
@@ -39,11 +49,27 @@ public class PlayerMoveState : PlayerGroundState
         else if (yInput == -1)
         {
             stateMachine.ChangeState(player.CrouchMoveState);
+        }else if(xInput != 0 && xInput != player.FacingRight)
+        {
+            isTurning =true;
+            player.anim.SetBool("turnIt", true);
+        }else
+        {
+            player.SetVelocityX(playerData.movementVelocity * xInput);
         }
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+    }
+
+    public override void AnimationFinishTrigger()
+    {
+        base.AnimationFinishTrigger();
+        player.Flip();
+        isTurning = false;
+        player.anim.SetBool("turnIt", false );
+
     }
 }
