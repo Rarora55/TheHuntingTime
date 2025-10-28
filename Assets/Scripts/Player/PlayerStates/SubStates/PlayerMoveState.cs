@@ -44,15 +44,21 @@ public class PlayerMoveState : PlayerGroundState
         //Logic of drifting here
         if(xInput == 0)
         {
+            //
+            if (xInput == 0 || xInput == player.FacingRight)
+            {
+                CancelTurn();
+            }
+            //
             stateMachine.ChangeState(player.IdleState);
         }
         else if (yInput == -1)
         {
             stateMachine.ChangeState(player.CrouchMoveState);
-        }else if(xInput != 0 && xInput != player.FacingRight)
+        }
+        else if(xInput != 0 && xInput != player.FacingRight)
         {
-            isTurning =true;
-            player.anim.SetBool("turnIt", true);
+            StartTurn();
         }else
         {
             player.SetVelocityX(playerData.movementVelocity * xInput);
@@ -67,9 +73,29 @@ public class PlayerMoveState : PlayerGroundState
     public override void AnimationFinishTrigger()
     {
         base.AnimationFinishTrigger();
+        if (isTurning)
+        {
+            CompleteTurn();
+        }
+
+    }
+    private void StartTurn()
+    {
+        isTurning = true;
+        player.anim.SetBool("turnIt", true);
+        player.SetVelocityX(0f);
+    }
+
+    private void CompleteTurn()
+    {
         player.Flip();
         isTurning = false;
-        player.anim.SetBool("turnIt", false );
+        player.anim.SetBool("turnIt", false);
+    }
 
+    private void CancelTurn()
+    {
+        isTurning = false;
+        player.anim.SetBool("turnIt", false);
     }
 }
