@@ -19,6 +19,7 @@ public class PlayerData: ScriptableObject
 
     [Header("Wall Checks")]
     public float WallCheckDistance = 0.5f;
+    public float LedgeCheckDistance = 0.4f;
     public float WallSlicedVelocity = 3f;
 
     [Header("Wall Climb State")]

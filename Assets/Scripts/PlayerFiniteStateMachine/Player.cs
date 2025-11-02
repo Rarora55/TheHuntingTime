@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     public PlayerMoveState MoveState { get; private set; }
     public PlayerAirState AirState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
-
+    //public PlayerFallState FallState { get; private set; }
     public PlayerLandState LandState { get; private set; }
     public PlayerWallClimbState WallClimbState { get; private set; }
     public PlayerWallGrapState WallGrapState { get; private set; }
@@ -60,6 +60,7 @@ public class Player : MonoBehaviour
         AirState = new PlayerAirState(this, StateMachine, PlayerData, "inAir");
         JumpState = new PlayerJumpState(this, StateMachine, PlayerData, "inAir");
         LandState = new PlayerLandState(this, StateMachine, PlayerData, "land");
+        //FallState = new PlayerFallState(this, StateMachine, PlayerData, "fall");
         WallClimbState = new PlayerWallClimbState(this, StateMachine, PlayerData, "climbWall");
         WallGrapState = new PlayerWallGrapState(this, StateMachine, PlayerData, "grabWall");
         WallSlicedState = new PlayerWallSlicedState(this, StateMachine, PlayerData, "wallSlide");
@@ -130,12 +131,22 @@ public class Player : MonoBehaviour
 
     public bool CheckIfTouchingWall()
     {
-        return Physics2D.Raycast(WallCheck.position, Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
+        RaycastHit2D hit = Physics2D.Raycast(WallCheck.position, Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
+        
+        Color debugColor = hit ? Color.green : Color.red;
+        Debug.DrawRay(WallCheck.position, Vector2.right * FacingRight * PlayerData.WallCheckDistance, debugColor);
+        
+        return hit;
     }
 
     public bool CheckTouchingLedge()
     {
-        return Physics2D.Raycast(LedgeCheck.position , Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
+        RaycastHit2D hit = Physics2D.Raycast(LedgeCheck.position , Vector2.right * FacingRight, PlayerData.LedgeCheckDistance, PlayerData.WhatIsGround);
+        
+        Color debugColor = hit ? Color.cyan : Color.magenta;
+        Debug.DrawRay(LedgeCheck.position, Vector2.right * FacingRight * PlayerData.LedgeCheckDistance, debugColor);
+        
+        return hit;
     }
    
     public bool CheckForCeiling()
@@ -163,11 +174,32 @@ public class Player : MonoBehaviour
     public Vector2 DeterminetCornerPos()
     {
         RaycastHit2D xHit = Physics2D.Raycast(WallCheck.position, Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
-        float xDist  = xHit.distance;
+        float xDist = xHit.distance;
+        
+        Debug.Log($"<color=cyan>[CORNER] xRaycast desde WallCheck.pos: {WallCheck.position} → Hit: {xHit.point} | Dist: {xDist:F3}</color>");
+        
         workSpace.Set((xDist + 0.015f) * FacingRight, 0f);
-        RaycastHit2D yHit = Physics2D.Raycast(LedgeCheck.position + (Vector3)(workSpace), Vector2.down, LedgeCheck.position.y - WallCheck.position.y + 0.015f, PlayerData.WhatIsGround);
+        
+        Vector3 yRayStart = LedgeCheck.position + (Vector3)workSpace;
+        float yRayMaxDist = LedgeCheck.position.y - WallCheck.position.y + 0.015f;
+        
+        RaycastHit2D yHit = Physics2D.Raycast(yRayStart, Vector2.down, yRayMaxDist, PlayerData.WhatIsGround);
         float yDist = yHit.distance;
-        workSpace.Set(WallCheck.position.x + (xDist * FacingRight), LedgeCheck.position.y - yDist);
+        
+        Debug.Log($"<color=cyan>[CORNER] yRaycast desde LedgeCheck offset: {yRayStart} → Hit: {yHit.point} | Dist: {yDist:F3} | MaxDist: {yRayMaxDist:F3}</color>");
+        
+        Vector2 calculatedCorner = new Vector2(
+            WallCheck.position.x + (xDist * FacingRight), 
+            LedgeCheck.position.y - yDist
+        );
+        
+        Debug.Log($"<color=green>[CORNER] Resultado final: {calculatedCorner}</color>");
+        
+        Debug.DrawRay(WallCheck.position, Vector2.right * FacingRight * xDist, Color.red, 3f);
+        Debug.DrawRay(yRayStart, Vector2.down * yDist, Color.blue, 3f);
+        Debug.DrawLine(calculatedCorner, calculatedCorner + Vector2.up * 0.5f, Color.green, 3f);
+        
+        workSpace = calculatedCorner;
         return workSpace;
     }
 
@@ -180,6 +212,23 @@ public class Player : MonoBehaviour
     {
         FacingRight *= -1;
         transform.Rotate(0.0f, 180f, 0.0f);
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (WallCheck == null || LedgeCheck == null || GroundCheck == null || PlayerData == null) 
+            return;
+        
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(WallCheck.position, WallCheck.position + Vector3.right * FacingRight * PlayerData.WallCheckDistance);
+        Gizmos.DrawWireSphere(WallCheck.position, 0.05f);
+        
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(LedgeCheck.position, LedgeCheck.position + Vector3.right * FacingRight * PlayerData.LedgeCheckDistance);
+        Gizmos.DrawWireSphere(LedgeCheck.position, 0.05f);
+        
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(GroundCheck.position, PlayerData.GroundCheckRadius);
     }
     #endregion
 }

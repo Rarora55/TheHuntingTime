@@ -18,10 +18,11 @@ MonoBehaviour:
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 128
-  WallCheckDistance: 0.5
+  WallCheckDistance: 0.71
+  LedgeCheckDistance: 0.25
   WallSlicedVelocity: 2
   WallClimbVelocity: 3
-  startOffSet: {x: 0.4, y: 0.97}
+  startOffSet: {x: 0.4, y: 1.07}
   stopOffSet: {x: 0.4, y: 0.7}
   crouchMovementVelocity: 4
   crouchColliderHeight: 0.8

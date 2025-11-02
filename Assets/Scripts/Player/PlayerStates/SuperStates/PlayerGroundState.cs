@@ -8,6 +8,7 @@ public class PlayerGroundState : PlayerState
     protected int yInput;
 
     protected bool isTouchingCeiling;
+    protected bool isGrounded;
 
     private bool JumpInput;
     private bool isTouchingWall;
@@ -22,6 +23,7 @@ public class PlayerGroundState : PlayerState
     {
         base.DoChecks();
 
+        isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
         isTouchingCeiling = player.CheckForCeiling();
     }
@@ -45,11 +47,15 @@ public class PlayerGroundState : PlayerState
         GrabInput = player.InputHandler.GrabInput;
 
 
-        if (JumpInput)
+        if (JumpInput && isGrounded)
         {
             player.InputHandler.JumpEnded();
             stateMachine.ChangeState(player.JumpState);
-        } 
+        }
+        else if (!isGrounded)
+        {
+            stateMachine.ChangeState(player.AirState);
+        }
         else if (isTouchingWall && GrabInput)
         {
             stateMachine.ChangeState(player.WallGrapState);

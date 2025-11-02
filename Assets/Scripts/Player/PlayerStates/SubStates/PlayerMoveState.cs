@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class PlayerMoveState : PlayerGroundState
 {
     private bool isTurning;
+    private bool turnStartTime;
+    private const float MAX_TURN_DURATION = 0.4f;
     public PlayerMoveState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
@@ -34,15 +36,16 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.LogicUpdate();
 
-        if (isTurning)
-        {
-            return;
-        }
+        /*
+       if (isTurning)
+       {
+       //Para girar de un turno y produce conflicto
+           return;
+       }
+       */
 
         
-
-        //Logic of drifting here
-        if(xInput == 0)
+        if (xInput == 0)
         {
             //
             if (xInput == 0 || xInput == player.FacingRight)
@@ -56,13 +59,18 @@ public class PlayerMoveState : PlayerGroundState
         {
             stateMachine.ChangeState(player.CrouchMoveState);
         }
-        else if(xInput != 0 && xInput != player.FacingRight)
+        else if (xInput != 0 && xInput != player.FacingRight)
         {
             StartTurn();
-        }else
+        }
+        else
         {
             player.SetVelocityX(playerData.movementVelocity * xInput);
         }
+
+
+
+       
     }
 
     public override void PhysicsUpdate()

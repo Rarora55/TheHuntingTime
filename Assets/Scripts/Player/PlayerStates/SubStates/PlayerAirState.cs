@@ -10,6 +10,7 @@ public class PlayerAirState : PlayerState
     private bool jumpInput;
     private bool GrabInput;
     private bool isTouchingLedge;
+   
     public PlayerAirState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
@@ -32,12 +33,14 @@ public class PlayerAirState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        Debug.Log("<color=cyan>[AIR] Enter - En el aire</color>");
     }
 
     public override void Exit()
     {
         base.Exit();
         player.anim.SetBool("ledge", false);
+    
     }
 
     public override void LogicUpdate()
@@ -48,24 +51,21 @@ public class PlayerAirState : PlayerState
         jumpInput = player.InputHandler.JumpInput;
         GrabInput = player.InputHandler.GrabInput;
 
+        Debug.Log($"<color=cyan>[AIR] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | FacingRight:{player.FacingRight} | Grab:{GrabInput} | Vel.y:{player.CurrentVelocity.y:F2}</color>");
+
         if (isGrounded && player.CurrentVelocity.y < 0.01f)
         {
+            Debug.Log("[AIR] -> LandState (aterrizó)");
             stateMachine.ChangeState(player.LandState);
-
-        }
-        else if (isTouchingWall && !isTouchingLedge)
-        {
-
-            stateMachine.ChangeState(player.WallLedgeState);
-
         }
         else if (isTouchingWall && GrabInput)
         {
+            Debug.Log("[AIR] -> WallGrapState (agarrando pared)");
             stateMachine.ChangeState(player.WallGrapState);
         }
-
-        else if (isTouchingWall && xInput == player.FacingRight && player.CurrentVelocity.y <= 0)
+        else if (isTouchingWall && xInput != 0 && xInput == player.FacingRight && !GrabInput)
         {
+            Debug.Log($"<color=green>[AIR] -> WallSlicedState (presionando hacia pared, xInput:{xInput}, FacingRight:{player.FacingRight})</color>");
             stateMachine.ChangeState(player.WallSlicedState);
         }
         else
@@ -75,12 +75,6 @@ public class PlayerAirState : PlayerState
 
             player.anim.SetFloat("yVelocity", player.CurrentVelocity.y);
             player.anim.SetFloat("xVelocity", Mathf.Abs(player.CurrentVelocity.x));
-
-            bool isRising = player.CurrentVelocity.y > 1f;
-            bool isFalling = player.CurrentVelocity.y < -3f;
-
-            player.anim.SetBool("isRising", isRising);
-            player.anim.SetBool("isFalling", isFalling);
         }
     }
 

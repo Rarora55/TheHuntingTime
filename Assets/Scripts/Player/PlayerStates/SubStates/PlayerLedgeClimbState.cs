@@ -37,17 +37,43 @@ public class PlayerLedgeClimbState : PlayerState
         base.Enter();
         isHanging = false;
         isClimbing = false;
- 
 
-        
         player.SetVelocityZero();
+        
+        Debug.Log($"<color=yellow>========== [LEDGE CLIMB] ENTER ==========</color>");
+        Debug.Log($"[LEDGE] DetectedPos: {detectedPos}");
+        Debug.Log($"[LEDGE] Player actual pos: {player.transform.position}");
+        Debug.Log($"[LEDGE] FacingRight: {player.FacingRight}");
+        
         player.transform.position = detectedPos;
+        Debug.Log($"[LEDGE] Movido a detectedPos, llamando DeterminetCornerPos()...");
+        
         cornerPos = player.DeterminetCornerPos();
-        startPos.Set(cornerPos.x - (player.FacingRight * playerData.startOffSet.x), cornerPos.y - playerData.startOffSet.y);
-        stopPos.Set(cornerPos.x + (player.FacingRight * playerData.stopOffSet.x), cornerPos.y + playerData.stopOffSet.y);
+        
+        Debug.Log($"[LEDGE] CornerPos obtenido: {cornerPos}");
+        
+        startPos.Set(
+            cornerPos.x - (player.FacingRight * playerData.startOffSet.x), 
+            cornerPos.y - playerData.startOffSet.y
+        );
+        
+        stopPos.Set(
+            cornerPos.x + (player.FacingRight * playerData.stopOffSet.x), 
+            cornerPos.y + playerData.stopOffSet.y
+        );
+        
+        Debug.Log($"[LEDGE] StartPos: {startPos} (offset: {playerData.startOffSet})");
+        Debug.Log($"[LEDGE] StopPos: {stopPos} (offset: {playerData.stopOffSet})");
+        
         player.transform.position = startPos;
+        
+        Debug.DrawLine(detectedPos, detectedPos + Vector2.up * 0.3f, Color.white, 4f);
+        Debug.DrawLine(cornerPos, cornerPos + Vector2.up * 0.6f, Color.yellow, 4f);
+        Debug.DrawLine(startPos, startPos + Vector2.right * player.FacingRight * 0.3f, Color.cyan, 4f);
+        Debug.DrawLine(stopPos, stopPos + Vector2.left * player.FacingRight * 0.3f, Color.magenta, 4f);
 
         isHanging = true;
+        Debug.Log($"<color=yellow>========== [LEDGE CLIMB] COMPLETO ==========</color>");
     }
 
     public override void Exit()
@@ -55,12 +81,17 @@ public class PlayerLedgeClimbState : PlayerState
         base.Exit();
         player.anim.SetBool("ledge", false);
         isHanging = false;
+        
         if (isClimbing)
         {
+            Debug.Log($"<color=green>[LEDGE] EXIT - Moviendo a stopPos: {stopPos}</color>");
             player.transform.position = stopPos;
             isClimbing = false;
         }
-        
+        else
+        {
+            Debug.Log("<color=yellow>[LEDGE] EXIT - Sin climb, cancelado</color>");
+        }
     }
 
     public override void LogicUpdate()
@@ -107,6 +138,7 @@ public class PlayerLedgeClimbState : PlayerState
     public void SetDetectedPosition (Vector2 pos)
     {
         detectedPos = pos;
+        Debug.Log($"<color=cyan>[LEDGE] SetDetectedPosition llamado con: {pos}</color>");
     }
 
     private void CheckForSpace()

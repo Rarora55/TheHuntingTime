@@ -9,25 +9,40 @@ public class PlayerWallClimbState : PlayerTouchingWallState
     public override void DoChecks()
     {
         base.DoChecks();
+    }
 
-
+    public override void Enter()
+    {
+        base.Enter();
+        Debug.Log("<color=lime>[WALLCLIMB] Enter - Escalando pared</color>");
     }
 
     public override void LogicUpdate()
     {
-        base.LogicUpdate();
-        
-        if (!grabInput)
+        xInput = player.InputHandler.NormInputX;
+        yInput = player.InputHandler.NormInputY;
+        grabInput = player.InputHandler.GrabInput;
+
+        Debug.Log($"[WALLCLIMB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | yIn:{yInput} | Grab:{grabInput}");
+
+        if (!isTouchingWall)
         {
+            Debug.Log("[WALLCLIMB] -> AirState (no toca pared)");
             stateMachine.ChangeState(player.AirState);
-            return;
         }
-
-        player.SetVelocityY(playerData.WallClimbVelocity);
-
-        if (yInput != 1)
+        else if (isTouchingWall && !isTouchingLedge && grabInput)
         {
+            Debug.Log("[WALLCLIMB] -> WallLedgeState (llegó al borde)");
+            stateMachine.ChangeState(player.WallLedgeState);
+        }
+        else if (yInput != 1)
+        {
+            Debug.Log("[WALLCLIMB] -> WallGrapState (dejó de subir)");
             stateMachine.ChangeState(player.WallGrapState);
+        }
+        else
+        {
+            player.SetVelocityY(playerData.WallClimbVelocity);
         }
     }
 }

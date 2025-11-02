@@ -33,11 +33,10 @@ public class PlayerTouchingWallState : PlayerState
         isTouchingWall = player.CheckIfTouchingWall();
         isTouchingLedge = player.CheckTouchingLedge();
 
-       /* if(isTouchingWall && !isTouchingLedge)
+        if(isTouchingWall && !isTouchingLedge)
         {
             player.WallLedgeState.SetDetectedPosition(player.transform.position);
         }
-       */
     }
 
     public override void Enter()
@@ -57,23 +56,23 @@ public class PlayerTouchingWallState : PlayerState
         yInput = player.InputHandler.NormInputY;
         grabInput = player.InputHandler.GrabInput;
 
-        if (isGrounded && !grabInput)
+        Debug.Log($"[WALL] Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Ground:{isGrounded} | xIn:{xInput} | Grab:{grabInput} | Vel.y:{player.CurrentVelocity.y:F2}");
+
+        if (isTouchingWall && !isTouchingLedge && grabInput && player.CurrentVelocity.y <= 0.5f && xInput == player.FacingRight)
         {
-            stateMachine.ChangeState(player.IdleState);
-        }
-        else if(!isTouchingWall || (xInput != player.FacingRight && !grabInput))
-        {
-         
-            stateMachine.ChangeState(player.AirState);
-        }
-       /* else if (xInput == -player.FacingRight && !grabInput)
-        {
-            stateMachine.ChangeState(player.AirState);
-        }
-        else if (isTouchingWall && !isTouchingLedge && grabInput)
-        {
+            Debug.Log("[WALL] -> WallLedgeState (borde detectado con grab)");
             stateMachine.ChangeState(player.WallLedgeState);
-        }*/
+        }
+        else if (!isTouchingWall)
+        {
+            Debug.Log("[WALL] -> AirState (no toca pared)");
+            stateMachine.ChangeState(player.AirState);
+        }
+        else if (xInput != player.FacingRight && xInput != 0 && !grabInput)
+        {
+            Debug.Log("[WALL] -> AirState (empujando afuera)");
+            stateMachine.ChangeState(player.AirState);
+        }
     }
 
     public override void PhysicsUpdate()
