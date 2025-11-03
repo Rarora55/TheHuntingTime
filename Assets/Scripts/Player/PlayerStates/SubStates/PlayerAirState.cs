@@ -33,12 +33,14 @@ public class PlayerAirState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        player.anim.SetBool("inAir", true);
         Debug.Log("<color=cyan>[AIR] Enter - En el aire</color>");
     }
 
     public override void Exit()
     {
         base.Exit();
+        player.anim.SetBool("inAir", false);
         player.anim.SetBool("ledge", false);
     
     }

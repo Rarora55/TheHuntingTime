@@ -8,6 +8,7 @@ public class PlayerData: ScriptableObject
 
     [Header("Move State")]
     public float movementVelocity = 10f;
+    public float runVelocity = 12f;
 
     [Header("Jump State")]
     public float JumpVelocity = 15f;

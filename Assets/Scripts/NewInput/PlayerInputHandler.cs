@@ -7,6 +7,7 @@ public class PlayerInputHandler : MonoBehaviour
     public int NormInputX { get; private set; }
     public int NormInputY { get; private set; }
     public bool JumpInput { get; private set; }
+    public bool RunInput { get; private set; }
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
@@ -58,6 +59,15 @@ public class PlayerInputHandler : MonoBehaviour
         if(context.canceled)
             GrabInput = false;
 
+    }
+
+    public void OnRunInput(InputAction.CallbackContext context)
+    {
+        if (context.started)
+            RunInput = true;
+
+        if (context.canceled)
+            RunInput = false;
     }
 
     public void JumpEnded() => JumpInput = false;

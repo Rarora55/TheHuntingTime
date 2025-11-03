@@ -25,15 +25,15 @@ public class PlayerWallClimbState : PlayerTouchingWallState
 
         Debug.Log($"[WALLCLIMB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | yIn:{yInput} | Grab:{grabInput}");
 
-        if (!isTouchingWall)
+        if (isTouchingWall && !isTouchingLedge)
+        {
+            Debug.Log("[WALLCLIMB] -> WallLedgeState (llegó al borde, trepa automáticamente)");
+            stateMachine.ChangeState(player.WallLedgeState);
+        }
+        else if (!isTouchingWall)
         {
             Debug.Log("[WALLCLIMB] -> AirState (no toca pared)");
             stateMachine.ChangeState(player.AirState);
-        }
-        else if (isTouchingWall && !isTouchingLedge && grabInput)
-        {
-            Debug.Log("[WALLCLIMB] -> WallLedgeState (llegó al borde)");
-            stateMachine.ChangeState(player.WallLedgeState);
         }
         else if (yInput != 1)
         {

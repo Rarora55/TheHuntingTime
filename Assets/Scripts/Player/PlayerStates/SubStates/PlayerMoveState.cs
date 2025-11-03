@@ -6,6 +6,7 @@ public class PlayerMoveState : PlayerGroundState
 {
     private bool isTurning;
     private bool turnStartTime;
+    private bool runInput;
     private const float MAX_TURN_DURATION = 0.4f;
     public PlayerMoveState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -29,12 +30,14 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.Exit();
         player.anim.SetBool("turnIt", false);
+        player.anim.SetBool("isRunning", false);
         isTurning = false;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        runInput = player.InputHandler.RunInput;
 
         /*
        if (isTurning)
@@ -65,7 +68,9 @@ public class PlayerMoveState : PlayerGroundState
         }
         else
         {
-            player.SetVelocityX(playerData.movementVelocity * xInput);
+            float currentVelocity = runInput ? playerData.runVelocity : playerData.movementVelocity;
+            player.SetVelocityX(currentVelocity * xInput);
+            player.anim.SetBool("isRunning", runInput);
         }
 
 
