@@ -58,7 +58,7 @@ public class PlayerMoveState : PlayerGroundState
             //
             stateMachine.ChangeState(player.IdleState);
         }
-        else if (yInput == -1)
+        else if (yInput == -1 && !player.CheckIfTouchingWall())
         {
             stateMachine.ChangeState(player.CrouchMoveState);
         }

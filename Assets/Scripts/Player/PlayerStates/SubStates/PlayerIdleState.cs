@@ -19,6 +19,7 @@ public class PlayerIdleState : PlayerGroundState
     {
         base.Enter();
         player.SetVelocityX(0);
+        player.anim.SetBool("isRunning", false);
     }
 
     public override void Exit()
@@ -34,7 +35,7 @@ public class PlayerIdleState : PlayerGroundState
         {
             stateMachine.ChangeState(player.MoveState);
         }
-        else if (yInput == -1)
+        else if (yInput == -1 && !player.CheckIfTouchingWall())
         {
             stateMachine.ChangeState(player.CrouchIdleState);
         }

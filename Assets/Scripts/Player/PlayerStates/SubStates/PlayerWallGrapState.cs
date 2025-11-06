@@ -29,27 +29,35 @@ public class PlayerWallGrapState : PlayerTouchingWallState
         
         HoldPosition();
         
-        Debug.Log($"[WALLGRAB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | yIn:{yInput} | Grab:{grabInput}");
+        Debug.Log($"[WALLGRAB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | yIn:{yInput} | Grab:{grabInput} | FacingRight:{player.FacingRight}");
 
         if (!isTouchingWall)
         {
             Debug.Log("[WALLGRAB] -> AirState (no toca pared)");
             stateMachine.ChangeState(player.AirState);
         }
-        else if (isTouchingWall && !isTouchingLedge && grabInput)
-        {
-            Debug.Log("[WALLGRAB] -> WallLedgeState (en el borde)");
-            stateMachine.ChangeState(player.WallLedgeState);
-        }
         else if (yInput > 0)
         {
             Debug.Log("[WALLGRAB] -> WallClimbState (subiendo)");
             stateMachine.ChangeState(player.WallClimbState);
         }
-        else if (yInput < 0 || !grabInput)
+        else if (yInput < 0 && grabInput)
         {
-            Debug.Log("[WALLGRAB] -> WallSlicedState (soltando/bajando)");
+            Debug.Log("[WALLGRAB] -> WallSlicedState (bajando con Grab)");
             stateMachine.ChangeState(player.WallSlicedState);
+        }
+        else if (!grabInput)
+        {
+            if (xInput != 0 && xInput == player.FacingRight)
+            {
+                Debug.Log("[WALLGRAB] -> WallSlicedState (soltó Grab pero presiona hacia pared)");
+                stateMachine.ChangeState(player.WallSlicedState);
+            }
+            else
+            {
+                Debug.Log("[WALLGRAB] -> AirState (soltó Grab sin presionar hacia pared)");
+                stateMachine.ChangeState(player.AirState);
+            }
         }
     }
 

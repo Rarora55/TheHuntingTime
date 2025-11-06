@@ -4,7 +4,6 @@ using System.Collections;
 
 public class PlayerLedgeClimbState : PlayerState
 {
-    private Vector2 detectedPos;
     private Vector2 cornerPos;
     private Vector2 startPos;
     private Vector2 stopPos;
@@ -41,12 +40,8 @@ public class PlayerLedgeClimbState : PlayerState
         player.SetVelocityZero();
         
         Debug.Log($"<color=yellow>========== [LEDGE CLIMB] ENTER ==========</color>");
-        Debug.Log($"[LEDGE] DetectedPos: {detectedPos}");
-        Debug.Log($"[LEDGE] Player actual pos: {player.transform.position}");
+        Debug.Log($"[LEDGE] Player actual pos ANTES de calcular: {player.transform.position}");
         Debug.Log($"[LEDGE] FacingRight: {player.FacingRight}");
-        
-        player.transform.position = detectedPos;
-        Debug.Log($"[LEDGE] Movido a detectedPos, llamando DeterminetCornerPos()...");
         
         cornerPos = player.DeterminetCornerPos();
         
@@ -67,7 +62,6 @@ public class PlayerLedgeClimbState : PlayerState
         
         player.transform.position = startPos;
         
-        Debug.DrawLine(detectedPos, detectedPos + Vector2.up * 0.3f, Color.white, 4f);
         Debug.DrawLine(cornerPos, cornerPos + Vector2.up * 0.6f, Color.yellow, 4f);
         Debug.DrawLine(startPos, startPos + Vector2.right * player.FacingRight * 0.3f, Color.cyan, 4f);
         Debug.DrawLine(stopPos, stopPos + Vector2.left * player.FacingRight * 0.3f, Color.magenta, 4f);
@@ -133,12 +127,6 @@ public class PlayerLedgeClimbState : PlayerState
         }
 
 
-    }
-
-    public void SetDetectedPosition (Vector2 pos)
-    {
-        detectedPos = pos;
-        Debug.Log($"<color=cyan>[LEDGE] SetDetectedPosition llamado con: {pos}</color>");
     }
 
     private void CheckForSpace()

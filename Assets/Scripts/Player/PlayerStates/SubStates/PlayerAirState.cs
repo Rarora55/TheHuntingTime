@@ -21,19 +21,13 @@ public class PlayerAirState : PlayerState
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
         isTouchingLedge = player.CheckTouchingLedge();
-
-        if(isTouchingWall && !isTouchingLedge)
-        {
-            player.WallLedgeState.SetDetectedPosition(player.transform.position);
-        }
-
-   
     }
 
     public override void Enter()
     {
         base.Enter();
         player.anim.SetBool("inAir", true);
+        player.anim.SetBool("isRunning", false);
         Debug.Log("<color=cyan>[AIR] Enter - En el aire</color>");
     }
 
@@ -62,7 +56,7 @@ public class PlayerAirState : PlayerState
         }
         else if (isTouchingWall && GrabInput)
         {
-            Debug.Log("[AIR] -> WallGrapState (agarrando pared)");
+            Debug.Log("[AIR] -> WallGrapState (agarrando pared desde aire)");
             stateMachine.ChangeState(player.WallGrapState);
         }
         else if (isTouchingWall && xInput != 0 && xInput == player.FacingRight && !GrabInput)

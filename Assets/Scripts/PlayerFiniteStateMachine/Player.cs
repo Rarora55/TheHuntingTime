@@ -26,6 +26,14 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerData PlayerData;
     #endregion
 
+    #region Core Systems
+    public IPlayerPhysics Physics { get; private set; }
+    public IPlayerCollision Collision { get; private set; }
+    public IPlayerAnimation Animation { get; private set; }
+    public IPlayerOrientation Orientation { get; private set; }
+    public PlayerEvents Events { get; private set; }
+    #endregion
+
     #region Components
     public Animator anim { get; private set; }
     public PlayerInputHandler InputHandler { get; private set; }
@@ -46,7 +54,20 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Checks Var
-    public int FacingRight { get; private set; }
+    public int FacingRight 
+    { 
+        get 
+        {
+            if (Orientation != null)
+                return Orientation.FacingDirection;
+            return facingRightFallback;
+        }
+        private set
+        {
+            facingRightFallback = value;
+        }
+    }
+    private int facingRightFallback = 1;
     #endregion
 
     //Methods
@@ -54,22 +75,20 @@ public class Player : MonoBehaviour
     #region Unity CallBacks
     private void Awake()
     {
+        InitializeCoreSystems();
+        
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine, PlayerData, "idle");
         MoveState = new PlayerMoveState(this, StateMachine, PlayerData, "move");
         AirState = new PlayerAirState(this, StateMachine, PlayerData, "inAir");
         JumpState = new PlayerJumpState(this, StateMachine, PlayerData, "inAir");
         LandState = new PlayerLandState(this, StateMachine, PlayerData, "land");
-        //FallState = new PlayerFallState(this, StateMachine, PlayerData, "fall");
         WallClimbState = new PlayerWallClimbState(this, StateMachine, PlayerData, "climbWall");
         WallGrapState = new PlayerWallGrapState(this, StateMachine, PlayerData, "grabWall");
         WallSlicedState = new PlayerWallSlicedState(this, StateMachine, PlayerData, "wallSlide");
         WallLedgeState = new PlayerLedgeClimbState(this, StateMachine, PlayerData, "ledge");
         CrouchIdleState = new PlayerCrouchIdleState(this, StateMachine, PlayerData, "crouchIdle");
         CrouchMoveState = new PlayerCrouchMoveState(this, StateMachine, PlayerData, "crouchMove");
-        
-        
-
     }
 
     private void Start()
@@ -79,46 +98,83 @@ public class Player : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         moveCollider = GetComponent<BoxCollider2D>();
         FacingRight = 1;
+        
+        Collision = new PlayerCollisionController(
+            GroundCheck, WallCheck, LedgeCheck, ceilingCheck,
+            moveCollider, PlayerData, Orientation, Events);
+        Animation = new PlayerAnimationController(anim, StateMachine, Events);
+        
         StateMachine.Initialize(IdleState);
-
     }
 
     private void Update()
     {
-        CurrentVelocity = RB.linearVelocity;
+        if (Physics != null)
+            Physics.UpdateVelocity();
+        else
+            CurrentVelocity = RB.linearVelocity;
+            
         StateMachine.CurrentState.LogicUpdate();
     }
 
     private void FixedUpdate()
     {
-
         StateMachine.CurrentState.PhysicsUpdate();
     }
 
+    #endregion
+
+    #region Core System Initialization
+    private void InitializeCoreSystems()
+    {
+        Events = new PlayerEvents();
+        
+        Orientation = new PlayerOrientationController(transform, Events, initialDirection: 1);
+        Physics = new PlayerPhysicsController(GetComponent<Rigidbody2D>(), Events);
+    }
     #endregion
 
     #region Set Functions
 
     public void SetVelocityZero()
     {
-        RB.linearVelocity = Vector2.zero;
-        CurrentVelocity = Vector2.zero;
+        if (Physics != null)
+        {
+            Physics.SetVelocityZero();
+        }
+        else
+        {
+            RB.linearVelocity = Vector2.zero;
+            CurrentVelocity = Vector2.zero;
+        }
     }
 
     public void SetVelocityX(float velocity)
     {
-
-        workSpace.Set(velocity, CurrentVelocity.y);
-        RB.linearVelocity = workSpace;
-        CurrentVelocity = workSpace;
-        
+        if (Physics != null)
+        {
+            Physics.SetVelocityX(velocity);
+        }
+        else
+        {
+            workSpace.Set(velocity, RB.linearVelocity.y);
+            RB.linearVelocity = workSpace;
+            CurrentVelocity = workSpace;
+        }
     }
 
     public void SetVelocityY(float velocity)
     {
-        workSpace.Set(CurrentVelocity.x, velocity);
-        RB.linearVelocity = workSpace;
-        CurrentVelocity = workSpace;
+        if (Physics != null)
+        {
+            Physics.SetVelocityY(velocity);
+        }
+        else
+        {
+            workSpace.Set(RB.linearVelocity.x, velocity);
+            RB.linearVelocity = workSpace;
+            CurrentVelocity = workSpace;
+        }
     }
     #endregion
 
@@ -126,11 +182,16 @@ public class Player : MonoBehaviour
 
     public bool CheckIsGrounded()
     {
-        return Physics2D.OverlapCircle(GroundCheck.position, PlayerData.GroundCheckRadius, PlayerData.WhatIsGround);
+        if (Collision != null)
+            return Collision.CheckIsGrounded();
+        return Physics2D.Raycast(GroundCheck.position, Vector2.down, PlayerData.GroundCheckRadius, PlayerData.WhatIsGround);
     }
 
     public bool CheckIfTouchingWall()
     {
+        if (Collision != null)
+            return Collision.CheckIfTouchingWall();
+            
         RaycastHit2D hit = Physics2D.Raycast(WallCheck.position, Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
         
         Color debugColor = hit ? Color.green : Color.red;
@@ -141,6 +202,9 @@ public class Player : MonoBehaviour
 
     public bool CheckTouchingLedge()
     {
+        if (Collision != null)
+            return Collision.CheckTouchingLedge();
+            
         RaycastHit2D hit = Physics2D.Raycast(LedgeCheck.position , Vector2.right * FacingRight, PlayerData.LedgeCheckDistance, PlayerData.WhatIsGround);
         
         Color debugColor = hit ? Color.cyan : Color.magenta;
@@ -151,13 +215,23 @@ public class Player : MonoBehaviour
    
     public bool CheckForCeiling()
     {
+        if (Collision != null)
+            return Collision.CheckForCeiling();
         return Physics2D.OverlapCircle(ceilingCheck.position, PlayerData.GroundCheckRadius, PlayerData.WhatIsGround);
     }
+    
     public void CheckFlip(int xInput)
     {
-        if(xInput != 0 && xInput != FacingRight)
+        if (Orientation != null)
         {
-            Flip();
+            Orientation.CheckFlip(xInput);
+        }
+        else
+        {
+            if(xInput != 0 && xInput != FacingRight)
+            {
+                Flip();
+            }
         }
     }
     #endregion
@@ -165,14 +239,24 @@ public class Player : MonoBehaviour
     #region Others
     public void SetColliderHeight(float height)
     {
-        Vector2 center = moveCollider.offset;
-        workSpace.Set(moveCollider.size.x, height);
-        center.y += (height - moveCollider.size.y) / 2;
-        moveCollider.size = workSpace;
-        moveCollider.offset = center;
+        if (Collision != null)
+        {
+            Collision.SetColliderHeight(height);
+        }
+        else
+        {
+            Vector2 center = moveCollider.offset;
+            workSpace.Set(moveCollider.size.x, height);
+            center.y += (height - moveCollider.size.y) / 2;
+            moveCollider.size = workSpace;
+            moveCollider.offset = center;
+        }
     }
+    
     public Vector2 DeterminetCornerPos()
     {
+        if (Collision != null)
+            return Collision.DetermineCornerPosition();
         RaycastHit2D xHit = Physics2D.Raycast(WallCheck.position, Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
         float xDist = xHit.distance;
         
@@ -203,15 +287,33 @@ public class Player : MonoBehaviour
         return workSpace;
     }
 
-    public void AnimationTrigger() => StateMachine.CurrentState.AnimationTrigger();
-    public void AnimationFinishTrigger() => StateMachine.CurrentState.AnimationFinishTrigger();
-
-
+    public void AnimationTrigger()
+    {
+        if (Animation != null)
+            Animation.AnimationTrigger();
+        else
+            StateMachine.CurrentState.AnimationTrigger();
+    }
+    
+    public void AnimationFinishTrigger()
+    {
+        if (Animation != null)
+            Animation.AnimationFinishTrigger();
+        else
+            StateMachine.CurrentState.AnimationFinishTrigger();
+    }
 
     public void Flip()
     {
-        FacingRight *= -1;
-        transform.Rotate(0.0f, 180f, 0.0f);
+        if (Orientation != null)
+        {
+            Orientation.Flip();
+        }
+        else
+        {
+            FacingRight *= -1;
+            transform.Rotate(0.0f, 180f, 0.0f);
+        }
     }
 
     private void OnDrawGizmos()

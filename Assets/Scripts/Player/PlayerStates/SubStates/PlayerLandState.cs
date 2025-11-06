@@ -8,6 +8,12 @@ public class PlayerLandState : PlayerGroundState
     {
     }
 
+    public override void Enter()
+    {
+        base.Enter();
+        player.anim.SetBool("isRunning", false);
+    }
+
     public override void LogicUpdate()
     {
         base.LogicUpdate();

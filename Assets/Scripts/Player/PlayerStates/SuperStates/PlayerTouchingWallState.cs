@@ -32,16 +32,12 @@ public class PlayerTouchingWallState : PlayerState
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
         isTouchingLedge = player.CheckTouchingLedge();
-
-        if(isTouchingWall && !isTouchingLedge)
-        {
-            player.WallLedgeState.SetDetectedPosition(player.transform.position);
-        }
     }
 
     public override void Enter()
     {
         base.Enter();
+        player.anim.SetBool("isRunning", false);
     }
 
     public override void Exit()
@@ -58,12 +54,7 @@ public class PlayerTouchingWallState : PlayerState
 
         Debug.Log($"[WALL] Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Ground:{isGrounded} | xIn:{xInput} | Grab:{grabInput} | Vel.y:{player.CurrentVelocity.y:F2}");
 
-        if (isTouchingWall && !isTouchingLedge && grabInput && player.CurrentVelocity.y <= 0.5f && xInput == player.FacingRight)
-        {
-            Debug.Log("[WALL] -> WallLedgeState (borde detectado con grab)");
-            stateMachine.ChangeState(player.WallLedgeState);
-        }
-        else if (!isTouchingWall)
+        if (!isTouchingWall)
         {
             Debug.Log("[WALL] -> AirState (no toca pared)");
             stateMachine.ChangeState(player.AirState);
