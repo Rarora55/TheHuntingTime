@@ -11,6 +11,7 @@ public class PlayerLedgeClimbState : PlayerState
     private bool isHanging;
     private bool isClimbing;
     private bool isTouchingCeiling;
+    private bool isInitialized;
 
     private int xInput;
     private int yInput;
@@ -34,8 +35,16 @@ public class PlayerLedgeClimbState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        
+        if (isInitialized)
+        {
+            Debug.Log("<color=red>[LEDGE] ⚠️ RE-ENTRADA detectada - ignorando</color>");
+            return;
+        }
+        
         isHanging = false;
         isClimbing = false;
+        isInitialized = true;
 
         player.SetVelocityZero();
         
@@ -67,6 +76,9 @@ public class PlayerLedgeClimbState : PlayerState
         Debug.DrawLine(stopPos, stopPos + Vector2.left * player.FacingRight * 0.3f, Color.magenta, 4f);
 
         isHanging = true;
+        
+        CheckForSpace();
+        
         Debug.Log($"<color=yellow>========== [LEDGE CLIMB] COMPLETO ==========</color>");
     }
 
@@ -74,7 +86,9 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.Exit();
         player.anim.SetBool("ledge", false);
+        player.anim.SetBool("isTouchingCeiling", false);
         isHanging = false;
+        isInitialized = false;
         
         if (isClimbing)
         {
@@ -92,19 +106,22 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.LogicUpdate();
 
+        Debug.Log($"[LEDGE] LogicUpdate - isAnimationFinish:{isAnimationFinish} | isTouchingCeiling:{isTouchingCeiling} | isClimbing:{isClimbing}");
+
         if (isAnimationFinish)
         {
             if (isTouchingCeiling)
             {
+                Debug.Log("<color=red>[LEDGE] → CrouchIdleState (hay techo)</color>");
                 stateMachine.ChangeState(player.CrouchIdleState);
             }
             else
             {
+                Debug.Log("<color=green>[LEDGE] → IdleState (sin techo)</color>");
                 stateMachine.ChangeState(player.IdleState);
             }
-
-            //cambio
-        }else
+        }
+        else
         {
             xInput = player.InputHandler.NormInputX;
             yInput = player.InputHandler.NormInputY;
@@ -133,6 +150,7 @@ public class PlayerLedgeClimbState : PlayerState
     {
         isTouchingCeiling = Physics2D.Raycast(cornerPos + (Vector2.up * 0.015f) + (Vector2.right * player.FacingRight * 0.015f), Vector2.up, playerData.standColliderHeight, playerData.WhatIsGround);
         player.anim.SetBool("isTouchingCeiling", isTouchingCeiling);
-
+        
+        Debug.Log($"<color={(isTouchingCeiling ? "red" : "green")}>[LEDGE] CheckForSpace - isTouchingCeiling: {isTouchingCeiling}</color>");
     }
 }

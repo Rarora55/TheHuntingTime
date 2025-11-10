@@ -56,7 +56,7 @@ public class PlayerGroundState : PlayerState
         {
             stateMachine.ChangeState(player.AirState);
         }
-        else if (isTouchingWall && GrabInput)
+        else if (isTouchingWall && GrabInput && !isTouchingCeiling)
         {
             stateMachine.ChangeState(player.WallGrapState);
         }

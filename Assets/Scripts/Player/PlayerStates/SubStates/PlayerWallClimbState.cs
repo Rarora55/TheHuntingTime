@@ -29,13 +29,17 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         {
             Debug.Log("[WALLCLIMB] -> WallLedgeState (llegó al borde, trepa automáticamente)");
             stateMachine.ChangeState(player.WallLedgeState);
+            return;
         }
-        else if (!isTouchingWall)
+        
+        if (!isTouchingWall)
         {
             Debug.Log("[WALLCLIMB] -> AirState (no toca pared)");
             stateMachine.ChangeState(player.AirState);
+            return;
         }
-        else if (!grabInput)
+        
+        if (!grabInput)
         {
             if (xInput != 0 && xInput == player.FacingRight)
             {
@@ -47,15 +51,16 @@ public class PlayerWallClimbState : PlayerTouchingWallState
                 Debug.Log("[WALLCLIMB] -> AirState (soltó Grab sin presionar hacia pared)");
                 stateMachine.ChangeState(player.AirState);
             }
+            return;
         }
-        else if (yInput != 1)
+        
+        if (yInput != 1)
         {
             Debug.Log("[WALLCLIMB] -> WallGrapState (dejó de subir pero mantiene Grab)");
             stateMachine.ChangeState(player.WallGrapState);
+            return;
         }
-        else
-        {
-            player.SetVelocityY(playerData.WallClimbVelocity);
-        }
+
+        player.SetVelocityY(playerData.WallClimbVelocity);
     }
 }
