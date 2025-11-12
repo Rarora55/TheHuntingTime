@@ -23,9 +23,15 @@ public class PlayerGroundState : PlayerState
     {
         base.DoChecks();
 
+        bool wasGrounded = isGrounded;
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
         isTouchingCeiling = player.CheckForCeiling();
+        
+        if (wasGrounded != isGrounded)
+        {
+            Debug.Log($"<color=yellow>[GROUND DoChecks] isGrounded cambió: {wasGrounded} → {isGrounded} | Pos: {player.transform.position}</color>");
+        }
     }
     public override void Enter()
     {
@@ -54,6 +60,7 @@ public class PlayerGroundState : PlayerState
         }
         else if (!isGrounded)
         {
+            Debug.Log($"<color=orange>[GROUND] !isGrounded detectado → AirState | Pos:{player.transform.position} | Estado actual: {this.GetType().Name}</color>");
             stateMachine.ChangeState(player.AirState);
         }
         else if (isTouchingWall && GrabInput && !isTouchingCeiling)

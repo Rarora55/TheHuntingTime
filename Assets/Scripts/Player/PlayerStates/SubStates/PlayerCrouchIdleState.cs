@@ -11,6 +11,11 @@ public class PlayerCrouchIdleState : PlayerGroundState
         base.Enter();
         player.SetVelocityZero();
         player.SetColliderHeight(playerData.crouchColliderHeight);
+        
+        Debug.Log($"<color=cyan>━━━━━━━━ CROUCH IDLE ENTER ━━━━━━━━</color>");
+        Debug.Log($"[CROUCH] Posición: {player.transform.position}");
+        Debug.Log($"[CROUCH] Velocidad: {player.RB.linearVelocity}");
+        Debug.Log($"<color=cyan>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
     }
 
     public override void Exit()

@@ -11,7 +11,6 @@ public class PlayerLedgeClimbState : PlayerState
     private bool isHanging;
     private bool isClimbing;
     private bool isTouchingCeiling;
-    private bool isInitialized;
 
     private int xInput;
     private int yInput;
@@ -36,15 +35,9 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.Enter();
         
-        if (isInitialized)
-        {
-            Debug.Log("<color=red>[LEDGE] ⚠️ RE-ENTRADA detectada - ignorando</color>");
-            return;
-        }
-        
         isHanging = false;
         isClimbing = false;
-        isInitialized = true;
+        isTouchingCeiling = false;
 
         player.SetVelocityZero();
         
@@ -77,8 +70,6 @@ public class PlayerLedgeClimbState : PlayerState
 
         isHanging = true;
         
-        CheckForSpace();
-        
         Debug.Log($"<color=yellow>========== [LEDGE CLIMB] COMPLETO ==========</color>");
     }
 
@@ -88,12 +79,25 @@ public class PlayerLedgeClimbState : PlayerState
         player.anim.SetBool("ledge", false);
         player.anim.SetBool("isTouchingCeiling", false);
         isHanging = false;
-        isInitialized = false;
         
         if (isClimbing)
         {
-            Debug.Log($"<color=green>[LEDGE] EXIT - Moviendo a stopPos: {stopPos}</color>");
+            Debug.Log($"<color=green>━━━━━━━━ LEDGE EXIT (CLIMBING) ━━━━━━━━</color>");
+            Debug.Log($"[LEDGE] Moviendo a stopPos: {stopPos}");
+            
+            if (isTouchingCeiling)
+            {
+                Debug.Log($"[LEDGE EXIT] HAY TECHO - Reduciendo collider ANTES de mover");
+                player.SetColliderHeight(playerData.crouchColliderHeight);
+            }
+            
             player.transform.position = stopPos;
+            player.RB.linearVelocity = Vector2.zero;
+            player.RB.angularVelocity = 0f;
+            
+            Debug.Log($"[LEDGE] Nueva posición: {player.transform.position}");
+            Debug.Log($"[LEDGE] isTouchingCeiling (guardado): {isTouchingCeiling}");
+            Debug.Log($"<color=green>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
             isClimbing = false;
         }
         else
@@ -148,9 +152,33 @@ public class PlayerLedgeClimbState : PlayerState
 
     private void CheckForSpace()
     {
-        isTouchingCeiling = Physics2D.Raycast(cornerPos + (Vector2.up * 0.015f) + (Vector2.right * player.FacingRight * 0.015f), Vector2.up, playerData.standColliderHeight, playerData.WhatIsGround);
+        Vector2 checkPosition = stopPos + (Vector2.up * 0.015f);
+        
+        RaycastHit2D hit = Physics2D.Raycast(
+            checkPosition, 
+            Vector2.up, 
+            playerData.standColliderHeight, 
+            playerData.WhatIsGround
+        );
+        
+        isTouchingCeiling = hit.collider != null;
         player.anim.SetBool("isTouchingCeiling", isTouchingCeiling);
         
-        Debug.Log($"<color={(isTouchingCeiling ? "red" : "green")}>[LEDGE] CheckForSpace - isTouchingCeiling: {isTouchingCeiling}</color>");
+        Debug.Log($"<color=yellow>━━━━━━━━ CHECK FOR SPACE ━━━━━━━━</color>");
+        Debug.Log($"[LEDGE] CheckPosition: {checkPosition} (stopPos:{stopPos} + 0.015 arriba)");
+        Debug.Log($"[LEDGE] Raycast Dir: UP, Distance: {playerData.standColliderHeight}");
+        Debug.Log($"[LEDGE] LayerMask: {playerData.WhatIsGround.value}");
+        Debug.Log($"<color={(isTouchingCeiling ? "red" : "green")}>[LEDGE] Hit: {(hit.collider != null ? hit.collider.name : "NINGUNO")} → isTouchingCeiling: {isTouchingCeiling}</color>");
+        if (hit.collider != null)
+        {
+            Debug.Log($"[LEDGE] Hit Point: {hit.point}, Distance: {hit.distance:F3}");
+        }
+        Debug.Log($"<color=yellow>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
+        
+        Debug.DrawRay(checkPosition, Vector2.up * playerData.standColliderHeight, isTouchingCeiling ? Color.red : Color.green, 5f);
+        if (hit.collider != null)
+        {
+            Debug.DrawLine(checkPosition, hit.point, Color.magenta, 5f);
+        }
     }
 }

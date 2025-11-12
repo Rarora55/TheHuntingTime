@@ -13,6 +13,9 @@ public class PlayerCollisionController : IPlayerCollision
     
     private Vector2 workSpace;
     private bool wasGrounded;
+    private Vector2 originalColliderOffset;
+    private float originalColliderHeight;
+    private bool colliderInitialized;
     
     public PlayerCollisionController(
         Transform ground, 
@@ -136,11 +139,25 @@ public class PlayerCollisionController : IPlayerCollision
     {
         if (collider == null) return;
         
-        Vector2 center = collider.offset;
+        if (!colliderInitialized)
+        {
+            originalColliderOffset = collider.offset;
+            originalColliderHeight = collider.size.y;
+            colliderInitialized = true;
+            Debug.Log($"[COLLIDER] Valores originales guardados - Offset: {originalColliderOffset}, Height: {originalColliderHeight}");
+        }
+        
         Vector2 size = collider.size;
-        center.y += (height - size.y) / 2;
+        float heightDifference = height - originalColliderHeight;
+        
+        Vector2 newOffset = originalColliderOffset;
+        newOffset.y += heightDifference / 2f;
+        
         size.y = height;
+        
         collider.size = size;
-        collider.offset = center;
+        collider.offset = newOffset;
+        
+        Debug.Log($"[COLLIDER] Altura cambiada a {height:F2} | Offset: {newOffset} | Size: {size}");
     }
 }

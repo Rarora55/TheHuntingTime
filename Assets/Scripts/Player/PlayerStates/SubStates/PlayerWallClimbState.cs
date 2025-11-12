@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerWallClimbState : PlayerTouchingWallState
 {
+    private bool hasTriggeredLedge;
+    
     public PlayerWallClimbState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
@@ -14,6 +16,7 @@ public class PlayerWallClimbState : PlayerTouchingWallState
     public override void Enter()
     {
         base.Enter();
+        hasTriggeredLedge = false;
         Debug.Log("<color=lime>[WALLCLIMB] Enter - Escalando pared</color>");
     }
 
@@ -23,11 +26,12 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         yInput = player.InputHandler.NormInputY;
         grabInput = player.InputHandler.GrabInput;
 
-        Debug.Log($"[WALLCLIMB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | yIn:{yInput} | Grab:{grabInput} | FacingRight:{player.FacingRight}");
+        Debug.Log($"[WALLCLIMB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | yIn:{yInput} | Grab:{grabInput} | hasTriggered:{hasTriggeredLedge}");
 
-        if (isTouchingWall && !isTouchingLedge)
+        if (isTouchingWall && !isTouchingLedge && yInput == 1 && grabInput && !hasTriggeredLedge)
         {
             Debug.Log("[WALLCLIMB] -> WallLedgeState (llegó al borde, trepa automáticamente)");
+            hasTriggeredLedge = true;
             stateMachine.ChangeState(player.WallLedgeState);
             return;
         }
