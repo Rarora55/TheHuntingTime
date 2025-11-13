@@ -114,14 +114,16 @@ public class PlayerLedgeClimbState : PlayerState
 
         if (isAnimationFinish)
         {
+            player.JustFinishedLedgeClimb = true;
+            
             if (isTouchingCeiling)
             {
-                Debug.Log("<color=red>[LEDGE] → CrouchIdleState (hay techo)</color>");
+                Debug.Log("<color=red>[LEDGE] → CrouchIdleState (hay techo, marcado JustFinishedLedgeClimb)</color>");
                 stateMachine.ChangeState(player.CrouchIdleState);
             }
             else
             {
-                Debug.Log("<color=green>[LEDGE] → IdleState (sin techo)</color>");
+                Debug.Log("<color=green>[LEDGE] → IdleState (sin techo, marcado JustFinishedLedgeClimb)</color>");
                 stateMachine.ChangeState(player.IdleState);
             }
         }

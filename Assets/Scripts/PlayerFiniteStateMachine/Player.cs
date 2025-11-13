@@ -68,6 +68,8 @@ public class Player : MonoBehaviour
         }
     }
     private int facingRightFallback = 1;
+    
+    public bool JustFinishedLedgeClimb { get; set; }
     #endregion
 
     //Methods

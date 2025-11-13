@@ -20,6 +20,8 @@ public class PlayerIdleState : PlayerGroundState
         base.Enter();
         player.SetVelocityX(0);
         player.anim.SetBool("isRunning", false);
+        
+        Debug.Log($"<color=magenta>[IDLE] ENTER | JustFinishedLedgeClimb: {player.JustFinishedLedgeClimb}</color>");
     }
 
     public override void Exit()
@@ -30,6 +32,12 @@ public class PlayerIdleState : PlayerGroundState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        
+        if (player.JustFinishedLedgeClimb)
+        {
+            Debug.Log("<color=yellow>[IDLE] Reseteando JustFinishedLedgeClimb flag AL INICIO</color>");
+            player.JustFinishedLedgeClimb = false;
+        }
 
         if (xInput != 0)
         {
@@ -37,6 +45,7 @@ public class PlayerIdleState : PlayerGroundState
         }
         else if (yInput == -1 && !player.CheckIfTouchingWall())
         {
+            Debug.Log("[IDLE] → CrouchIdleState (yInput detectado)");
             stateMachine.ChangeState(player.CrouchIdleState);
         }
     }

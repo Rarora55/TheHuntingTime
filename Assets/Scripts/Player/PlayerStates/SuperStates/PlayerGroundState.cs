@@ -26,7 +26,15 @@ public class PlayerGroundState : PlayerState
         bool wasGrounded = isGrounded;
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
-        isTouchingCeiling = player.CheckForCeiling();
+        
+        if (!player.JustFinishedLedgeClimb)
+        {
+            isTouchingCeiling = player.CheckForCeiling();
+        }
+        else
+        {
+            Debug.Log("<color=yellow>[GROUND DoChecks] Saltando ceiling check (JustFinishedLedgeClimb=true)</color>");
+        }
         
         if (wasGrounded != isGrounded)
         {

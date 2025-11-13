@@ -3,6 +3,9 @@ using UnityEngine;
 public class PlayerWallClimbState : PlayerTouchingWallState
 {
     private bool hasTriggeredLedge;
+    private float startYPosition;
+    private const float MIN_CLIMB_DISTANCE = 0.3f;
+    private const float MIN_LEDGE_HEIGHT = 0.2f;
     
     public PlayerWallClimbState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -17,7 +20,8 @@ public class PlayerWallClimbState : PlayerTouchingWallState
     {
         base.Enter();
         hasTriggeredLedge = false;
-        Debug.Log("<color=lime>[WALLCLIMB] Enter - Escalando pared</color>");
+        startYPosition = player.transform.position.y;
+        Debug.Log($"<color=lime>[WALLCLIMB] Enter - Escalando pared desde Y:{startYPosition:F2}</color>");
     }
 
     public override void LogicUpdate()
@@ -26,11 +30,15 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         yInput = player.InputHandler.NormInputY;
         grabInput = player.InputHandler.GrabInput;
 
-        Debug.Log($"[WALLCLIMB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | yIn:{yInput} | Grab:{grabInput} | hasTriggered:{hasTriggeredLedge}");
+        float distanceClimbed = player.transform.position.y - startYPosition;
+        bool canTriggerLedge = distanceClimbed >= MIN_CLIMB_DISTANCE;
+        bool isValidLedge = player.Collision.IsValidLedge(MIN_LEDGE_HEIGHT);
 
-        if (isTouchingWall && !isTouchingLedge && yInput == 1 && grabInput && !hasTriggeredLedge)
+        Debug.Log($"[WALLCLIMB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Climbed:{distanceClimbed:F2} | CanTrigger:{canTriggerLedge} | ValidLedge:{isValidLedge} | hasTriggered:{hasTriggeredLedge}");
+
+        if (isTouchingWall && !isTouchingLedge && yInput == 1 && grabInput && !hasTriggeredLedge && canTriggerLedge && isValidLedge)
         {
-            Debug.Log("[WALLCLIMB] -> WallLedgeState (llegó al borde, trepa automáticamente)");
+            Debug.Log("<color=yellow>[WALLCLIMB] -> WallLedgeState (llegó al borde válido después de escalar suficiente)</color>");
             hasTriggeredLedge = true;
             stateMachine.ChangeState(player.WallLedgeState);
             return;

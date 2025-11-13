@@ -38,6 +38,12 @@ public class PlayerMoveState : PlayerGroundState
     {
         base.LogicUpdate();
         runInput = player.InputHandler.RunInput;
+        
+        if (player.JustFinishedLedgeClimb)
+        {
+            Debug.Log("<color=yellow>[MOVE] Reseteando JustFinishedLedgeClimb flag AL INICIO</color>");
+            player.JustFinishedLedgeClimb = false;
+        }
 
         /*
        if (isTurning)

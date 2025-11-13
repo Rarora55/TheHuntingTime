@@ -54,6 +54,22 @@ public class PlayerAirState : PlayerState
             Debug.Log("[AIR] -> LandState (aterrizó)");
             stateMachine.ChangeState(player.LandState);
         }
+        else if (isTouchingWall && !isTouchingLedge && GrabInput)
+        {
+            bool isValidLedge = player.Collision.IsValidLedge(0.2f);
+            Debug.Log($"<color=orange>[AIR] Detectó esquina | ValidLedge: {isValidLedge}</color>");
+            
+            if (isValidLedge)
+            {
+                Debug.Log("<color=green>[AIR] -> WallLedgeState (esquina válida en el aire con Grab)</color>");
+                stateMachine.ChangeState(player.WallLedgeState);
+            }
+            else
+            {
+                Debug.Log("<color=yellow>[AIR] -> WallGrapState (esquina inválida, agarrando pared)</color>");
+                stateMachine.ChangeState(player.WallGrapState);
+            }
+        }
         else if (isTouchingWall && GrabInput)
         {
             Debug.Log("[AIR] -> WallGrapState (agarrando pared desde aire)");

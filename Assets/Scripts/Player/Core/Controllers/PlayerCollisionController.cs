@@ -135,6 +135,33 @@ public class PlayerCollisionController : IPlayerCollision
         return calculatedCorner;
     }
     
+    public bool IsValidLedge(float minHeight)
+    {
+        RaycastHit2D xHit = Physics2D.Raycast(
+            wallCheck.position, 
+            Vector2.right * orientation.FacingDirection, 
+            playerData.WallCheckDistance, 
+            playerData.WhatIsGround);
+            
+        if (!xHit) return false;
+        
+        float xDist = xHit.distance;
+        workSpace.Set((xDist + 0.015f) * orientation.FacingDirection, 0f);
+        Vector3 yRayStart = ledgeCheck.position + (Vector3)workSpace;
+        float yRayMaxDist = ledgeCheck.position.y - wallCheck.position.y + 0.015f;
+        
+        RaycastHit2D yHit = Physics2D.Raycast(yRayStart, Vector2.down, yRayMaxDist, playerData.WhatIsGround);
+        
+        if (!yHit) return false;
+        
+        float yDist = yHit.distance;
+        bool isValid = yDist >= minHeight;
+        
+        Debug.Log($"<color=cyan>[VALID LEDGE CHECK] yDist: {yDist:F3} | MIN: {minHeight:F3} | Valid: {isValid}</color>");
+        
+        return isValid;
+    }
+    
     public void SetColliderHeight(float height)
     {
         if (collider == null) return;
@@ -144,7 +171,7 @@ public class PlayerCollisionController : IPlayerCollision
             originalColliderOffset = collider.offset;
             originalColliderHeight = collider.size.y;
             colliderInitialized = true;
-            Debug.Log($"[COLLIDER] Valores originales guardados - Offset: {originalColliderOffset}, Height: {originalColliderHeight}");
+            Debug.Log($"<color=cyan>[COLLIDER INIT] Offset original: {originalColliderOffset} | Height original: {originalColliderHeight}</color>");
         }
         
         Vector2 size = collider.size;
@@ -155,9 +182,13 @@ public class PlayerCollisionController : IPlayerCollision
         
         size.y = height;
         
+        Debug.Log($"<color=yellow>[COLLIDER] Cambiando altura de {collider.size.y:F2} a {height:F2}</color>");
+        Debug.Log($"<color=yellow>[COLLIDER] HeightDiff: {heightDifference:F3} | Offset anterior: {collider.offset} → Nuevo: {newOffset}</color>");
+        Debug.Log($"<color=yellow>[COLLIDER] GroundCheck.localPos ANTES: {groundCheck.localPosition}</color>");
+        
         collider.size = size;
         collider.offset = newOffset;
         
-        Debug.Log($"[COLLIDER] Altura cambiada a {height:F2} | Offset: {newOffset} | Size: {size}");
+        Debug.Log($"<color=yellow>[COLLIDER] GroundCheck.localPos DESPUÉS: {groundCheck.localPosition}</color>");
     }
 }
