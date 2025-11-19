@@ -12,6 +12,12 @@ public class PlayerLandState : PlayerGroundState
     {
         base.Enter();
         player.anim.SetBool("isRunning", false);
+        
+        PlayerHealthIntegration healthIntegration = player.GetComponent<PlayerHealthIntegration>();
+        if (healthIntegration != null)
+        {
+            healthIntegration.OnPlayerLanded();
+        }
     }
 
     public override void LogicUpdate()
