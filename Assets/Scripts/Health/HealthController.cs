@@ -11,6 +11,7 @@ public class HealthController : MonoBehaviour, IHealth, IDamageable, IHealable
     private float lastDamageTime;
     private Coroutine regenerationCoroutine;
     
+    //Propiedades de IHealth
     public float CurrentHealth => currentHealth;
     public float MaxHealth => healthData.maxHealth;
     public float HealthPercentage => currentHealth / MaxHealth;
@@ -100,10 +101,7 @@ public class HealthController : MonoBehaviour, IHealth, IDamageable, IHealable
             return;
         
         float excessHeight = fallHeight - healthData.fallDamageThreshold;
-        float damage = Mathf.Min(
-            excessHeight * healthData.fallDamageMultiplier,
-            healthData.maxFallDamage
-        );
+        float damage = Mathf.Min( excessHeight * healthData.fallDamageMultiplier, healthData.maxFallDamage);
         
         Debug.Log($"<color=yellow>[FALL DAMAGE] Height: {fallHeight:F1}m | " +
                   $"Excess: {excessHeight:F1}m | Damage: {damage:F1}</color>");
@@ -137,9 +135,7 @@ public class HealthController : MonoBehaviour, IHealth, IDamageable, IHealable
         {
             yield return new WaitForSeconds(0.1f);
             
-            if (IsAlive && 
-                currentHealth < MaxHealth && 
-                Time.time - lastDamageTime >= healthData.regenerationDelay)
+            if (IsAlive && currentHealth < MaxHealth && Time.time - lastDamageTime >= healthData.regenerationDelay)
             {
                 float regenAmount = healthData.regenerationRate * 0.1f;
                 Heal(regenAmount);

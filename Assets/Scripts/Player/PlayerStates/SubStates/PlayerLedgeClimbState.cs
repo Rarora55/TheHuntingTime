@@ -156,12 +156,7 @@ public class PlayerLedgeClimbState : PlayerState
     {
         Vector2 checkPosition = stopPos + (Vector2.up * 0.015f);
         
-        RaycastHit2D hit = Physics2D.Raycast(
-            checkPosition, 
-            Vector2.up, 
-            playerData.standColliderHeight, 
-            playerData.WhatIsGround
-        );
+        RaycastHit2D hit = Physics2D.Raycast(checkPosition, Vector2.up,playerData.standColliderHeight, playerData.WhatIsGround);
         
         isTouchingCeiling = hit.collider != null;
         player.anim.SetBool("isTouchingCeiling", isTouchingCeiling);
