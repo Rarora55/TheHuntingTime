@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6b4c8add7a8d774c9b4e542ab262d00, type: 3}
+  m_Name: PlayerHealthData
+  m_EditorClassIdentifier: Assembly-CSharp::HealthData
+  maxHealth: 100
+  startingHealth: 100
+  canRegenerate: 0
+  regenerationRate: 1
+  regenerationDelay: 3
+  invulnerabilityDuration: 1
+  canTakeFallDamage: 1
+  fallDamageThreshold: 5
+  fallDamageMultiplier: 10
+  maxFallDamage: 50
