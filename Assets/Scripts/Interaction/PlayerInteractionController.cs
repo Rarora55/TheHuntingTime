@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace TheHunt.Interaction
 {
@@ -10,11 +9,9 @@ namespace TheHunt.Interaction
         [SerializeField] private float detectionRadius = 2f;
         [SerializeField] private LayerMask interactionLayer;
         
-        [Header("Input")]
-        [SerializeField] private InputActionReference interactAction;
-        
         private IInteractable currentInteractable;
         private Collider2D[] detectionResults = new Collider2D[10];
+        private ContactFilter2D contactFilter;
         
         public IInteractable CurrentInteractable => currentInteractable;
         public bool CanInteract => currentInteractable != null && currentInteractable.CanInteract(gameObject);
@@ -23,20 +20,14 @@ namespace TheHunt.Interaction
         public event Action OnInteractableCleared;
         public event Action<IInteractable> OnInteracted;
         
-        void OnEnable()
+        void Awake()
         {
-            if (interactAction != null)
+            contactFilter = new ContactFilter2D
             {
-                interactAction.action.performed += OnInteractPerformed;
-            }
-        }
-        
-        void OnDisable()
-        {
-            if (interactAction != null)
-            {
-                interactAction.action.performed -= OnInteractPerformed;
-            }
+                layerMask = interactionLayer,
+                useLayerMask = true,
+                useTriggers = true
+            };
         }
         
         void Update()
@@ -46,11 +37,11 @@ namespace TheHunt.Interaction
         
         void DetectNearbyInteractables()
         {
-            int numFound = Physics2D.OverlapCircleNonAlloc(
+            int numFound = Physics2D.OverlapCircle(
                 transform.position,
                 detectionRadius,
-                detectionResults,
-                interactionLayer
+                contactFilter,
+                detectionResults
             );
             
             IInteractable closestInteractable = null;
@@ -114,11 +105,6 @@ namespace TheHunt.Interaction
             
             currentInteractable.Interact(gameObject);
             OnInteracted?.Invoke(currentInteractable);
-        }
-        
-        void OnInteractPerformed(InputAction.CallbackContext context)
-        {
-            TryInteract();
         }
         
         void OnDrawGizmosSelected()

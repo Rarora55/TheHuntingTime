@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TheHunt.Interaction;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -8,11 +9,17 @@ public class PlayerInputHandler : MonoBehaviour
     public int NormInputY { get; private set; }
     public bool JumpInput { get; private set; }
     public bool RunInput { get; private set; }
+    public bool GrabInput { get; private set; }
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
 
-    public bool GrabInput { get; private set; }
+    private PlayerInteractionController interactionController;
+
+    private void Awake()
+    {
+        interactionController = GetComponent<PlayerInteractionController>();
+    }
 
     private void Update()
     {
@@ -68,6 +75,14 @@ public class PlayerInputHandler : MonoBehaviour
 
         if (context.canceled)
             RunInput = false;
+    }
+
+    public void OnInteractInput(InputAction.CallbackContext context)
+    {
+        if (context.performed && interactionController != null)
+        {
+            interactionController.TryInteract();
+        }
     }
 
     public void JumpEnded() => JumpInput = false;

@@ -280,7 +280,7 @@ public class NPCInteractable : InteractableObject
 3. **Testeable:** Interfaces facilitan unit testing
 4. **Reutilizable:** Mismo sistema para Player/NPC
 5. **Configurable:** Settings en Inspector
-6. **Performance:** Detection optimizada con `OverlapCircleNonAlloc`
+6. **Performance:** Detection optimizada con `Physics2D.OverlapCircle` (Unity 6)
 
 ---
 
