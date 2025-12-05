@@ -15,13 +15,13 @@ MonoBehaviour:
   itemName: Health Recover
   itemID: 1e18a0de-c332-4fb4-9000-d82d95b468a7
   description: Restores 50HP
-  itemIcon: {fileID: 0}
-  itemDetailImage: {fileID: 0}
+  itemIcon: {fileID: 8137125111494602307, guid: 63c368950b0350d46a903dd29372a359, type: 3}
+  itemDetailImage: {fileID: -2377622892474425555, guid: 63c368950b0350d46a903dd29372a359, type: 3}
   itemType: 0
   stackable: 1
   canBeExamined: 1
   examinationText: A red potion to get recover
-  examinationImage: {fileID: 0}
+  examinationImage: {fileID: 8137125111494602307, guid: 63c368950b0350d46a903dd29372a359, type: 3}
   healAmount: 50
   removeOnUse: 1
   useSound: {fileID: 0}
