@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1988c7c4f312d2c4eb0f4cbd4852d1fd, type: 3}
+  m_Name: TestHeltth1
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.ConsumableItemData
+  itemName: Health Recover
+  itemID: 1e18a0de-c332-4fb4-9000-d82d95b468a7
+  description: Restores 50HP
+  itemIcon: {fileID: 0}
+  itemDetailImage: {fileID: 0}
+  itemType: 0
+  stackable: 1
+  canBeExamined: 1
+  examinationText: A red potion to get recover
+  examinationImage: {fileID: 0}
+  healAmount: 50
+  removeOnUse: 1
+  useSound: {fileID: 0}
+  useEffect: {fileID: 0}

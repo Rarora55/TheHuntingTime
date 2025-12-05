@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TheHunt.Interaction;
+using TheHunt.Inventory;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -15,10 +16,12 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private float jumpInputStartTime;
 
     private PlayerInteractionController interactionController;
+    private InventoryUIController inventoryUIController;
 
     private void Awake()
     {
         interactionController = GetComponent<PlayerInteractionController>();
+        inventoryUIController = GetComponent<InventoryUIController>();
     }
 
     private void Update()
@@ -82,6 +85,50 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.performed && interactionController != null)
         {
             interactionController.TryInteract();
+        }
+    }
+
+    public void OnInventoryToggleInput(InputAction.CallbackContext context)
+    {
+        if (context.performed && inventoryUIController != null)
+        {
+            inventoryUIController.ToggleInventory();
+        }
+    }
+
+    public void OnInventoryNavigateInput(InputAction.CallbackContext context)
+    {
+        if (inventoryUIController == null)
+            return;
+
+        if (context.performed)
+        {
+            float navigation = context.ReadValue<float>();
+
+            if (inventoryUIController.IsInContextMenu)
+            {
+                inventoryUIController.NavigateContextMenu(navigation);
+            }
+            else if (inventoryUIController.IsOpen)
+            {
+                inventoryUIController.NavigateInventory(navigation);
+            }
+        }
+    }
+
+    public void OnInventoryInteractInput(InputAction.CallbackContext context)
+    {
+        if (context.performed && inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            inventoryUIController.InteractWithCurrentItem();
+        }
+    }
+
+    public void OnInventoryCancelInput(InputAction.CallbackContext context)
+    {
+        if (context.performed && inventoryUIController != null)
+        {
+            inventoryUIController.CancelCurrentAction();
         }
     }
 

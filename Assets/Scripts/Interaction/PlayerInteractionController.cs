@@ -37,12 +37,7 @@ namespace TheHunt.Interaction
         
         void DetectNearbyInteractables()
         {
-            int numFound = Physics2D.OverlapCircle(
-                transform.position,
-                detectionRadius,
-                contactFilter,
-                detectionResults
-            );
+            int numFound = Physics2D.OverlapCircle( transform.position, detectionRadius, contactFilter,detectionResults);
             
             IInteractable closestInteractable = null;
             float closestDistance = float.MaxValue;

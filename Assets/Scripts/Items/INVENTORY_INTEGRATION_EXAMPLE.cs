@@ -12,7 +12,7 @@ public class INVENTORY_INTEGRATION_EXAMPLE : MonoBehaviour
     
     void UseItemExample()
     {
-        Player player = FindObjectOfType<Player>();
+        Player player = FindFirstObjectByType<Player>();
         if (player == null) return;
         
         ConsumableItemData medkit = Resources.Load<ConsumableItemData>("Items/Medkit");
