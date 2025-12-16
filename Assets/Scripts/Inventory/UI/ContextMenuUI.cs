@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace TheHunt.Inventory
@@ -10,6 +11,7 @@ namespace TheHunt.Inventory
         [SerializeField] private InventoryUIController uiController;
 
         [Header("UI Elements")]
+        [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private Transform optionsContainer;
         [SerializeField] private GameObject optionPrefab;
 
@@ -17,13 +19,31 @@ namespace TheHunt.Inventory
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color selectedColor = Color.yellow;
 
+        [Header("Animation Settings")]
+        [SerializeField] private float animationDuration = 0.3f;
+        [SerializeField] private AnimationCurve scaleCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+        [SerializeField] private bool animateOnOpen = true;
+        [SerializeField] private bool animateOnClose = true;
+
         private List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI>();
         private int currentSelection = 0;
+        private RectTransform rectTransform;
+        private Coroutine currentAnimation;
 
         private void Awake()
         {
             if (uiController == null)
                 uiController = FindFirstObjectByType<InventoryUIController>();
+
+            if (canvasGroup == null)
+                canvasGroup = GetComponent<CanvasGroup>();
+
+            rectTransform = GetComponent<RectTransform>();
+        }
+
+        private void Start()
+        {
+            HideMenu();
         }
 
         private void OnEnable()
@@ -48,6 +68,7 @@ namespace TheHunt.Inventory
 
         private void OnContextMenuOpened(List<ItemContextAction> actions)
         {
+            ShowMenu();
             ClearOptions();
 
             foreach (ItemContextAction action in actions)
@@ -56,11 +77,16 @@ namespace TheHunt.Inventory
             }
 
             UpdateSelectionVisual(0);
+
+            Debug.Log($"<color=cyan>[CONTEXT MENU UI] Opened with {actions.Count} actions</color>");
         }
 
         private void OnContextMenuClosed()
         {
             ClearOptions();
+            HideMenu();
+
+            Debug.Log("<color=cyan>[CONTEXT MENU UI] Closed</color>");
         }
 
         private void OnSelectionChanged(int newIndex)
@@ -71,7 +97,10 @@ namespace TheHunt.Inventory
         private void CreateOption(ItemContextAction action)
         {
             if (optionsContainer == null || optionPrefab == null)
+            {
+                Debug.LogWarning("<color=yellow>[CONTEXT MENU UI] Container or prefab is null!</color>");
                 return;
+            }
 
             GameObject optionObj = Instantiate(optionPrefab, optionsContainer);
             TextMeshProUGUI textComponent = optionObj.GetComponent<TextMeshProUGUI>();
@@ -81,6 +110,11 @@ namespace TheHunt.Inventory
                 textComponent.text = uiController.GetContextActionDisplayName(action);
                 textComponent.color = normalColor;
                 optionTexts.Add(textComponent);
+                Debug.Log($"<color=green>[CONTEXT MENU UI] Created option: {textComponent.text}</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[CONTEXT MENU UI] Prefab has no TextMeshProUGUI component!</color>");
             }
         }
 
@@ -115,6 +149,104 @@ namespace TheHunt.Inventory
                     optionTexts[i].fontSize = optionTexts[i].fontSize / 1.1f;
                 }
             }
+        }
+
+        private void ShowMenu()
+        {
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
+            }
+
+            if (animateOnOpen)
+            {
+                if (currentAnimation != null)
+                    StopCoroutine(currentAnimation);
+                
+                currentAnimation = StartCoroutine(AnimateScale(Vector3.one, Vector3.one));
+            }
+        }
+
+        private void HideMenu()
+        {
+            if (animateOnClose && gameObject.activeInHierarchy)
+            {
+                if (currentAnimation != null)
+                    StopCoroutine(currentAnimation);
+                
+                currentAnimation = StartCoroutine(AnimateScaleAndHide());
+            }
+            else
+            {
+                if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 0f;
+                    canvasGroup.interactable = false;
+                    canvasGroup.blocksRaycasts = false;
+                }
+            }
+        }
+
+        private IEnumerator AnimateScale(Vector3 from, Vector3 to)
+        {
+            if (rectTransform == null)
+                yield break;
+
+            Vector3 startScale = new Vector3(1f, 0f, 1f);
+            Vector3 targetScale = new Vector3(1f, 1f, 1f);
+
+            rectTransform.localScale = startScale;
+
+            float elapsed = 0f;
+
+            while (elapsed < animationDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / animationDuration);
+                float curveValue = scaleCurve.Evaluate(t);
+
+                rectTransform.localScale = Vector3.Lerp(startScale, targetScale, curveValue);
+
+                yield return null;
+            }
+
+            rectTransform.localScale = targetScale;
+            currentAnimation = null;
+        }
+
+        private IEnumerator AnimateScaleAndHide()
+        {
+            if (rectTransform == null)
+                yield break;
+
+            Vector3 startScale = rectTransform.localScale;
+            Vector3 targetScale = new Vector3(1f, 0f, 1f);
+
+            float elapsed = 0f;
+
+            while (elapsed < animationDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / animationDuration);
+                float curveValue = scaleCurve.Evaluate(t);
+
+                rectTransform.localScale = Vector3.Lerp(startScale, targetScale, curveValue);
+
+                yield return null;
+            }
+
+            rectTransform.localScale = targetScale;
+
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+            }
+
+            currentAnimation = null;
         }
     }
 }
