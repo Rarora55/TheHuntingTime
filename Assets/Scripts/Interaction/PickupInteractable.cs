@@ -6,7 +6,7 @@ namespace TheHunt.Interaction
     public class PickupInteractable : InteractableObject
     {
         [Header("Pickup Settings")]
-        [SerializeField] private GameObject itemPrefab;
+        [SerializeField] private Inventory.ItemData itemData;
         [SerializeField] private string itemName = "Item";
         [SerializeField] private bool destroyOnPickup = true;
         
@@ -16,6 +16,11 @@ namespace TheHunt.Interaction
         
         void Awake()
         {
+            if (itemData != null && string.IsNullOrEmpty(itemName))
+            {
+                itemName = itemData.ItemName;
+            }
+            
             interactionPrompt = $"Press E to pick up {itemName}";
             
             Collider2D col = GetComponent<Collider2D>();
@@ -47,8 +52,32 @@ namespace TheHunt.Interaction
         
         bool AddToInventory(GameObject interactor)
         {
-            Debug.Log($"<color=green>[PICKUP] {interactor.name} picked up {itemName}</color>");
-            return true;
+            Inventory.InventorySystem inventory = interactor.GetComponent<Inventory.InventorySystem>();
+            
+            if (inventory == null)
+            {
+                Debug.LogError($"<color=red>[PICKUP] {interactor.name} has no InventorySystem component!</color>");
+                return false;
+            }
+            
+            if (itemData == null)
+            {
+                Debug.LogError($"<color=red>[PICKUP] {gameObject.name} has no ItemData assigned!</color>");
+                return false;
+            }
+            
+            bool added = inventory.TryAddItem(itemData);
+            
+            if (added)
+            {
+                Debug.Log($"<color=green>[PICKUP] {interactor.name} picked up {itemName}</color>");
+            }
+            else
+            {
+                Debug.Log($"<color=yellow>[PICKUP] Could not add {itemName} to inventory (full?)</color>");
+            }
+            
+            return added;
         }
         
         void PlayFeedback()

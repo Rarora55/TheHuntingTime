@@ -8,26 +8,17 @@ namespace TheHunt.Inventory
     {
         public const int MAX_SLOTS = 6;
         public const int MAX_STACK_SIZE = 6;
-        public const int EQUIPMENT_SLOTS = 2;
 
         private ItemInstance[] items = new ItemInstance[MAX_SLOTS];
         private int selectedIndex = 0;
-        private WeaponItemData primaryWeapon;
-        private WeaponItemData secondaryWeapon;
-        private Dictionary<AmmoType, int> ammoInventory = new Dictionary<AmmoType, int>
-        {
-            { AmmoType.Pistol_9mm, 0 },
-            { AmmoType.Shotgun_Shell, 0 },
-            { AmmoType.Rifle_762, 0 },
-            { AmmoType.Special, 0 }
-        };
+
+        private AmmoInventoryManager ammoManager;
+        private WeaponInventoryManager weaponManager;
 
         public ItemInstance CurrentItem => selectedIndex >= 0 && selectedIndex < MAX_SLOTS ? items[selectedIndex] : null;
         public bool IsFull => FindEmptySlot() == -1;
         public bool HasSpace => !IsFull;
         public int SelectedSlot => selectedIndex;
-        public WeaponItemData PrimaryWeapon => primaryWeapon;
-        public WeaponItemData SecondaryWeapon => secondaryWeapon;
         public ItemInstance[] Items => items;
 
         public event Action<int, ItemInstance> OnItemAdded;
@@ -35,9 +26,12 @@ namespace TheHunt.Inventory
         public event Action<ItemInstance> OnItemUsed;
         public event Action<int, int> OnSelectionChanged;
         public event Action OnInventoryFull;
-        public event Action<EquipSlot, WeaponItemData> OnWeaponEquipped;
-        public event Action<EquipSlot> OnWeaponUnequipped;
-        public event Action<AmmoType, int> OnAmmoChanged;
+
+        void Awake()
+        {
+            ammoManager = GetComponent<AmmoInventoryManager>();
+            weaponManager = GetComponent<WeaponInventoryManager>();
+        }
 
         public bool TryAddItem(ItemData itemData)
         {
@@ -49,7 +43,14 @@ namespace TheHunt.Inventory
 
             if (itemData is AmmoItemData ammoData)
             {
-                AddAmmo(ammoData.AmmoType, ammoData.AmmoAmount);
+                if (ammoManager != null)
+                {
+                    ammoManager.AddAmmo(ammoData.AmmoType, ammoData.AmmoAmount);
+                }
+                else
+                {
+                    Debug.LogWarning("<color=yellow>[INVENTORY] AmmoInventoryManager not found!</color>");
+                }
                 return true;
             }
 
@@ -184,117 +185,6 @@ namespace TheHunt.Inventory
             int oldIndex = selectedIndex;
             selectedIndex = index;
             OnSelectionChanged?.Invoke(oldIndex, selectedIndex);
-        }
-
-        public void EquipWeapon(WeaponItemData weapon, EquipSlot slot)
-        {
-            if (weapon == null)
-                return;
-
-            bool hasWeapon = false;
-            for (int i = 0; i < MAX_SLOTS; i++)
-            {
-                if (items[i] != null && items[i].itemData == weapon)
-                {
-                    hasWeapon = true;
-                    break;
-                }
-            }
-
-            if (!hasWeapon)
-            {
-                Debug.LogWarning("[INVENTORY] Cannot equip weapon not in inventory");
-                return;
-            }
-
-            if (slot == EquipSlot.Primary)
-            {
-                if (primaryWeapon != null)
-                    UnequipWeapon(EquipSlot.Primary);
-
-                primaryWeapon = weapon;
-            }
-            else
-            {
-                if (secondaryWeapon != null)
-                    UnequipWeapon(EquipSlot.Secondary);
-
-                secondaryWeapon = weapon;
-            }
-
-            weapon.Equip(gameObject);
-            OnWeaponEquipped?.Invoke(slot, weapon);
-            Debug.Log($"<color=green>[INVENTORY] Equipped {weapon.ItemName} in {slot} slot</color>");
-        }
-
-        public void UnequipWeapon(EquipSlot slot)
-        {
-            WeaponItemData weapon = slot == EquipSlot.Primary ? primaryWeapon : secondaryWeapon;
-
-            if (weapon == null)
-                return;
-
-            weapon.Unequip(gameObject);
-
-            if (slot == EquipSlot.Primary)
-                primaryWeapon = null;
-            else
-                secondaryWeapon = null;
-
-            OnWeaponUnequipped?.Invoke(slot);
-            Debug.Log($"<color=orange>[INVENTORY] Unequipped weapon from {slot} slot</color>");
-        }
-
-        public void SwapWeapons()
-        {
-            WeaponItemData temp = primaryWeapon;
-            primaryWeapon = secondaryWeapon;
-            secondaryWeapon = temp;
-
-            if (primaryWeapon != null)
-                OnWeaponEquipped?.Invoke(EquipSlot.Primary, primaryWeapon);
-            if (secondaryWeapon != null)
-                OnWeaponEquipped?.Invoke(EquipSlot.Secondary, secondaryWeapon);
-
-            Debug.Log("<color=cyan>[INVENTORY] Swapped weapons</color>");
-        }
-
-        public WeaponItemData GetEquippedWeapon(EquipSlot slot)
-        {
-            return slot == EquipSlot.Primary ? primaryWeapon : secondaryWeapon;
-        }
-
-        public void AddAmmo(AmmoType type, int amount)
-        {
-            if (type == AmmoType.None)
-                return;
-
-            ammoInventory[type] += amount;
-            OnAmmoChanged?.Invoke(type, ammoInventory[type]);
-            Debug.Log($"<color=green>[AMMO] Added {amount} {type}. Total: {ammoInventory[type]}</color>");
-        }
-
-        public bool RemoveAmmo(AmmoType type, int amount)
-        {
-            if (!HasAmmo(type, amount))
-                return false;
-
-            ammoInventory[type] -= amount;
-            OnAmmoChanged?.Invoke(type, ammoInventory[type]);
-            return true;
-        }
-
-        public int GetAmmoCount(AmmoType type)
-        {
-            return type == AmmoType.None ? 0 : ammoInventory[type];
-        }
-
-        public bool HasAmmo(AmmoType type, int required)
-        {
-            if (type == AmmoType.None)
-                return true;
-
-            return ammoInventory[type] >= required;
         }
 
         private int FindEmptySlot()

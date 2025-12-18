@@ -18,6 +18,7 @@ namespace TheHunt.Inventory
         [Header("Visual Settings")]
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color selectedColor = Color.yellow;
+        [SerializeField] private float selectedFontSizeMultiplier = 1.1f;
 
         [Header("Animation Settings")]
         [SerializeField] private float animationDuration = 0.3f;
@@ -26,6 +27,7 @@ namespace TheHunt.Inventory
         [SerializeField] private bool animateOnClose = true;
 
         private List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI>();
+        private List<float> originalFontSizes = new List<float>();
         private int currentSelection = 0;
         private RectTransform rectTransform;
         private Coroutine currentAnimation;
@@ -110,6 +112,7 @@ namespace TheHunt.Inventory
                 textComponent.text = uiController.GetContextActionDisplayName(action);
                 textComponent.color = normalColor;
                 optionTexts.Add(textComponent);
+                originalFontSizes.Add(textComponent.fontSize);
                 Debug.Log($"<color=green>[CONTEXT MENU UI] Created option: {textComponent.text}</color>");
             }
             else
@@ -129,6 +132,7 @@ namespace TheHunt.Inventory
             }
 
             optionTexts.Clear();
+            originalFontSizes.Clear();
             currentSelection = 0;
         }
 
@@ -138,15 +142,18 @@ namespace TheHunt.Inventory
 
             for (int i = 0; i < optionTexts.Count; i++)
             {
+                if (i >= originalFontSizes.Count)
+                    continue;
+
                 if (i == selectedIndex)
                 {
                     optionTexts[i].color = selectedColor;
-                    optionTexts[i].fontSize = optionTexts[i].fontSize * 1.1f;
+                    optionTexts[i].fontSize = originalFontSizes[i] * selectedFontSizeMultiplier;
                 }
                 else
                 {
                     optionTexts[i].color = normalColor;
-                    optionTexts[i].fontSize = optionTexts[i].fontSize / 1.1f;
+                    optionTexts[i].fontSize = originalFontSizes[i];
                 }
             }
         }

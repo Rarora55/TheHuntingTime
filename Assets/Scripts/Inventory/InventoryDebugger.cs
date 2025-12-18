@@ -6,6 +6,8 @@ namespace TheHunt.Inventory
     {
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
+        [SerializeField] private AmmoInventoryManager ammoManager;
+        [SerializeField] private WeaponInventoryManager weaponManager;
         [SerializeField] private InventoryUIController inventoryUIController;
 
         [Header("Debug Items")]
@@ -21,6 +23,12 @@ namespace TheHunt.Inventory
             if (inventorySystem == null)
                 inventorySystem = GetComponent<InventorySystem>();
 
+            if (ammoManager == null)
+                ammoManager = GetComponent<AmmoInventoryManager>();
+
+            if (weaponManager == null)
+                weaponManager = GetComponent<WeaponInventoryManager>();
+
             if (inventoryUIController == null)
                 inventoryUIController = GetComponent<InventoryUIController>();
         }
@@ -34,9 +42,17 @@ namespace TheHunt.Inventory
                 inventorySystem.OnItemUsed += OnItemUsed;
                 inventorySystem.OnSelectionChanged += OnSelectionChanged;
                 inventorySystem.OnInventoryFull += OnInventoryFull;
-                inventorySystem.OnWeaponEquipped += OnWeaponEquipped;
-                inventorySystem.OnWeaponUnequipped += OnWeaponUnequipped;
-                inventorySystem.OnAmmoChanged += OnAmmoChanged;
+            }
+
+            if (weaponManager != null)
+            {
+                weaponManager.OnWeaponEquipped += OnWeaponEquipped;
+                weaponManager.OnWeaponUnequipped += OnWeaponUnequipped;
+            }
+
+            if (ammoManager != null)
+            {
+                ammoManager.OnAmmoChanged += OnAmmoChanged;
             }
 
             if (inventoryUIController != null)
@@ -56,9 +72,17 @@ namespace TheHunt.Inventory
                 inventorySystem.OnItemUsed -= OnItemUsed;
                 inventorySystem.OnSelectionChanged -= OnSelectionChanged;
                 inventorySystem.OnInventoryFull -= OnInventoryFull;
-                inventorySystem.OnWeaponEquipped -= OnWeaponEquipped;
-                inventorySystem.OnWeaponUnequipped -= OnWeaponUnequipped;
-                inventorySystem.OnAmmoChanged -= OnAmmoChanged;
+            }
+
+            if (weaponManager != null)
+            {
+                weaponManager.OnWeaponEquipped -= OnWeaponEquipped;
+                weaponManager.OnWeaponUnequipped -= OnWeaponUnequipped;
+            }
+
+            if (ammoManager != null)
+            {
+                ammoManager.OnAmmoChanged -= OnAmmoChanged;
             }
 
             if (inventoryUIController != null)
@@ -100,8 +124,12 @@ namespace TheHunt.Inventory
             Debug.Log("========== INVENTORY STATE ==========");
             Debug.Log($"Selected Slot: {inventorySystem.SelectedSlot}");
             Debug.Log($"Is Full: {inventorySystem.IsFull}");
-            Debug.Log($"Primary Weapon: {inventorySystem.PrimaryWeapon?.ItemName ?? "None"}");
-            Debug.Log($"Secondary Weapon: {inventorySystem.SecondaryWeapon?.ItemName ?? "None"}");
+
+            if (weaponManager != null)
+            {
+                Debug.Log($"Primary Weapon: {weaponManager.PrimaryWeapon?.ItemName ?? "None"}");
+                Debug.Log($"Secondary Weapon: {weaponManager.SecondaryWeapon?.ItemName ?? "None"}");
+            }
 
             Debug.Log("\n--- Items ---");
             for (int i = 0; i < InventorySystem.MAX_SLOTS; i++)
@@ -112,13 +140,16 @@ namespace TheHunt.Inventory
             }
 
             Debug.Log("\n--- Ammo ---");
-            foreach (AmmoType ammoType in System.Enum.GetValues(typeof(AmmoType)))
+            if (ammoManager != null)
             {
-                if (ammoType == AmmoType.None)
-                    continue;
+                foreach (AmmoType ammoType in System.Enum.GetValues(typeof(AmmoType)))
+                {
+                    if (ammoType == AmmoType.None)
+                        continue;
 
-                int count = inventorySystem.GetAmmoCount(ammoType);
-                Debug.Log($"{ammoType}: {count}");
+                    int count = ammoManager.GetAmmoCount(ammoType);
+                    Debug.Log($"{ammoType}: {count}");
+                }
             }
 
             Debug.Log("=====================================");

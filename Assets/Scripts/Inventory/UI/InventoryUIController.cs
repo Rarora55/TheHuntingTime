@@ -8,6 +8,7 @@ namespace TheHunt.Inventory
     {
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
+        [SerializeField] private WeaponInventoryManager weaponManager;
 
         [Header("State")]
         private InventoryState currentState = InventoryState.Closed;
@@ -29,6 +30,9 @@ namespace TheHunt.Inventory
         {
             if (inventorySystem == null)
                 inventorySystem = GetComponent<InventorySystem>();
+
+            if (weaponManager == null)
+                weaponManager = GetComponent<WeaponInventoryManager>();
         }
 
         public void ToggleInventory()
@@ -211,17 +215,17 @@ namespace TheHunt.Inventory
                     break;
 
                 case ItemContextAction.EquipPrimary:
-                    if (currentItem.itemData is WeaponItemData weapon)
+                    if (currentItem.itemData is WeaponItemData weapon && weaponManager != null)
                     {
-                        inventorySystem.EquipWeapon(weapon, EquipSlot.Primary);
+                        weaponManager.EquipWeapon(weapon, EquipSlot.Primary);
                     }
                     CloseContextMenu();
                     break;
 
                 case ItemContextAction.EquipSecondary:
-                    if (currentItem.itemData is WeaponItemData weaponSecondary)
+                    if (currentItem.itemData is WeaponItemData weaponSecondary && weaponManager != null)
                     {
-                        inventorySystem.EquipWeapon(weaponSecondary, EquipSlot.Secondary);
+                        weaponManager.EquipWeapon(weaponSecondary, EquipSlot.Secondary);
                     }
                     CloseContextMenu();
                     break;
