@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1988c7c4f312d2c4eb0f4cbd4852d1fd, type: 3}
+  m_Name: TestCombine
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.ConsumableItemData
+  itemName: BoxCombined
+  itemID: 06498e1c-ae68-42b4-83e4-64581695d33d
+  description: 
+  itemIcon: {fileID: 0}
+  itemDetailImage: {fileID: 0}
+  itemType: 0
+  stackable: 0
+  canBeExamined: 1
+  examinationText: 
+  examinationImage: {fileID: 0}
+  canBeCombined: 0
+  combinationHint: 
+  healAmount: 50
+  removeOnUse: 1
+  useSound: {fileID: 0}
+  useEffect: {fileID: 0}

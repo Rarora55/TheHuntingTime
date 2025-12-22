@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.CombinationRecipe
   recipeName: Max Cure
   recipeDescription: 
-  itemA: {fileID: 0}
-  itemB: {fileID: 0}
+  itemA: {fileID: 11400000, guid: 990c102120aaaf44faa0eaf144f7eb84, type: 2}
+  itemB: {fileID: 11400000, guid: 34a6629fc375d6e42af8e673579942b7, type: 2}
   bidirectional: 1
-  resultItem: {fileID: 0}
+  resultItem: {fileID: 11400000, guid: 3b38b9973441de34d86815cf74d3735a, type: 2}
   resultQuantity: 1
   consumeAmountA: 1
   consumeAmountB: 1

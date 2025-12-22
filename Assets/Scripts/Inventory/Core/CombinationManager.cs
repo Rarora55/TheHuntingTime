@@ -23,6 +23,8 @@ namespace TheHunt.Inventory
 
         private void Awake()
         {
+            CleanNullRecipes();
+
             inventory = GetComponent<InventorySystem>();
             audioSource = GetComponent<AudioSource>();
 
@@ -33,6 +35,21 @@ namespace TheHunt.Inventory
             }
 
             ValidateRecipes();
+        }
+
+        private void CleanNullRecipes()
+        {
+            if (allRecipes == null)
+            {
+                allRecipes = new List<CombinationRecipe>();
+                return;
+            }
+
+            int nullCount = allRecipes.RemoveAll(r => r == null);
+            if (nullCount > 0)
+            {
+                LogWarning($"Removed {nullCount} null recipe(s) from allRecipes list");
+            }
         }
 
         private void Start()
@@ -175,6 +192,9 @@ namespace TheHunt.Inventory
         {
             foreach (CombinationRecipe recipe in allRecipes)
             {
+                if (recipe == null)
+                    continue;
+
                 if (recipe.IsValidRecipe() && recipe.CanCombine(itemA, itemB))
                 {
                     return recipe;
@@ -193,6 +213,9 @@ namespace TheHunt.Inventory
 
             foreach (CombinationRecipe recipe in allRecipes)
             {
+                if (recipe == null)
+                    continue;
+
                 if (!recipe.IsValidRecipe())
                     continue;
 
@@ -217,6 +240,9 @@ namespace TheHunt.Inventory
 
             foreach (CombinationRecipe recipe in allRecipes)
             {
+                if (recipe == null)
+                    continue;
+
                 if (!recipe.IsValidRecipe())
                     continue;
 
@@ -252,6 +278,12 @@ namespace TheHunt.Inventory
 
             foreach (CombinationRecipe recipe in allRecipes)
             {
+                if (recipe == null)
+                {
+                    LogWarning("Found null recipe in allRecipes list!");
+                    continue;
+                }
+
                 if (!recipe.IsValidRecipe())
                 {
                     invalidRecipes.Add(recipe);
@@ -311,6 +343,12 @@ namespace TheHunt.Inventory
             
             foreach (CombinationRecipe recipe in allRecipes)
             {
+                if (recipe == null)
+                {
+                    Debug.Log("✗ [NULL RECIPE]");
+                    continue;
+                }
+
                 string status = recipe.IsValidRecipe() ? "✓" : "✗";
                 Debug.Log($"{status} {recipe.RecipeName}: {recipe.ItemA?.ItemName} + {recipe.ItemB?.ItemName} → {recipe.ResultItem?.ItemName}");
             }

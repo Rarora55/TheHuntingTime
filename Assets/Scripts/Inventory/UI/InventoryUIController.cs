@@ -150,7 +150,7 @@ namespace TheHunt.Inventory
 
             if (currentItem.itemData.CanBeCombined && combinationManager != null)
             {
-                List<ItemData> possibleCombinations = currentItem.itemData.GetPossibleCombinations();
+                List<ItemData> possibleCombinations = combinationManager.GetCombinableItemsFor(currentItem.itemData);
                 if (possibleCombinations != null && possibleCombinations.Count > 0)
                 {
                     availableActions.Add(ItemContextAction.Combine);

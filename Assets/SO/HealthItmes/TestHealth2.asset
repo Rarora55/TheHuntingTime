@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1988c7c4f312d2c4eb0f4cbd4852d1fd, type: 3}
-  m_Name: TestHeltth1
+  m_Name: TestHealth2
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.ConsumableItemData
-  itemName: Health Recover
-  itemID: 1e18a0de-c332-4fb4-9000-d82d95b468a7
-  description: Restores 50HP
-  itemIcon: {fileID: 8137125111494602307, guid: 63c368950b0350d46a903dd29372a359, type: 3}
-  itemDetailImage: {fileID: -2377622892474425555, guid: 63c368950b0350d46a903dd29372a359, type: 3}
+  itemName: Box
+  itemID: c533dc69-41c0-4889-adf5-75ec1565b0f9
+  description: 
+  itemIcon: {fileID: 0}
+  itemDetailImage: {fileID: 0}
   itemType: 0
-  stackable: 1
+  stackable: 0
   canBeExamined: 1
-  examinationText: A red potion to get recover
-  examinationImage: {fileID: 8137125111494602307, guid: 63c368950b0350d46a903dd29372a359, type: 3}
+  examinationText: 
+  examinationImage: {fileID: 0}
   canBeCombined: 1
-  combinationHint: Can be mixed with box
-  healAmount: 30
+  combinationHint: Can be combined with plants
+  healAmount: 70
   removeOnUse: 1
   useSound: {fileID: 0}
   useEffect: {fileID: 0}

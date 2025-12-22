@@ -44,11 +44,6 @@ namespace TheHunt.Inventory
             return canBeCombined && otherItem != null && otherItem.CanBeCombined && this != otherItem;
         }
 
-        public virtual List<ItemData> GetPossibleCombinations()
-        {
-            return new List<ItemData>();
-        }
-
         public virtual string GetCombinationHint(ItemData otherItem)
         {
             if (!string.IsNullOrEmpty(combinationHint))
