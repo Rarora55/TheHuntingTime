@@ -1,8 +1,9 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace TheHunt.Inventory
 {
-    public abstract class ItemData : ScriptableObject
+    public abstract class ItemData : ScriptableObject, ICombinable
     {
         [Header("Basic Info")]
         [SerializeField] private string itemName;
@@ -20,6 +21,10 @@ namespace TheHunt.Inventory
         [SerializeField] [TextArea(3, 6)] private string examinationText;
         [SerializeField] private Sprite examinationImage;
 
+        [Header("Combination")]
+        [SerializeField] private bool canBeCombined = false;
+        [SerializeField] [TextArea(2, 3)] private string combinationHint;
+
         public string ItemName => itemName;
         public string ItemID => itemID;
         public string Description => description;
@@ -30,8 +35,27 @@ namespace TheHunt.Inventory
         public bool CanBeExamined => canBeExamined;
         public string ExaminationText => examinationText;
         public Sprite ExaminationImage => examinationImage;
+        public bool CanBeCombined => canBeCombined;
 
         public abstract void Use(GameObject user);
+
+        public virtual bool CanCombineWith(ItemData otherItem)
+        {
+            return canBeCombined && otherItem != null && otherItem.CanBeCombined && this != otherItem;
+        }
+
+        public virtual List<ItemData> GetPossibleCombinations()
+        {
+            return new List<ItemData>();
+        }
+
+        public virtual string GetCombinationHint(ItemData otherItem)
+        {
+            if (!string.IsNullOrEmpty(combinationHint))
+                return combinationHint;
+
+            return canBeCombined ? "Can be combined with other items." : string.Empty;
+        }
 
         private void OnValidate()
         {

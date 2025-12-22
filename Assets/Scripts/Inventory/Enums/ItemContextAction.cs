@@ -6,6 +6,7 @@ namespace TheHunt.Inventory
         Examine,
         Drop,
         EquipPrimary,
-        EquipSecondary
+        EquipSecondary,
+        Combine
     }
 }

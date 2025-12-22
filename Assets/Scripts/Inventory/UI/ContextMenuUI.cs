@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,12 @@ namespace TheHunt.Inventory
         [SerializeField] private CanvasGroup canvasGroup;
         [SerializeField] private Transform optionsContainer;
         [SerializeField] private GameObject optionPrefab;
+        
+        [Header("Layout Settings")]
+        [SerializeField] private bool autoResizePanel = true;
+        [SerializeField] private float padding = 10f;
+        [SerializeField] private float minHeight = 80f;
+        [SerializeField] private float maxHeight = 300f;
 
         [Header("Visual Settings")]
         [SerializeField] private Color normalColor = Color.white;
@@ -30,6 +37,7 @@ namespace TheHunt.Inventory
         private List<float> originalFontSizes = new List<float>();
         private int currentSelection = 0;
         private RectTransform rectTransform;
+        private RectTransform containerRectTransform;
         private Coroutine currentAnimation;
 
         private void Awake()
@@ -41,6 +49,9 @@ namespace TheHunt.Inventory
                 canvasGroup = GetComponent<CanvasGroup>();
 
             rectTransform = GetComponent<RectTransform>();
+            
+            if (optionsContainer != null)
+                containerRectTransform = optionsContainer as RectTransform;
         }
 
         private void Start()
@@ -79,6 +90,11 @@ namespace TheHunt.Inventory
             }
 
             UpdateSelectionVisual(0);
+            
+            if (autoResizePanel)
+            {
+                StartCoroutine(ResizePanelAfterLayout());
+            }
 
             Debug.Log($"<color=cyan>[CONTEXT MENU UI] Opened with {actions.Count} actions</color>");
         }
@@ -254,6 +270,27 @@ namespace TheHunt.Inventory
             }
 
             currentAnimation = null;
+        }
+        
+        private IEnumerator ResizePanelAfterLayout()
+        {
+            yield return null;
+            
+            if (containerRectTransform != null && rectTransform != null)
+            {
+                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(containerRectTransform);
+                yield return null;
+                
+                float containerHeight = UnityEngine.UI.LayoutUtility.GetPreferredHeight(containerRectTransform);
+                float titleHeight = 30f;
+                
+                float totalHeight = titleHeight + containerHeight + (padding * 2);
+                totalHeight = Mathf.Clamp(totalHeight, minHeight, maxHeight);
+                
+                rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, totalHeight);
+                
+                Debug.Log($"<color=green>[CONTEXT MENU UI] Resized panel to {totalHeight} (container: {containerHeight})</color>");
+            }
         }
     }
 }

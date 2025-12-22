@@ -9,11 +9,14 @@ namespace TheHunt.Inventory
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private WeaponInventoryManager weaponManager;
+        [SerializeField] private CombinationManager combinationManager;
 
         [Header("State")]
         private InventoryState currentState = InventoryState.Closed;
         private int contextMenuIndex = 0;
         private List<ItemContextAction> availableActions = new List<ItemContextAction>();
+        private bool isCombineMode = false;
+        private int combineSourceSlot = -1;
 
         public InventoryState CurrentState => currentState;
         public bool IsOpen => currentState != InventoryState.Closed;
@@ -25,6 +28,7 @@ namespace TheHunt.Inventory
         public event Action<List<ItemContextAction>> OnContextMenuOpened;
         public event Action OnContextMenuClosed;
         public event Action<int> OnContextMenuSelectionChanged;
+        public event Action<bool, ItemData> OnCombineModeChanged;
 
         private void Awake()
         {
@@ -33,6 +37,9 @@ namespace TheHunt.Inventory
 
             if (weaponManager == null)
                 weaponManager = GetComponent<WeaponInventoryManager>();
+
+            if (combinationManager == null)
+                combinationManager = GetComponent<CombinationManager>();
         }
 
         public void ToggleInventory()
@@ -141,6 +148,15 @@ namespace TheHunt.Inventory
                 availableActions.Add(ItemContextAction.EquipSecondary);
             }
 
+            if (currentItem.itemData.CanBeCombined && combinationManager != null)
+            {
+                List<ItemData> possibleCombinations = currentItem.itemData.GetPossibleCombinations();
+                if (possibleCombinations != null && possibleCombinations.Count > 0)
+                {
+                    availableActions.Add(ItemContextAction.Combine);
+                }
+            }
+
             availableActions.Add(ItemContextAction.Drop);
 
             if (availableActions.Count > 0)
@@ -229,6 +245,11 @@ namespace TheHunt.Inventory
                     }
                     CloseContextMenu();
                     break;
+
+                case ItemContextAction.Combine:
+                    StartCombineMode();
+                    CloseContextMenu();
+                    break;
             }
         }
 
@@ -260,7 +281,64 @@ namespace TheHunt.Inventory
                 case ItemContextAction.Drop: return "Drop";
                 case ItemContextAction.EquipPrimary: return "Equip Primary";
                 case ItemContextAction.EquipSecondary: return "Equip Secondary";
+                case ItemContextAction.Combine: return "Combine";
                 default: return action.ToString();
+            }
+        }
+
+        private void StartCombineMode()
+        {
+            isCombineMode = true;
+            combineSourceSlot = inventorySystem.SelectedSlot;
+            ItemInstance sourceItem = inventorySystem.CurrentItem;
+            
+            if (sourceItem != null)
+            {
+                OnCombineModeChanged?.Invoke(true, sourceItem.itemData);
+                Debug.Log($"<color=cyan>[INVENTORY UI] Combine mode started. Select item to combine with {sourceItem.itemData.ItemName}</color>");
+            }
+        }
+
+        public void CancelCombineMode()
+        {
+            isCombineMode = false;
+            combineSourceSlot = -1;
+            OnCombineModeChanged?.Invoke(false, null);
+            Debug.Log("<color=cyan>[INVENTORY UI] Combine mode cancelled</color>");
+        }
+
+        public void TryCombineWithSelected()
+        {
+            if (!isCombineMode || combineSourceSlot < 0 || combinationManager == null)
+                return;
+
+            int targetSlot = inventorySystem.SelectedSlot;
+
+            if (targetSlot == combineSourceSlot)
+            {
+                Debug.Log("<color=yellow>[INVENTORY UI] Cannot combine item with itself!</color>");
+                return;
+            }
+
+            bool success = combinationManager.TryCombine(combineSourceSlot, targetSlot);
+
+            if (success)
+            {
+                Debug.Log("<color=green>[INVENTORY UI] Items combined successfully!</color>");
+            }
+            else
+            {
+                Debug.Log("<color=yellow>[INVENTORY UI] These items cannot be combined.</color>");
+            }
+
+            CancelCombineMode();
+        }
+
+        public void HandleCombineInput()
+        {
+            if (isCombineMode)
+            {
+                TryCombineWithSelected();
             }
         }
     }
