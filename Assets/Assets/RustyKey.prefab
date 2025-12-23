@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4174347595318926195
+--- !u!1 &8157603312307409887
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,72 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3041194277434216994}
+  - component: {fileID: 3169396294466460931}
+  - component: {fileID: 6949793326908209935}
+  - component: {fileID: 7212751021036465043}
+  - component: {fileID: 5454008030175030034}
   m_Layer: 9
-  m_Name: detectionGround
+  m_Name: RustyKey
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3041194277434216994
+--- !u!4 &3169396294466460931
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4174347595318926195}
+  m_GameObject: {fileID: 8157603312307409887}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0105, y: -0.0749, z: 0}
+  m_LocalPosition: {x: 13.1, y: 7.24, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2985550626458477195}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4913746126012285002
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2985550626458477195}
-  - component: {fileID: 5218591768228993159}
-  - component: {fileID: 203524281714863722}
-  - component: {fileID: 3156591280089110485}
-  m_Layer: 9
-  m_Name: Plant
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2985550626458477195
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4913746126012285002}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.99, y: 7.406, z: 0}
-  m_LocalScale: {x: 3.58, y: 3.44, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3041194277434216994}
+  - {fileID: 2949262397454560653}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &5218591768228993159
+--- !u!212 &6949793326908209935
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4913746126012285002}
+  m_GameObject: {fileID: 8157603312307409887}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -115,23 +84,23 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1566436441228595852, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
-  m_Color: {r: 0.990566, g: 0.990566, b: 0.990566, a: 1}
+  m_Sprite: {fileID: 1694913177206695654, guid: ea716d2c305dfb94aac6bb329d7df8b2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.25, y: 0.52}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!61 &203524281714863722
-BoxCollider2D:
+--- !u!58 &7212751021036465043
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4913746126012285002}
+  m_GameObject: {fileID: 8157603312307409887}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -159,30 +128,55 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0016283989, y: 0.002900254}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.14, y: 0.14}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.1760746, y: 0.18321288}
-  m_EdgeRadius: 0
---- !u!114 &3156591280089110485
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
+--- !u!114 &5454008030175030034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4913746126012285002}
+  m_GameObject: {fileID: 8157603312307409887}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a9a1ba83126d694db8256c3d70ce24d, type: 3}
+  m_Script: {fileID: 11500000, guid: 565701cf0ea32ed43921a3a7fdb2596a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.PickupItem
-  itemData: {fileID: 11400000, guid: 34a6629fc375d6e42af8e673579942b7, type: 2}
-  interactionPrompt: Pick up
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.PickupInteractable
+  interactionPrompt: Press E to interact
+  isInteractable: 1
+  itemData: {fileID: 11400000, guid: 5350b9c7ad2ec7144944569bb4a66950, type: 2}
+  itemName: Rusty Key
   destroyOnPickup: 1
+  pickupVFX: {fileID: 0}
+  pickupSound: {fileID: 0}
+--- !u!1 &8557956082487563052
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2949262397454560653}
+  m_Layer: 0
+  m_Name: detectionGround
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2949262397454560653
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8557956082487563052}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.027, y: -0.244, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3169396294466460931}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

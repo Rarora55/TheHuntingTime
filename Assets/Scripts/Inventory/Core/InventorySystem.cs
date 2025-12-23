@@ -141,8 +141,100 @@ namespace TheHunt.Inventory
             if (CurrentItem == null)
                 return;
 
-            Debug.Log($"<color=cyan>[INVENTORY] Dropped {CurrentItem.itemData.ItemName}</color>");
+            ItemData droppedItemData = CurrentItem.itemData;
+            
+            Debug.Log($"<color=cyan>[INVENTORY] Dropped {droppedItemData.ItemName}</color>");
+            
             RemoveItem(selectedIndex, 1);
+            
+            if (droppedItemData.PickupPrefab != null)
+            {
+                Vector3 dropPosition = CalculateDropPosition(droppedItemData.PickupPrefab);
+                GameObject droppedObject = Instantiate(droppedItemData.PickupPrefab, dropPosition, Quaternion.identity);
+                
+                Debug.Log($"<color=green>[INVENTORY] Spawned {droppedItemData.ItemName} at {dropPosition}</color>");
+            }
+            else
+            {
+                Debug.LogWarning($"<color=yellow>[INVENTORY] No pickup prefab assigned for {droppedItemData.ItemName}</color>");
+            }
+        }
+
+        private Vector3 CalculateDropPosition(GameObject prefab)
+        {
+            const float HORIZONTAL_OFFSET = 1.5f;
+            const float RAYCAST_DISTANCE = 50f;
+            
+            Vector3 horizontalOffset = transform.right * HORIZONTAL_OFFSET;
+            Vector3 startPosition = transform.position + horizontalOffset;
+            
+            int groundLayer = LayerMask.GetMask("Ground");
+            RaycastHit2D hit = Physics2D.Raycast(startPosition, Vector2.down, RAYCAST_DISTANCE, groundLayer);
+            
+            Vector3 groundContactPoint;
+            if (hit.collider != null)
+            {
+                groundContactPoint = hit.point;
+                Debug.Log($"<color=cyan>[DROP] Ground found at {groundContactPoint}</color>");
+            }
+            else
+            {
+                groundContactPoint = startPosition;
+                Debug.LogWarning($"<color=yellow>[DROP] No ground found, using horizontal position</color>");
+            }
+            
+            Vector3 detectionOffset = GetDetectionPointOffset(prefab);
+            
+            Vector3 finalPosition = new Vector3(
+                groundContactPoint.x,
+                groundContactPoint.y - detectionOffset.y,
+                groundContactPoint.z
+            );
+            
+            Debug.Log($"<color=green>[DROP] Detection offset: {detectionOffset}, Final position: {finalPosition}</color>");
+            return finalPosition;
+        }
+        
+        private Vector3 GetDetectionPointOffset(GameObject prefab)
+        {
+            Transform detectionPoint = FindDetectionPointInPrefab(prefab);
+            
+            if (detectionPoint != null)
+            {
+                Vector3 localPos = detectionPoint.localPosition;
+                Vector3 scale = prefab.transform.localScale;
+                
+                Vector3 worldOffset = new Vector3(
+                    localPos.x * scale.x,
+                    localPos.y * scale.y,
+                    localPos.z * scale.z
+                );
+                
+                Debug.Log($"<color=cyan>[DROP] Found detection point: local={localPos}, scale={scale}, worldOffset={worldOffset}</color>");
+                return worldOffset;
+            }
+            
+            Debug.LogWarning($"<color=yellow>[DROP] No 'detectionGround' found in prefab, using zero offset</color>");
+            return Vector3.zero;
+        }
+        
+        private Transform FindDetectionPointInPrefab(GameObject prefab)
+        {
+            Transform root = prefab.transform;
+            
+            Transform detectionPoint = root.Find("detectionGround");
+            if (detectionPoint != null)
+                return detectionPoint;
+            
+            detectionPoint = root.Find("detectioGround");
+            if (detectionPoint != null)
+                return detectionPoint;
+            
+            detectionPoint = root.Find("DetectionGround");
+            if (detectionPoint != null)
+                return detectionPoint;
+            
+            return null;
         }
 
         public void ExamineCurrentItem()

@@ -84,6 +84,12 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (context.performed && interactionController != null)
         {
+            if (inventoryUIController != null && inventoryUIController.IsOpen)
+            {
+                Debug.Log("<color=yellow>[INPUT] Cannot interact while inventory is open</color>");
+                return;
+            }
+            
             interactionController.TryInteract();
         }
     }

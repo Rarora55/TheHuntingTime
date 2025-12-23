@@ -40,6 +40,7 @@ namespace TheHunt.Inventory
 
             if (iconImage != null)
             {
+                iconImage.gameObject.SetActive(true);
                 iconImage.sprite = item.itemData.ItemIcon;
                 iconImage.color = fullIconColor;
                 iconImage.enabled = true;
@@ -49,11 +50,13 @@ namespace TheHunt.Inventory
             {
                 if (item.quantity > 1)
                 {
+                    quantityText.gameObject.SetActive(true);
                     quantityText.text = $"x{item.quantity}";
                     quantityText.enabled = true;
                 }
                 else
                 {
+                    quantityText.gameObject.SetActive(false);
                     quantityText.enabled = false;
                 }
             }
@@ -63,6 +66,7 @@ namespace TheHunt.Inventory
         {
             if (iconImage != null)
             {
+                iconImage.gameObject.SetActive(false);
                 iconImage.sprite = null;
                 iconImage.color = emptyIconColor;
                 iconImage.enabled = false;
@@ -70,6 +74,7 @@ namespace TheHunt.Inventory
 
             if (quantityText != null)
             {
+                quantityText.gameObject.SetActive(false);
                 quantityText.enabled = false;
             }
         }

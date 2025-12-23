@@ -11,6 +11,7 @@ namespace TheHunt.Inventory
         [SerializeField] [TextArea(3, 6)] private string description;
         [SerializeField] private Sprite itemIcon;
         [SerializeField] private Sprite itemDetailImage;
+        [SerializeField] private GameObject pickupPrefab;
 
         [Header("Item Type")]
         [SerializeField] private ItemType itemType;
@@ -30,6 +31,7 @@ namespace TheHunt.Inventory
         public string Description => description;
         public Sprite ItemIcon => itemIcon;
         public Sprite ItemDetailImage => itemDetailImage;
+        public GameObject PickupPrefab => pickupPrefab;
         public ItemType ItemType => itemType;
         public bool IsStackable => stackable;
         public bool CanBeExamined => canBeExamined;

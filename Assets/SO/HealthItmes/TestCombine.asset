@@ -15,8 +15,9 @@ MonoBehaviour:
   itemName: BoxCombined
   itemID: 06498e1c-ae68-42b4-83e4-64581695d33d
   description: 
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 1727535833903486776, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   itemDetailImage: {fileID: 0}
+  pickupPrefab: {fileID: 0}
   itemType: 0
   stackable: 0
   canBeExamined: 1

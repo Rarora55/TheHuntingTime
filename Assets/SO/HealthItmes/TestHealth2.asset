@@ -15,10 +15,11 @@ MonoBehaviour:
   itemName: Box
   itemID: c533dc69-41c0-4889-adf5-75ec1565b0f9
   description: 
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: -1447192519959669193, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   itemDetailImage: {fileID: 0}
+  pickupPrefab: {fileID: 1897324123978043569, guid: 2df74a5c013b01b40b259e606073f380, type: 3}
   itemType: 0
-  stackable: 0
+  stackable: 1
   canBeExamined: 1
   examinationText: 
   examinationImage: {fileID: 0}

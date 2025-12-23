@@ -15,13 +15,16 @@ MonoBehaviour:
   itemName: Pistol
   itemID: weapon_knife_9
   description: 
-  itemIcon: {fileID: 5987588446089127147, guid: 1600f67c83bd50d4cb02e278eba0e2bb, type: 3}
-  itemDetailImage: {fileID: -2286631953215479313, guid: b317b2530e898664fa9036ba22d93b04, type: 3}
+  itemIcon: {fileID: 8344646365764277431, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
+  itemDetailImage: {fileID: 8344646365764277431, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
+  pickupPrefab: {fileID: 2526569073481771136, guid: c7529b372bb046d4d85c6ce55b13a6c9, type: 3}
   itemType: 1
   stackable: 0
   canBeExamined: 1
   examinationText: 
   examinationImage: {fileID: 0}
+  canBeCombined: 0
+  combinationHint: 
   damage: 10
   attackRange: 1
   attackSpeed: 1
@@ -30,5 +33,5 @@ MonoBehaviour:
   magazineSize: 12
   ammoPerShot: 1
   equipPrefab: {fileID: 0}
-  equipIcon: {fileID: 5987588446089127147, guid: 1600f67c83bd50d4cb02e278eba0e2bb, type: 3}
+  equipIcon: {fileID: 8344646365764277431, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   equipAnimation: {fileID: 0}

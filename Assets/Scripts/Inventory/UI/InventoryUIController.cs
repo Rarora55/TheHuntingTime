@@ -94,6 +94,12 @@ namespace TheHunt.Inventory
 
         public void InteractWithCurrentItem()
         {
+            if (isCombineMode)
+            {
+                HandleCombineInput();
+                return;
+            }
+
             if (currentState == InventoryState.Open)
             {
                 OpenContextMenu();
@@ -106,6 +112,12 @@ namespace TheHunt.Inventory
 
         public void CancelCurrentAction()
         {
+            if (isCombineMode)
+            {
+                CancelCombineMode();
+                return;
+            }
+
             if (currentState == InventoryState.ContextMenu)
             {
                 CloseContextMenu();
