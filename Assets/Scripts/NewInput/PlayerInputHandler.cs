@@ -16,11 +16,15 @@ public class PlayerInputHandler : MonoBehaviour
     [SerializeField] private float jumpInputStartTime;
 
     private PlayerInteractionController interactionController;
+    private ConfirmableInteraction confirmableInteraction;
+    private SimpleConfirmableInteraction simpleConfirmableInteraction;
     private InventoryUIController inventoryUIController;
 
     private void Awake()
     {
         interactionController = GetComponent<PlayerInteractionController>();
+        confirmableInteraction = GetComponent<ConfirmableInteraction>();
+        simpleConfirmableInteraction = GetComponent<SimpleConfirmableInteraction>();
         inventoryUIController = GetComponent<InventoryUIController>();
     }
 
@@ -82,7 +86,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnInteractInput(InputAction.CallbackContext context)
     {
-        if (context.performed && interactionController != null)
+        if (context.performed)
         {
             if (inventoryUIController != null && inventoryUIController.IsOpen)
             {
@@ -90,7 +94,18 @@ public class PlayerInputHandler : MonoBehaviour
                 return;
             }
             
-            interactionController.TryInteract();
+            if (simpleConfirmableInteraction != null)
+            {
+                simpleConfirmableInteraction.RequestInteraction();
+            }
+            else if (confirmableInteraction != null)
+            {
+                confirmableInteraction.RequestInteraction();
+            }
+            else if (interactionController != null)
+            {
+                interactionController.TryInteract();
+            }
         }
     }
 
