@@ -8,32 +8,36 @@ namespace TheHunt.Interaction
     {
         [Header("References")]
         [SerializeField] private PlayerInteractionController interactionController;
+        [SerializeField] private DialogService dialogService;
         
         [Header("Settings")]
         [SerializeField] private bool requireConfirmation = true;
         
         private IInteractable pendingInteractable;
         private GameObject pendingInteractor;
-        private SimpleConfirmationDialog dialog;
         
         void Awake()
         {
             if (interactionController == null)
                 interactionController = GetComponent<PlayerInteractionController>();
             
-            if (SimpleConfirmationDialog.Instance == null)
+            if (dialogService == null)
+                dialogService = FindFirstObjectByType<DialogService>();
+            
+            if (dialogService == null)
             {
-                GameObject dialogObj = new GameObject("SimpleConfirmationDialog");
-                dialog = dialogObj.AddComponent<SimpleConfirmationDialog>();
-            }
-            else
-            {
-                dialog = SimpleConfirmationDialog.Instance;
+                Debug.LogError("<color=red>[SIMPLE CONFIRMABLE] DialogService not found in scene!</color>");
             }
         }
         
         public void RequestInteraction()
         {
+            if (dialogService != null && dialogService.IsDialogOpen)
+            {
+                Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] Dialog already open, ignoring interaction</color>");
+                return;
+            }
+            
             if (interactionController == null)
             {
                 Debug.LogWarning($"<color=yellow>[SIMPLE CONFIRMABLE] Missing interactionController</color>");
@@ -62,9 +66,9 @@ namespace TheHunt.Interaction
         
         private void ShowConfirmationDialog(IInteractable interactable)
         {
-            if (dialog == null)
+            if (dialogService == null)
             {
-                Debug.LogError("<color=red>[SIMPLE CONFIRMABLE] Dialog is null!</color>");
+                Debug.LogError("<color=red>[SIMPLE CONFIRMABLE] DialogService is null!</color>");
                 return;
             }
             
@@ -74,7 +78,7 @@ namespace TheHunt.Interaction
             string title = GetInteractionTitle(interactable);
             string description = GetInteractionDescription(interactable);
             
-            dialog.Show(title, description, OnConfirmed, OnCancelled);
+            dialogService.ShowConfirmation(title, description, OnConfirmed, OnCancelled);
             
             Debug.Log($"<color=cyan>[SIMPLE CONFIRMABLE] Showing confirmation for: {interactable.InteractionPrompt}</color>");
         }
@@ -84,7 +88,9 @@ namespace TheHunt.Interaction
             if (pendingInteractable != null)
             {
                 Debug.Log($"<color=green>[SIMPLE CONFIRMABLE] Interaction confirmed</color>");
+                Debug.Log($"<color=green>[SIMPLE CONFIRMABLE] ===== CALLING Interact() =====</color>");
                 pendingInteractable.Interact(pendingInteractor);
+                Debug.Log($"<color=green>[SIMPLE CONFIRMABLE] ===== FINISHED Interact() =====</color>");
             }
             
             ClearPending();
@@ -92,7 +98,7 @@ namespace TheHunt.Interaction
         
         private void OnCancelled()
         {
-            Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] Interaction cancelled</color>");
+            Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] Interaction cancelled - NOT picking up item</color>");
             ClearPending();
         }
         
@@ -125,7 +131,7 @@ namespace TheHunt.Interaction
         
         private string GetPickupDescription(PickupItem pickup)
         {
-            ItemData itemData = GetItemDataFromPickup(pickup);
+            ItemData itemData = pickup?.ItemData;
             
             if (itemData == null)
                 return "Do you want to pick up this item?";
@@ -136,21 +142,6 @@ namespace TheHunt.Interaction
                 return $"Pick up {itemData.ItemName}?";
             
             return description;
-        }
-        
-        private ItemData GetItemDataFromPickup(PickupItem pickup)
-        {
-            if (pickup == null)
-                return null;
-            
-            var field = typeof(PickupItem).GetField("itemData", 
-                System.Reflection.BindingFlags.NonPublic | 
-                System.Reflection.BindingFlags.Instance);
-            
-            if (field != null)
-                return field.GetValue(pickup) as ItemData;
-            
-            return null;
         }
         
         public void SetRequireConfirmation(bool require)

@@ -1,14 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using System;
+using TheHunt.Input;
 
 namespace TheHunt.UI
 {
     public class SimpleConfirmationDialog : MonoBehaviour
     {
-        private static SimpleConfirmationDialog instance;
-        
         private Canvas canvas;
         private GameObject panel;
         private TextMeshProUGUI titleText;
@@ -19,21 +19,99 @@ namespace TheHunt.UI
         private Action onConfirm;
         private Action onCancel;
         
+        private EventSystem eventSystem;
+        private int manualSelection = 0;
+        
         public bool IsOpen => panel != null && panel.activeSelf;
         
         void Awake()
         {
-            if (instance != null && instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            
+            SetupEventSystem();
             CreateDialog();
             Hide();
+        }
+        
+        void SetupEventSystem()
+        {
+            eventSystem = EventSystem.current;
+            
+            if (eventSystem == null)
+            {
+                GameObject esObj = new GameObject("EventSystem");
+                eventSystem = esObj.AddComponent<EventSystem>();
+                esObj.AddComponent<StandaloneInputModule>();
+                Debug.Log("<color=green>[SIMPLE DIALOG] ✓ Created EventSystem</color>");
+            }
+        }
+        
+        public void OnNavigate(float direction)
+        {
+            if (!IsOpen)
+                return;
+            
+            Debug.Log($"<color=magenta>[SIMPLE DIALOG] OnNavigate called with direction: {direction}</color>");
+            
+            if (direction < -0.5f)
+            {
+                Debug.Log($"<color=magenta>[SIMPLE DIALOG] Direction < -0.5 (A/Left), selecting NO (right button)</color>");
+                SelectNo();
+            }
+            else if (direction > 0.5f)
+            {
+                Debug.Log($"<color=magenta>[SIMPLE DIALOG] Direction > 0.5 (D/Right), selecting YES (left button)</color>");
+                SelectYes();
+            }
+        }
+        
+        public void OnConfirmInput()
+        {
+            if (!IsOpen)
+                return;
+            
+            ConfirmSelection();
+        }
+        
+        public void OnCancelInput()
+        {
+            if (!IsOpen)
+                return;
+            
+            OnNoClicked();
+        }
+        
+        void SelectYes()
+        {
+            manualSelection = 0;
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(yesButton.gameObject);
+            Debug.Log("<color=cyan>[SIMPLE DIALOG] Selected YES (manualSelection=0)</color>");
+        }
+        
+        void SelectNo()
+        {
+            manualSelection = 1;
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(noButton.gameObject);
+            Debug.Log("<color=cyan>[SIMPLE DIALOG] Selected NO (manualSelection=1)</color>");
+        }
+        
+        void ConfirmSelection()
+        {
+            GameObject selected = EventSystem.current.currentSelectedGameObject;
+            Debug.Log($"<color=white>★★★ [SIMPLE DIALOG] ConfirmSelection called!</color>");
+            Debug.Log($"<color=white>★★★ EventSystem selected: {selected?.name}</color>");
+            Debug.Log($"<color=white>★★★ manualSelection: {manualSelection} (0=YES, 1=NO)</color>");
+            
+            if (manualSelection == 0)
+            {
+                Debug.Log($"<color=white>★★★ Calling OnYesClicked() ★★★</color>");
+                OnYesClicked();
+            }
+            else
+            {
+                Debug.Log($"<color=white>★★★ Calling OnNoClicked() ★★★</color>");
+                OnNoClicked();
+            }
         }
         
         void CreateDialog()
@@ -104,10 +182,23 @@ namespace TheHunt.UI
             descriptionText.alignment = TextAlignmentOptions.Center;
             descriptionText.color = Color.white;
             
-            yesButton = CreateButton("YesButton", contentBox.transform, new Vector2(-80, -150), "YES", OnYesClicked);
-            noButton = CreateButton("NoButton", contentBox.transform, new Vector2(80, -150), "NO", OnNoClicked);
+            yesButton = CreateButton("YesButton", contentBox.transform, new Vector2(80, -150), "YES", OnYesClicked);
+            noButton = CreateButton("NoButton", contentBox.transform, new Vector2(-80, -150), "NO", OnNoClicked);
+            
+            SetupButtonNavigation();
             
             Debug.Log("<color=green>[SIMPLE DIALOG] ✓✓✓ Dialog created programmatically</color>");
+        }
+        
+        void SetupButtonNavigation()
+        {
+            Navigation yesNav = new Navigation();
+            yesNav.mode = Navigation.Mode.None;
+            yesButton.navigation = yesNav;
+            
+            Navigation noNav = new Navigation();
+            noNav.mode = Navigation.Mode.None;
+            noButton.navigation = noNav;
         }
         
         Button CreateButton(string name, Transform parent, Vector2 position, string text, UnityEngine.Events.UnityAction onClick)
@@ -127,6 +218,16 @@ namespace TheHunt.UI
             Button btn = btnObj.AddComponent<Button>();
             btn.onClick.AddListener(onClick);
             
+            ColorBlock colors = btn.colors;
+            colors.normalColor = new Color(0.2f, 0.6f, 1f, 1f);
+            colors.highlightedColor = new Color(0.3f, 0.8f, 1f, 1f);
+            colors.pressedColor = new Color(0.1f, 0.4f, 0.8f, 1f);
+            colors.selectedColor = new Color(0.4f, 1f, 0.4f, 1f);
+            colors.disabledColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+            colors.colorMultiplier = 1f;
+            colors.fadeDuration = 0.1f;
+            btn.colors = colors;
+            
             GameObject textObj = new GameObject("Text");
             textObj.transform.SetParent(btnObj.transform, false);
             
@@ -138,6 +239,7 @@ namespace TheHunt.UI
             TextMeshProUGUI btnText = textObj.AddComponent<TextMeshProUGUI>();
             btnText.text = text;
             btnText.fontSize = 24;
+            btnText.fontStyle = FontStyles.Bold;
             btnText.alignment = TextAlignmentOptions.Center;
             btnText.color = Color.white;
             
@@ -154,9 +256,18 @@ namespace TheHunt.UI
             
             panel.SetActive(true);
             
+            manualSelection = 0;
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(yesButton.gameObject);
+            
+            InputContextManager.Instance?.PushContext(InputContext.Dialog);
+            
             Debug.Log($"<color=green>[SIMPLE DIALOG] ========== SHOWN ==========</color>");
             Debug.Log($"<color=green>[SIMPLE DIALOG] Title: {title}</color>");
             Debug.Log($"<color=green>[SIMPLE DIALOG] Description: {description}</color>");
+            Debug.Log($"<color=green>[SIMPLE DIALOG] manualSelection initialized to: {manualSelection} (0=YES)</color>");
+            Debug.Log($"<color=green>[SIMPLE DIALOG] EventSystem selected: {EventSystem.current.currentSelectedGameObject?.name}</color>");
+            Debug.Log($"<color=green>[SIMPLE DIALOG] Controls: A/D or Left/Right to navigate, E to confirm</color>");
             Debug.Log($"<color=green>[SIMPLE DIALOG] ===========================</color>");
         }
         
@@ -167,6 +278,8 @@ namespace TheHunt.UI
                 panel.SetActive(false);
                 Debug.Log("<color=yellow>[SIMPLE DIALOG] Hidden</color>");
             }
+            
+            InputContextManager.Instance?.PopContext();
             
             onConfirm = null;
             onCancel = null;
@@ -182,10 +295,10 @@ namespace TheHunt.UI
         void OnNoClicked()
         {
             Debug.Log("<color=yellow>[SIMPLE DIALOG] NO clicked</color>");
+            Debug.Log($"<color=yellow>[SIMPLE DIALOG] onCancel is null? {onCancel == null}</color>");
             onCancel?.Invoke();
+            Debug.Log("<color=yellow>[SIMPLE DIALOG] onCancel invoked (if not null)</color>");
             Hide();
         }
-        
-        public static SimpleConfirmationDialog Instance => instance;
     }
 }

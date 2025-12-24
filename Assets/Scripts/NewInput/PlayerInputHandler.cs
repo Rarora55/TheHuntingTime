@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TheHunt.Interaction;
 using TheHunt.Inventory;
+using TheHunt.UI;
+using TheHunt.Input;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -19,6 +21,7 @@ public class PlayerInputHandler : MonoBehaviour
     private ConfirmableInteraction confirmableInteraction;
     private SimpleConfirmableInteraction simpleConfirmableInteraction;
     private InventoryUIController inventoryUIController;
+    private DialogService dialogService;
 
     private void Awake()
     {
@@ -26,16 +29,39 @@ public class PlayerInputHandler : MonoBehaviour
         confirmableInteraction = GetComponent<ConfirmableInteraction>();
         simpleConfirmableInteraction = GetComponent<SimpleConfirmableInteraction>();
         inventoryUIController = GetComponent<InventoryUIController>();
+        dialogService = FindFirstObjectByType<DialogService>();
     }
 
     private void Update()
     {
         CheckJumpInputHoldTime();
     }
+    
+    private bool IsDialogOpen()
+    {
+        return InputContextManager.Instance != null && 
+               InputContextManager.Instance.IsInContext(InputContext.Dialog);
+    }
 
     public void OnMoveInput(InputAction.CallbackContext context)
     {
-        RamMovementInput = context.ReadValue<Vector2>();
+        Vector2 input = context.ReadValue<Vector2>();
+        
+        if (IsDialogOpen())
+        {
+            if (dialogService != null && context.performed)
+            {
+                Debug.Log($"<color=magenta>[INPUT] Movement input: {input}, X value: {input.x}</color>");
+                dialogService.OnNavigate(input.x);
+            }
+            
+            RamMovementInput = Vector2.zero;
+            NormInputX = 0;
+            NormInputY = 0;
+            return;
+        }
+        
+        RamMovementInput = input;
         if(Mathf.Abs(RamMovementInput.x) > 0.5f)
         {
         NormInputX = (int)(RamMovementInput * Vector2.right).normalized.x;
@@ -56,6 +82,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnJumpInput(InputAction.CallbackContext context)
     {
+        if (IsDialogOpen())
+            return;
 
         if (context.started)
         {
@@ -67,6 +95,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnGrabInput(InputAction.CallbackContext context)
     {
+        if (IsDialogOpen())
+            return;
+            
         if (context.started)
             GrabInput = true;
 
@@ -77,6 +108,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnRunInput(InputAction.CallbackContext context)
     {
+        if (IsDialogOpen())
+            return;
+            
         if (context.started)
             RunInput = true;
 
@@ -88,6 +122,16 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (context.performed)
         {
+            if (IsDialogOpen())
+            {
+                if (dialogService != null)
+                {
+                    dialogService.OnConfirmInput();
+                    Debug.Log("<color=cyan>[INPUT] E key sent to dialog for confirmation</color>");
+                }
+                return;
+            }
+            
             if (inventoryUIController != null && inventoryUIController.IsOpen)
             {
                 Debug.Log("<color=yellow>[INPUT] Cannot interact while inventory is open</color>");
@@ -111,9 +155,22 @@ public class PlayerInputHandler : MonoBehaviour
 
     public void OnInventoryToggleInput(InputAction.CallbackContext context)
     {
-        if (context.performed && inventoryUIController != null)
+        if (context.performed)
         {
-            inventoryUIController.ToggleInventory();
+            if (IsDialogOpen())
+            {
+                if (dialogService != null)
+                {
+                    dialogService.OnCancelInput();
+                    Debug.Log("<color=yellow>[INPUT] Inventory toggle cancelled dialog</color>");
+                }
+                return;
+            }
+            
+            if (inventoryUIController != null)
+            {
+                inventoryUIController.ToggleInventory();
+            }
         }
     }
 

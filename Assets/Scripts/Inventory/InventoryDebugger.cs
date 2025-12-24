@@ -98,22 +98,22 @@ namespace TheHunt.Inventory
             if (!showDebugInfo)
                 return;
 
-            if (Input.GetKeyDown(KeyCode.F1) && testConsumable != null)
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F1) && testConsumable != null)
             {
                 inventorySystem.TryAddItem(testConsumable);
             }
 
-            if (Input.GetKeyDown(KeyCode.F2) && testWeapon != null)
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F2) && testWeapon != null)
             {
                 inventorySystem.TryAddItem(testWeapon);
             }
 
-            if (Input.GetKeyDown(KeyCode.F3) && testAmmo != null)
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F3) && testAmmo != null)
             {
                 inventorySystem.TryAddItem(testAmmo);
             }
 
-            if (Input.GetKeyDown(KeyCode.F4))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F4))
             {
                 PrintInventoryState();
             }

@@ -11,6 +11,7 @@ namespace TheHunt.Inventory
 
         public bool IsInteractable => itemData != null;
         public string InteractionPrompt => $"{interactionPrompt} {itemData?.ItemName}";
+        public ItemData ItemData => itemData;
 
         public bool CanInteract(GameObject interactor)
         {
