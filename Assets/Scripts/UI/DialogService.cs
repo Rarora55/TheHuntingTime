@@ -12,18 +12,26 @@ namespace TheHunt.UI
         [SerializeField] private SimpleConfirmationDialog simpleDialog;
         
         [Header("Prefab-Based Dialog")]
-        [SerializeField] private GameObject dialogPrefab;
+        [SerializeField] private GameObject confirmationDialogPrefab;
+        [SerializeField] private GameObject infoDialogPrefab;
         
-        private PrefabConfirmationDialog prefabDialogInstance;
+        private PrefabConfirmationDialog confirmationDialogInstance;
+        private InfoDialog infoDialogInstance;
         
         public bool IsDialogOpen
         {
             get
             {
                 if (usePrefab)
-                    return prefabDialogInstance != null && prefabDialogInstance.IsOpen;
+                {
+                    bool confirmationOpen = confirmationDialogInstance != null && confirmationDialogInstance.IsOpen;
+                    bool infoOpen = infoDialogInstance != null && infoDialogInstance.IsOpen;
+                    return confirmationOpen || infoOpen;
+                }
                 else
+                {
                     return simpleDialog != null && simpleDialog.IsOpen;
+                }
             }
         }
         
@@ -31,23 +39,24 @@ namespace TheHunt.UI
         {
             Debug.Log($"<color=yellow>[DIALOG SERVICE] ========== AWAKE ==========</color>");
             Debug.Log($"<color=yellow>[DIALOG SERVICE] usePrefab: {usePrefab}</color>");
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] dialogPrefab: {(dialogPrefab != null ? dialogPrefab.name : "NULL")}</color>");
+            Debug.Log($"<color=yellow>[DIALOG SERVICE] confirmationDialogPrefab: {(confirmationDialogPrefab != null ? confirmationDialogPrefab.name : "NULL")}</color>");
+            Debug.Log($"<color=yellow>[DIALOG SERVICE] infoDialogPrefab: {(infoDialogPrefab != null ? infoDialogPrefab.name : "NULL")}</color>");
             Debug.Log($"<color=yellow>[DIALOG SERVICE] simpleDialog: {(simpleDialog != null ? "assigned" : "NULL")}</color>");
             
             if (usePrefab)
             {
                 Debug.Log("<color=cyan>[DIALOG SERVICE] Using PREFAB mode</color>");
                 
-                if (dialogPrefab != null && prefabDialogInstance == null)
+                if (confirmationDialogPrefab != null && confirmationDialogInstance == null)
                 {
-                    Debug.Log("<color=cyan>[DIALOG SERVICE] Instantiating dialog prefab...</color>");
+                    Debug.Log("<color=cyan>[DIALOG SERVICE] Instantiating confirmation dialog prefab...</color>");
                     
-                    GameObject instance = Instantiate(dialogPrefab, transform);
+                    GameObject instance = Instantiate(confirmationDialogPrefab, transform);
                     Debug.Log($"<color=cyan>[DIALOG SERVICE] Instance created: {instance.name}</color>");
                     
-                    prefabDialogInstance = instance.GetComponent<PrefabConfirmationDialog>();
+                    confirmationDialogInstance = instance.GetComponent<PrefabConfirmationDialog>();
                     
-                    if (prefabDialogInstance == null)
+                    if (confirmationDialogInstance == null)
                     {
                         Debug.LogError("[DIALOG SERVICE] Prefab does not have PrefabConfirmationDialog component!");
                         
@@ -64,13 +73,32 @@ namespace TheHunt.UI
                         Debug.Log("<color=green>[DIALOG SERVICE] Connected to PrefabConfirmationDialog ✓</color>");
                     }
                 }
-                else if (dialogPrefab == null)
+                else if (confirmationDialogPrefab == null)
                 {
-                    Debug.LogError("[DIALOG SERVICE] Dialog Prefab is not assigned!");
+                    Debug.LogWarning("[DIALOG SERVICE] Confirmation Dialog Prefab is not assigned!");
                 }
-                else if (prefabDialogInstance != null)
+                
+                if (infoDialogPrefab != null && infoDialogInstance == null)
                 {
-                    Debug.Log("<color=yellow>[DIALOG SERVICE] Prefab instance already exists</color>");
+                    Debug.Log("<color=cyan>[DIALOG SERVICE] Instantiating info dialog prefab...</color>");
+                    
+                    GameObject instance = Instantiate(infoDialogPrefab, transform);
+                    Debug.Log($"<color=cyan>[DIALOG SERVICE] Instance created: {instance.name}</color>");
+                    
+                    infoDialogInstance = instance.GetComponent<InfoDialog>();
+                    
+                    if (infoDialogInstance == null)
+                    {
+                        Debug.LogError("[DIALOG SERVICE] Prefab does not have InfoDialog component!");
+                    }
+                    else
+                    {
+                        Debug.Log("<color=green>[DIALOG SERVICE] Connected to InfoDialog ✓</color>");
+                    }
+                }
+                else if (infoDialogPrefab == null)
+                {
+                    Debug.LogWarning("[DIALOG SERVICE] Info Dialog Prefab is not assigned!");
                 }
             }
             else
@@ -104,13 +132,13 @@ namespace TheHunt.UI
         {
             if (usePrefab)
             {
-                if (prefabDialogInstance == null)
+                if (confirmationDialogInstance == null)
                 {
-                    Debug.LogError("[DIALOG SERVICE] Prefab dialog instance is null!");
+                    Debug.LogError("[DIALOG SERVICE] Confirmation dialog instance is null!");
                     return;
                 }
                 
-                prefabDialogInstance.Show(title, description, onConfirm, onCancel);
+                confirmationDialogInstance.Show(title, description, onConfirm, onCancel);
             }
             else
             {
@@ -124,11 +152,33 @@ namespace TheHunt.UI
             }
         }
         
+        public void ShowInfo(string title, string message, Action onClose = null)
+        {
+            if (usePrefab)
+            {
+                if (infoDialogInstance == null)
+                {
+                    Debug.LogError("[DIALOG SERVICE] Info dialog instance is null!");
+                    return;
+                }
+                
+                infoDialogInstance.Show(title, message, onClose);
+            }
+            else
+            {
+                Debug.LogWarning("[DIALOG SERVICE] ShowInfo() only works in prefab mode. Please set usePrefab = true.");
+            }
+        }
+        
         public void HideDialog()
         {
-            if (usePrefab && prefabDialogInstance != null)
+            if (usePrefab)
             {
-                prefabDialogInstance.Hide();
+                if (confirmationDialogInstance != null)
+                    confirmationDialogInstance.Hide();
+                
+                if (infoDialogInstance != null)
+                    infoDialogInstance.Hide();
             }
             else if (!usePrefab && simpleDialog != null)
             {
@@ -138,9 +188,16 @@ namespace TheHunt.UI
         
         public void OnNavigate(float direction)
         {
-            if (usePrefab && prefabDialogInstance != null && prefabDialogInstance.IsOpen)
+            if (usePrefab)
             {
-                prefabDialogInstance.OnNavigate(direction);
+                if (confirmationDialogInstance != null && confirmationDialogInstance.IsOpen)
+                {
+                    confirmationDialogInstance.OnNavigate(direction);
+                }
+                else if (infoDialogInstance != null && infoDialogInstance.IsOpen)
+                {
+                    // Info dialogs don't have navigation
+                }
             }
             else if (!usePrefab && simpleDialog != null && simpleDialog.IsOpen)
             {
@@ -150,9 +207,16 @@ namespace TheHunt.UI
         
         public void OnConfirmInput()
         {
-            if (usePrefab && prefabDialogInstance != null && prefabDialogInstance.IsOpen)
+            if (usePrefab)
             {
-                prefabDialogInstance.OnConfirmInput();
+                if (confirmationDialogInstance != null && confirmationDialogInstance.IsOpen)
+                {
+                    confirmationDialogInstance.OnConfirmInput();
+                }
+                else if (infoDialogInstance != null && infoDialogInstance.IsOpen)
+                {
+                    infoDialogInstance.OnConfirmInput();
+                }
             }
             else if (!usePrefab && simpleDialog != null && simpleDialog.IsOpen)
             {
@@ -162,9 +226,16 @@ namespace TheHunt.UI
         
         public void OnCancelInput()
         {
-            if (usePrefab && prefabDialogInstance != null && prefabDialogInstance.IsOpen)
+            if (usePrefab)
             {
-                prefabDialogInstance.OnCancelInput();
+                if (confirmationDialogInstance != null && confirmationDialogInstance.IsOpen)
+                {
+                    confirmationDialogInstance.OnCancelInput();
+                }
+                else if (infoDialogInstance != null && infoDialogInstance.IsOpen)
+                {
+                    infoDialogInstance.OnCancelInput();
+                }
             }
             else if (!usePrefab && simpleDialog != null && simpleDialog.IsOpen)
             {

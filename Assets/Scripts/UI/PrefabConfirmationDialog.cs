@@ -69,13 +69,13 @@ namespace TheHunt.UI
             
             if (direction < -0.5f)
             {
-                Debug.Log($"<color=magenta>[PREFAB DIALOG] Direction < -0.5 (A/Left), selecting NO</color>");
-                SelectNo();
+                Debug.Log($"<color=magenta>[PREFAB DIALOG] Direction < -0.5 (A/Left), selecting YES (left button)</color>");
+                SelectYes();
             }
             else if (direction > 0.5f)
             {
-                Debug.Log($"<color=magenta>[PREFAB DIALOG] Direction > 0.5 (D/Right), selecting YES</color>");
-                SelectYes();
+                Debug.Log($"<color=magenta>[PREFAB DIALOG] Direction > 0.5 (D/Right), selecting NO (right button)</color>");
+                SelectNo();
             }
         }
         
