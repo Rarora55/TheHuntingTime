@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace TheHunt.Interaction
 {
+    [System.Obsolete("LockedDoorInteractable is obsolete. Use LockedDoorInteraction (ConditionalInteraction-based) instead.", true)]
     [RequireComponent(typeof(Collider2D))]
     public class LockedDoorInteractable : InteractableObject
     {

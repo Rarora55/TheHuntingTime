@@ -16,6 +16,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
+    
+    [Header("Dependencies")]
+    [SerializeField] private InputContextManager inputContextManager;
 
     private PlayerInteractionController interactionController;
     private ConfirmableInteraction confirmableInteraction;
@@ -25,6 +28,11 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void Awake()
     {
+        if (inputContextManager == null)
+        {
+            inputContextManager = FindFirstObjectByType<InputContextManager>();
+        }
+        
         interactionController = GetComponent<PlayerInteractionController>();
         confirmableInteraction = GetComponent<ConfirmableInteraction>();
         simpleConfirmableInteraction = GetComponent<SimpleConfirmableInteraction>();
@@ -39,8 +47,8 @@ public class PlayerInputHandler : MonoBehaviour
     
     private bool IsDialogOpen()
     {
-        return InputContextManager.Instance != null && 
-               InputContextManager.Instance.IsInContext(InputContext.Dialog);
+        return inputContextManager != null && 
+               inputContextManager.IsInContext(InputContext.Dialog);
     }
 
     public void OnMoveInput(InputAction.CallbackContext context)

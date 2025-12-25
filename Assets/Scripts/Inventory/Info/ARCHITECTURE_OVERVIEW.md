@@ -15,15 +15,13 @@ Player (GameObject)
 │  ├─ API: AddAmmo, RemoveAmmo, GetAmmoCount, HasAmmo
 │  └─ Eventos: OnAmmoChanged, OnAmmoAdded, OnAmmoRemoved, OnAmmoEmpty
 │
-├─ WeaponInventoryManager
-│  ├─ Responsabilidad: Gestión de equipamiento de armas
-│  ├─ API: EquipWeapon, UnequipWeapon, SwapWeapons, GetEquippedWeapon
-│  └─ Eventos: OnWeaponEquipped, OnWeaponUnequipped, OnWeaponsSwapped
-│
-└─ KeyInventoryManager
-   ├─ Responsabilidad: Gestión de llaves y objetos clave
-   ├─ API: HasKeyItem, ConsumeKeyItem, GetKeyData, GetKeyCount
-   └─ Eventos: OnKeyFound, OnKeyConsumed
+└─ WeaponInventoryManager
+   ├─ Responsabilidad: Gestión de equipamiento de armas
+   ├─ API: EquipWeapon, UnequipWeapon, SwapWeapons, GetEquippedWeapon
+   └─ Eventos: OnWeaponEquipped, OnWeaponUnequipped, OnWeaponsSwapped
+
+NOTA: KeyInventoryManager está OBSOLETO. 
+      Usar InventorySystem.HasItem() y RemoveItem() directamente.
 ```
 
 ## Flujo de Datos
@@ -99,11 +97,12 @@ Play Locked Sound               OnKeyConsumed Event
 | **InventorySystem** | Items generales, slots, selección | ~200 |
 | **AmmoInventoryManager** | Munición por tipo, cantidades | ~100 |
 | **WeaponInventoryManager** | Equipar/desequipar armas | ~120 |
-| **KeyInventoryManager** | Llaves y objetos clave | ~90 |
+| ~~**KeyInventoryManager**~~ | ~~Llaves y objetos clave~~ | ~~OBSOLETO~~ |
 
 **Antes**: Un solo `InventorySystem` con ~500 líneas mezclando todo
 
-**Ahora**: 4 managers especializados, cada uno con responsabilidad única
+**Ahora**: 3 managers especializados, cada uno con responsabilidad única
+(KeyInventoryManager eliminado - funcionalidad integrada en InventorySystem)
 
 ## Ventajas del Diseño Actual
 

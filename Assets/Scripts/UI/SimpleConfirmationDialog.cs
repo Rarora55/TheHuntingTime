@@ -9,6 +9,9 @@ namespace TheHunt.UI
 {
     public class SimpleConfirmationDialog : MonoBehaviour
     {
+        [Header("Dependencies")]
+        [SerializeField] private InputContextManager inputContextManager;
+        
         private Canvas canvas;
         private GameObject panel;
         private TextMeshProUGUI titleText;
@@ -26,6 +29,11 @@ namespace TheHunt.UI
         
         void Awake()
         {
+            if (inputContextManager == null)
+            {
+                inputContextManager = FindFirstObjectByType<InputContextManager>();
+            }
+            
             SetupEventSystem();
             CreateDialog();
             Hide();
@@ -260,7 +268,7 @@ namespace TheHunt.UI
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(yesButton.gameObject);
             
-            InputContextManager.Instance?.PushContext(InputContext.Dialog);
+            inputContextManager?.PushContext(InputContext.Dialog);
             
             Debug.Log($"<color=green>[SIMPLE DIALOG] ========== SHOWN ==========</color>");
             Debug.Log($"<color=green>[SIMPLE DIALOG] Title: {title}</color>");
@@ -279,7 +287,7 @@ namespace TheHunt.UI
                 Debug.Log("<color=yellow>[SIMPLE DIALOG] Hidden</color>");
             }
             
-            InputContextManager.Instance?.PopContext();
+            inputContextManager?.PopContext();
             
             onConfirm = null;
             onCancel = null;

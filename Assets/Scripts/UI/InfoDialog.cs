@@ -14,6 +14,9 @@ namespace TheHunt.UI
         [SerializeField] private TextMeshProUGUI messageText;
         [SerializeField] private TextMeshProUGUI closeHintText;
         
+        [Header("Dependencies")]
+        [SerializeField] private InputContextManager inputContextManager;
+        
         private Action onClose;
         private bool isOpen = false;
         
@@ -21,6 +24,11 @@ namespace TheHunt.UI
         
         void Awake()
         {
+            if (inputContextManager == null)
+            {
+                inputContextManager = FindFirstObjectByType<InputContextManager>();
+            }
+            
             Debug.Log("<color=yellow>[INFO DIALOG] Awake</color>");
             Hide();
         }
@@ -54,7 +62,7 @@ namespace TheHunt.UI
             
             isOpen = true;
             
-            InputContextManager.Instance?.PushContext(InputContext.Dialog);
+            inputContextManager?.PushContext(InputContext.Dialog);
             
             Debug.Log($"<color=green>[INFO DIALOG] ========== SHOWN ==========</color>");
             Debug.Log($"<color=green>[INFO DIALOG] Title: {title}</color>");
@@ -70,10 +78,10 @@ namespace TheHunt.UI
             
             isOpen = false;
             
-            if (InputContextManager.Instance != null && 
-                InputContextManager.Instance.IsInContext(InputContext.Dialog))
+            if (inputContextManager != null && 
+                inputContextManager.IsInContext(InputContext.Dialog))
             {
-                InputContextManager.Instance.PopContext();
+                inputContextManager.PopContext();
             }
             
             onClose?.Invoke();

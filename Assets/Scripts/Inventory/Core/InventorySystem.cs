@@ -105,6 +105,70 @@ namespace TheHunt.Inventory
 
             OnItemRemoved?.Invoke(slotIndex, item);
         }
+        
+        public bool HasItem(ItemData itemData)
+        {
+            if (itemData == null)
+                return false;
+            
+            for (int i = 0; i < MAX_SLOTS; i++)
+            {
+                if (items[i] != null && items[i].itemData == itemData)
+                {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        public int GetItemCount(ItemData itemData)
+        {
+            if (itemData == null)
+                return 0;
+            
+            int count = 0;
+            for (int i = 0; i < MAX_SLOTS; i++)
+            {
+                if (items[i] != null && items[i].itemData == itemData)
+                {
+                    count += items[i].quantity;
+                }
+            }
+            
+            return count;
+        }
+        
+        public bool RemoveItem(ItemData itemData, int quantity = 1)
+        {
+            if (itemData == null || quantity <= 0)
+                return false;
+            
+            int remaining = quantity;
+            
+            for (int i = 0; i < MAX_SLOTS && remaining > 0; i++)
+            {
+                if (items[i] != null && items[i].itemData == itemData)
+                {
+                    int toRemove = Mathf.Min(remaining, items[i].quantity);
+                    RemoveItem(i, toRemove);
+                    remaining -= toRemove;
+                }
+            }
+            
+            bool success = remaining == 0;
+            
+            if (success)
+            {
+                Debug.Log($"<color=green>[INVENTORY] Successfully removed {quantity} {itemData.ItemName}</color>");
+            }
+            else
+            {
+                Debug.LogWarning($"<color=yellow>[INVENTORY] Could not remove {quantity} {itemData.ItemName}, only had {quantity - remaining}</color>");
+            }
+            
+            return success;
+        }
 
         public void UseCurrentItem()
         {
@@ -248,7 +312,15 @@ namespace TheHunt.Inventory
                 return;
             }
 
-            Debug.Log($"<color=cyan>[EXAMINE] {CurrentItem.itemData.ItemName}\n{CurrentItem.itemData.ExaminationText}</color>");
+            ItemExaminationPanel examinationPanel = FindFirstObjectByType<ItemExaminationPanel>();
+            if (examinationPanel != null)
+            {
+                examinationPanel.ShowItem(CurrentItem.itemData);
+            }
+            else
+            {
+                Debug.Log($"<color=cyan>[EXAMINE] {CurrentItem.itemData.ItemName}\n{CurrentItem.itemData.ExaminationText}</color>");
+            }
         }
 
         public void SelectNext()

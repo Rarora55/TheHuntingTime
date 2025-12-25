@@ -14,24 +14,12 @@ namespace TheHunt.Input
 
     public class InputContextManager : MonoBehaviour
     {
-        private static InputContextManager instance;
-        public static InputContextManager Instance => instance;
-        
         private Stack<InputContext> contextStack = new Stack<InputContext>();
         
         public InputContext CurrentContext => contextStack.Count > 0 ? contextStack.Peek() : InputContext.Gameplay;
         
         void Awake()
         {
-            if (instance != null && instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-            
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-            
             PushContext(InputContext.Gameplay);
             Debug.Log("<color=green>[INPUT CONTEXT] ✓ Initialized with Gameplay context</color>");
         }

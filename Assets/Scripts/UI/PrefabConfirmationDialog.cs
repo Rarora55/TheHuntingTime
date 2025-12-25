@@ -16,6 +16,9 @@ namespace TheHunt.UI
         [SerializeField] private Button yesButton;
         [SerializeField] private Button noButton;
         
+        [Header("Dependencies")]
+        [SerializeField] private InputContextManager inputContextManager;
+        
         private Action onConfirm;
         private Action onCancel;
         private int manualSelection = 0;
@@ -24,6 +27,11 @@ namespace TheHunt.UI
         
         void Awake()
         {
+            if (inputContextManager == null)
+            {
+                inputContextManager = FindFirstObjectByType<InputContextManager>();
+            }
+            
             Debug.Log($"<color=yellow>[PREFAB DIALOG] ========== AWAKE ==========</color>");
             Debug.Log($"<color=yellow>[PREFAB DIALOG] panel: {(panel != null ? panel.name : "NULL")}</color>");
             Debug.Log($"<color=yellow>[PREFAB DIALOG] titleText: {(titleText != null ? "OK" : "NULL")}</color>");
@@ -172,7 +180,7 @@ namespace TheHunt.UI
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(yesButton.gameObject);
             
-            InputContextManager.Instance?.PushContext(InputContext.Dialog);
+            inputContextManager?.PushContext(InputContext.Dialog);
             
             Debug.Log($"<color=green>[PREFAB DIALOG] ========== SHOWN ==========</color>");
             Debug.Log($"<color=green>[PREFAB DIALOG] Title: {title}</color>");
@@ -188,7 +196,7 @@ namespace TheHunt.UI
             if (panel != null)
                 panel.SetActive(false);
             
-            InputContextManager.Instance?.PopContext();
+            inputContextManager?.PopContext();
             
             onConfirm = null;
             onCancel = null;

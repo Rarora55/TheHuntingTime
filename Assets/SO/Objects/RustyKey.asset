@@ -14,15 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.KeyItemData
   itemName: Rusty Key
   itemID: 3a811731-58ca-4948-b733-8956580e11e8
-  description: 'An old Rusty Key '
+  description: 'An old rusty key. Looks like it belongs to...
+
+'
   itemIcon: {fileID: 1694913177206695654, guid: ea716d2c305dfb94aac6bb329d7df8b2, type: 3}
   itemDetailImage: {fileID: 0}
   pickupPrefab: {fileID: 8157603312307409887, guid: c079f4e729838384aaa5ccd840dafe98, type: 3}
   itemType: 3
   stackable: 0
   canBeExamined: 1
-  examinationText: 
-  examinationImage: {fileID: 0}
+  examinationText: The key is weathered and covered in rust...
+  examinationImage: {fileID: 1694913177206695654, guid: ea716d2c305dfb94aac6bb329d7df8b2, type: 3}
   canBeCombined: 0
   combinationHint: 
   unlocks:

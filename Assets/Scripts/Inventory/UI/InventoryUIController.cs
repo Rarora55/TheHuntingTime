@@ -10,6 +10,7 @@ namespace TheHunt.Inventory
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private WeaponInventoryManager weaponManager;
         [SerializeField] private CombinationManager combinationManager;
+        [SerializeField] private ItemExaminationPanel examinationPanel;
 
         [Header("State")]
         private InventoryState currentState = InventoryState.Closed;
@@ -40,6 +41,9 @@ namespace TheHunt.Inventory
 
             if (combinationManager == null)
                 combinationManager = GetComponent<CombinationManager>();
+
+            if (examinationPanel == null)
+                examinationPanel = FindFirstObjectByType<ItemExaminationPanel>();
         }
 
         public void ToggleInventory()
@@ -112,6 +116,12 @@ namespace TheHunt.Inventory
 
         public void CancelCurrentAction()
         {
+            if (examinationPanel != null && examinationPanel.IsVisible)
+            {
+                examinationPanel.Hide();
+                return;
+            }
+
             if (isCombineMode)
             {
                 CancelCombineMode();
@@ -235,6 +245,7 @@ namespace TheHunt.Inventory
 
                 case ItemContextAction.Examine:
                     inventorySystem.ExamineCurrentItem();
+                    CloseContextMenu();
                     break;
 
                 case ItemContextAction.Drop:

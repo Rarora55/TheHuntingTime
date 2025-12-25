@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace TheHunt.Inventory
 {
+    [System.Obsolete("KeyInventoryManager is obsolete. Use InventorySystem.HasItem() and InventorySystem.RemoveItem() directly instead.", true)]
     public class KeyInventoryManager : MonoBehaviour
     {
         private InventorySystem inventorySystem;
