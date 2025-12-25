@@ -9,7 +9,14 @@ namespace TheHunt.Interaction
         [SerializeField] private string messageTitle = "Information";
         [SerializeField] [TextArea(3, 10)] private string messageText = "This is an informative message.";
         
+        [Header("Interaction Settings")]
+        [SerializeField] private string interactionPrompt = "Read";
+        [SerializeField] private bool isInteractable = true;
+        
         private DialogService dialogService;
+        
+        public string InteractionPrompt => interactionPrompt;
+        public bool IsInteractable => isInteractable;
         
         void Start()
         {
@@ -21,18 +28,21 @@ namespace TheHunt.Interaction
             }
         }
         
+        public bool CanInteract(GameObject interactor)
+        {
+            return isInteractable && dialogService != null;
+        }
+        
         public void Interact(GameObject interactor)
         {
-            Debug.Log($"<color=cyan>[INFO INTERACTION] Showing info: {messageTitle}</color>");
+            if (!CanInteract(interactor))
+            {
+                Debug.LogWarning("[INFO INTERACTION] Cannot interact - conditions not met");
+                return;
+            }
             
-            if (dialogService != null)
-            {
-                dialogService.ShowInfo(messageTitle, messageText, OnInfoClosed);
-            }
-            else
-            {
-                Debug.LogError("[INFO INTERACTION] DialogService is null!");
-            }
+            Debug.Log($"<color=cyan>[INFO INTERACTION] Showing info: {messageTitle}</color>");
+            dialogService.ShowInfo(messageTitle, messageText, OnInfoClosed);
         }
         
         private void OnInfoClosed()

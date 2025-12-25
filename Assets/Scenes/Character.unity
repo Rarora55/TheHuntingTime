@@ -1424,7 +1424,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.UI.DialogService
   usePrefab: 1
   simpleDialog: {fileID: 0}
-  dialogPrefab: {fileID: 5520976464368168237, guid: 39752f8f83a351b43aa4b9c7d2ea34fb, type: 3}
+  confirmationDialogPrefab: {fileID: 5520976464368168237, guid: 39752f8f83a351b43aa4b9c7d2ea34fb, type: 3}
+  infoDialogPrefab: {fileID: 0}
 --- !u!4 &958639254
 Transform:
   m_ObjectHideFlags: 0
