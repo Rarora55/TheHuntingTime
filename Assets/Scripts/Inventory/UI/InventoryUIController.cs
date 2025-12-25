@@ -6,11 +6,17 @@ namespace TheHunt.Inventory
 {
     public class InventoryUIController : MonoBehaviour
     {
+        [Header("UI Prefab")]
+        [SerializeField] private GameObject inventoryCanvasPrefab;
+        
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private WeaponInventoryManager weaponManager;
         [SerializeField] private CombinationManager combinationManager;
-        [SerializeField] private ItemExaminationPanel examinationPanel;
+
+        [Header("Runtime UI References")]
+        private GameObject canvasInstance;
+        private ItemExaminationPanel examinationPanel;
 
         [Header("State")]
         private InventoryState currentState = InventoryState.Closed;
@@ -33,6 +39,17 @@ namespace TheHunt.Inventory
 
         private void Awake()
         {
+            if (inventoryCanvasPrefab != null && canvasInstance == null)
+            {
+                canvasInstance = Instantiate(inventoryCanvasPrefab);
+                canvasInstance.name = "InventoryCanvas (Runtime)";
+                
+                examinationPanel = canvasInstance.GetComponentInChildren<ItemExaminationPanel>(true);
+                
+                if (examinationPanel == null)
+                    Debug.LogWarning("[INVENTORY UI] ItemExaminationPanel not found in prefab!");
+            }
+            
             if (inventorySystem == null)
                 inventorySystem = GetComponent<InventorySystem>();
 
@@ -44,6 +61,14 @@ namespace TheHunt.Inventory
 
             if (examinationPanel == null)
                 examinationPanel = FindFirstObjectByType<ItemExaminationPanel>();
+        }
+        
+        private void OnDestroy()
+        {
+            if (canvasInstance != null)
+            {
+                Destroy(canvasInstance);
+            }
         }
 
         public void ToggleInventory()

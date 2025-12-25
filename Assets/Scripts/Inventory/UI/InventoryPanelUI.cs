@@ -31,10 +31,22 @@ namespace TheHunt.Inventory
         private void Awake()
         {
             if (inventorySystem == null)
-                inventorySystem = GetComponent<InventorySystem>();
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    inventorySystem = player.GetComponent<InventorySystem>();
+                }
+            }
 
             if (uiController == null)
-                uiController = GetComponent<InventoryUIController>();
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    uiController = player.GetComponent<InventoryUIController>();
+                }
+            }
 
             if (canvasGroup == null)
                 canvasGroup = GetComponent<CanvasGroup>();

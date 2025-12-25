@@ -7,12 +7,13 @@ namespace TheHunt.Inventory
     {
         private const int EQUIPMENT_SLOTS = 2;
 
+        [Header("Data Reference")]
+        [SerializeField] private InventoryDataSO inventoryData;
+        
         private InventorySystem inventorySystem;
-        private WeaponItemData primaryWeapon;
-        private WeaponItemData secondaryWeapon;
 
-        public WeaponItemData PrimaryWeapon => primaryWeapon;
-        public WeaponItemData SecondaryWeapon => secondaryWeapon;
+        public WeaponItemData PrimaryWeapon => inventoryData != null ? inventoryData.PrimaryWeapon : null;
+        public WeaponItemData SecondaryWeapon => inventoryData != null ? inventoryData.SecondaryWeapon : null;
 
         public event Action<EquipSlot, WeaponItemData> OnWeaponEquipped;
         public event Action<EquipSlot> OnWeaponUnequipped;
@@ -26,11 +27,16 @@ namespace TheHunt.Inventory
             {
                 Debug.LogError("<color=red>[WEAPON MANAGER] InventorySystem component not found!</color>");
             }
+            
+            if (inventoryData == null)
+            {
+                Debug.LogError("<color=red>[WEAPON MANAGER] InventoryDataSO reference is missing! Please assign it in the Inspector.</color>");
+            }
         }
 
         public void EquipWeapon(WeaponItemData weapon, EquipSlot slot)
         {
-            if (weapon == null)
+            if (weapon == null || inventoryData == null)
                 return;
 
             if (inventorySystem == null)
@@ -47,17 +53,17 @@ namespace TheHunt.Inventory
 
             if (slot == EquipSlot.Primary)
             {
-                if (primaryWeapon != null)
+                if (inventoryData.PrimaryWeapon != null)
                     UnequipWeapon(EquipSlot.Primary);
 
-                primaryWeapon = weapon;
+                inventoryData.PrimaryWeapon = weapon;
             }
             else
             {
-                if (secondaryWeapon != null)
+                if (inventoryData.SecondaryWeapon != null)
                     UnequipWeapon(EquipSlot.Secondary);
 
-                secondaryWeapon = weapon;
+                inventoryData.SecondaryWeapon = weapon;
             }
 
             weapon.Equip(gameObject);
@@ -68,7 +74,10 @@ namespace TheHunt.Inventory
 
         public void UnequipWeapon(EquipSlot slot)
         {
-            WeaponItemData weapon = slot == EquipSlot.Primary ? primaryWeapon : secondaryWeapon;
+            if (inventoryData == null)
+                return;
+                
+            WeaponItemData weapon = slot == EquipSlot.Primary ? inventoryData.PrimaryWeapon : inventoryData.SecondaryWeapon;
 
             if (weapon == null)
                 return;
@@ -76,9 +85,9 @@ namespace TheHunt.Inventory
             weapon.Unequip(gameObject);
 
             if (slot == EquipSlot.Primary)
-                primaryWeapon = null;
+                inventoryData.PrimaryWeapon = null;
             else
-                secondaryWeapon = null;
+                inventoryData.SecondaryWeapon = null;
 
             OnWeaponUnequipped?.Invoke(slot);
             
@@ -87,14 +96,17 @@ namespace TheHunt.Inventory
 
         public void SwapWeapons()
         {
-            WeaponItemData temp = primaryWeapon;
-            primaryWeapon = secondaryWeapon;
-            secondaryWeapon = temp;
+            if (inventoryData == null)
+                return;
+                
+            WeaponItemData temp = inventoryData.PrimaryWeapon;
+            inventoryData.PrimaryWeapon = inventoryData.SecondaryWeapon;
+            inventoryData.SecondaryWeapon = temp;
 
-            if (primaryWeapon != null)
-                OnWeaponEquipped?.Invoke(EquipSlot.Primary, primaryWeapon);
-            if (secondaryWeapon != null)
-                OnWeaponEquipped?.Invoke(EquipSlot.Secondary, secondaryWeapon);
+            if (inventoryData.PrimaryWeapon != null)
+                OnWeaponEquipped?.Invoke(EquipSlot.Primary, inventoryData.PrimaryWeapon);
+            if (inventoryData.SecondaryWeapon != null)
+                OnWeaponEquipped?.Invoke(EquipSlot.Secondary, inventoryData.SecondaryWeapon);
 
             OnWeaponsSwapped?.Invoke();
             
@@ -103,7 +115,10 @@ namespace TheHunt.Inventory
 
         public WeaponItemData GetEquippedWeapon(EquipSlot slot)
         {
-            return slot == EquipSlot.Primary ? primaryWeapon : secondaryWeapon;
+            if (inventoryData == null)
+                return null;
+                
+            return slot == EquipSlot.Primary ? inventoryData.PrimaryWeapon : inventoryData.SecondaryWeapon;
         }
 
         public bool HasWeaponEquipped(EquipSlot slot)
@@ -113,17 +128,20 @@ namespace TheHunt.Inventory
 
         public bool IsWeaponEquipped(WeaponItemData weapon)
         {
-            return weapon != null && (primaryWeapon == weapon || secondaryWeapon == weapon);
+            if (weapon == null || inventoryData == null)
+                return false;
+                
+            return inventoryData.PrimaryWeapon == weapon || inventoryData.SecondaryWeapon == weapon;
         }
 
         public EquipSlot? GetWeaponSlot(WeaponItemData weapon)
         {
-            if (weapon == null)
+            if (weapon == null || inventoryData == null)
                 return null;
 
-            if (primaryWeapon == weapon)
+            if (inventoryData.PrimaryWeapon == weapon)
                 return EquipSlot.Primary;
-            if (secondaryWeapon == weapon)
+            if (inventoryData.SecondaryWeapon == weapon)
                 return EquipSlot.Secondary;
 
             return null;

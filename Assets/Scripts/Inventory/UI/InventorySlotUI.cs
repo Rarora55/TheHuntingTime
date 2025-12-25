@@ -32,7 +32,7 @@ namespace TheHunt.Inventory
 
         public void UpdateSlot(ItemInstance item)
         {
-            if (item == null)
+            if (item == null || item.itemData == null)
             {
                 ClearSlot();
                 return;

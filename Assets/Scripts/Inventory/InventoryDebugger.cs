@@ -269,7 +269,7 @@ namespace TheHunt.Inventory
 
             GUILayout.Space(10);
             GUILayout.Label("--- Current Item ---");
-            if (inventorySystem.CurrentItem != null)
+            if (inventorySystem.CurrentItem != null && inventorySystem.CurrentItem.itemData != null)
             {
                 GUILayout.Label($"Name: {inventorySystem.CurrentItem.DisplayName}");
                 GUILayout.Label($"Type: {inventorySystem.CurrentItem.itemData.ItemType}");

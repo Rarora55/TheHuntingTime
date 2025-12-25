@@ -9,17 +9,19 @@ namespace TheHunt.Inventory
         public const int MAX_SLOTS = 6;
         public const int MAX_STACK_SIZE = 6;
 
-        private ItemInstance[] items = new ItemInstance[MAX_SLOTS];
-        private int selectedIndex = 0;
+        [Header("Data Reference")]
+        [SerializeField] private InventoryDataSO inventoryData;
 
         private AmmoInventoryManager ammoManager;
         private WeaponInventoryManager weaponManager;
 
-        public ItemInstance CurrentItem => selectedIndex >= 0 && selectedIndex < MAX_SLOTS ? items[selectedIndex] : null;
+        public ItemInstance CurrentItem => inventoryData != null && inventoryData.SelectedIndex >= 0 && inventoryData.SelectedIndex < MAX_SLOTS 
+            ? inventoryData.GetItem(inventoryData.SelectedIndex) 
+            : null;
         public bool IsFull => FindEmptySlot() == -1;
         public bool HasSpace => !IsFull;
-        public int SelectedSlot => selectedIndex;
-        public ItemInstance[] Items => items;
+        public int SelectedSlot => inventoryData != null ? inventoryData.SelectedIndex : 0;
+        public ItemInstance[] Items => inventoryData != null ? inventoryData.Items : new ItemInstance[MAX_SLOTS];
 
         public event Action<int, ItemInstance> OnItemAdded;
         public event Action<int, ItemInstance> OnItemRemoved;
@@ -31,6 +33,11 @@ namespace TheHunt.Inventory
         {
             ammoManager = GetComponent<AmmoInventoryManager>();
             weaponManager = GetComponent<WeaponInventoryManager>();
+            
+            if (inventoryData == null)
+            {
+                Debug.LogError("<color=red>[INVENTORY] InventoryDataSO reference is missing! Please assign it in the Inspector.</color>");
+            }
         }
 
         public bool TryAddItem(ItemData itemData)
@@ -38,6 +45,12 @@ namespace TheHunt.Inventory
             if (itemData == null)
             {
                 Debug.LogWarning("[INVENTORY] Cannot add null item");
+                return false;
+            }
+            
+            if (inventoryData == null)
+            {
+                Debug.LogError("[INVENTORY] InventoryDataSO is not assigned!");
                 return false;
             }
 
@@ -58,13 +71,15 @@ namespace TheHunt.Inventory
             {
                 for (int i = 0; i < MAX_SLOTS; i++)
                 {
-                    if (items[i] != null &&
-                        items[i].itemData == itemData &&
-                        items[i].quantity < MAX_STACK_SIZE)
+                    ItemInstance item = inventoryData.GetItem(i);
+                    if (item != null &&
+                        item.itemData == itemData &&
+                        item.quantity < MAX_STACK_SIZE)
                     {
-                        items[i].quantity++;
-                        OnItemAdded?.Invoke(i, items[i]);
-                        Debug.Log($"<color=green>[INVENTORY] Stacked {itemData.ItemName}. Total: {items[i].quantity}</color>");
+                        item.quantity++;
+                        inventoryData.SetItem(i, item);
+                        OnItemAdded?.Invoke(i, item);
+                        Debug.Log($"<color=green>[INVENTORY] Stacked {itemData.ItemName}. Total: {item.quantity}</color>");
                         return true;
                     }
                 }
@@ -78,8 +93,9 @@ namespace TheHunt.Inventory
                 return false;
             }
 
-            items[emptySlot] = new ItemInstance(itemData, 1);
-            OnItemAdded?.Invoke(emptySlot, items[emptySlot]);
+            ItemInstance newItem = new ItemInstance(itemData, 1);
+            inventoryData.SetItem(emptySlot, newItem);
+            OnItemAdded?.Invoke(emptySlot, newItem);
             Debug.Log($"<color=green>[INVENTORY] Added {itemData.ItemName} to slot {emptySlot}</color>");
 
             return true;
@@ -87,19 +103,26 @@ namespace TheHunt.Inventory
 
         public void RemoveItem(int slotIndex, int quantity = 1)
         {
-            if (slotIndex < 0 || slotIndex >= MAX_SLOTS || items[slotIndex] == null)
+            if (inventoryData == null)
+                return;
+                
+            if (slotIndex < 0 || slotIndex >= MAX_SLOTS)
+                return;
+                
+            ItemInstance item = inventoryData.GetItem(slotIndex);
+            if (item == null || item.itemData == null)
                 return;
 
-            ItemInstance item = items[slotIndex];
             item.quantity -= quantity;
 
             if (item.quantity <= 0)
             {
-                items[slotIndex] = null;
+                inventoryData.SetItem(slotIndex, null);
                 Debug.Log($"<color=orange>[INVENTORY] Removed {item.itemData.ItemName} completely from slot {slotIndex}</color>");
             }
             else
             {
+                inventoryData.SetItem(slotIndex, item);
                 Debug.Log($"<color=orange>[INVENTORY] Removed {quantity} {item.itemData.ItemName}. Remaining: {item.quantity}</color>");
             }
 
@@ -108,12 +131,13 @@ namespace TheHunt.Inventory
         
         public bool HasItem(ItemData itemData)
         {
-            if (itemData == null)
+            if (itemData == null || inventoryData == null)
                 return false;
             
             for (int i = 0; i < MAX_SLOTS; i++)
             {
-                if (items[i] != null && items[i].itemData == itemData)
+                ItemInstance item = inventoryData.GetItem(i);
+                if (item != null && item.itemData == itemData)
                 {
                     return true;
                 }
@@ -124,15 +148,16 @@ namespace TheHunt.Inventory
         
         public int GetItemCount(ItemData itemData)
         {
-            if (itemData == null)
+            if (itemData == null || inventoryData == null)
                 return 0;
             
             int count = 0;
             for (int i = 0; i < MAX_SLOTS; i++)
             {
-                if (items[i] != null && items[i].itemData == itemData)
+                ItemInstance item = inventoryData.GetItem(i);
+                if (item != null && item.itemData == itemData)
                 {
-                    count += items[i].quantity;
+                    count += item.quantity;
                 }
             }
             
@@ -141,16 +166,17 @@ namespace TheHunt.Inventory
         
         public bool RemoveItem(ItemData itemData, int quantity = 1)
         {
-            if (itemData == null || quantity <= 0)
+            if (itemData == null || quantity <= 0 || inventoryData == null)
                 return false;
             
             int remaining = quantity;
             
             for (int i = 0; i < MAX_SLOTS && remaining > 0; i++)
             {
-                if (items[i] != null && items[i].itemData == itemData)
+                ItemInstance item = inventoryData.GetItem(i);
+                if (item != null && item.itemData == itemData)
                 {
-                    int toRemove = Mathf.Min(remaining, items[i].quantity);
+                    int toRemove = Mathf.Min(remaining, item.quantity);
                     RemoveItem(i, toRemove);
                     remaining -= toRemove;
                 }
@@ -191,7 +217,7 @@ namespace TheHunt.Inventory
 
                 if (usable.RemoveOnUse)
                 {
-                    RemoveItem(selectedIndex, 1);
+                    RemoveItem(inventoryData.SelectedIndex, 1);
                 }
             }
             else
@@ -209,7 +235,7 @@ namespace TheHunt.Inventory
             
             Debug.Log($"<color=cyan>[INVENTORY] Dropped {droppedItemData.ItemName}</color>");
             
-            RemoveItem(selectedIndex, 1);
+            RemoveItem(inventoryData.SelectedIndex, 1);
             
             if (droppedItemData.PickupPrefab != null)
             {
@@ -325,37 +351,47 @@ namespace TheHunt.Inventory
 
         public void SelectNext()
         {
-            int oldIndex = selectedIndex;
-            selectedIndex = (selectedIndex + 1) % MAX_SLOTS;
-            OnSelectionChanged?.Invoke(oldIndex, selectedIndex);
-            Debug.Log($"<color=cyan>[INVENTORY] Selected slot {selectedIndex}</color>");
+            if (inventoryData == null)
+                return;
+                
+            int oldIndex = inventoryData.SelectedIndex;
+            inventoryData.SelectedIndex = (inventoryData.SelectedIndex + 1) % MAX_SLOTS;
+            OnSelectionChanged?.Invoke(oldIndex, inventoryData.SelectedIndex);
+            Debug.Log($"<color=cyan>[INVENTORY] Selected slot {inventoryData.SelectedIndex}</color>");
         }
 
         public void SelectPrevious()
         {
-            int oldIndex = selectedIndex;
-            selectedIndex--;
-            if (selectedIndex < 0)
-                selectedIndex = MAX_SLOTS - 1;
-            OnSelectionChanged?.Invoke(oldIndex, selectedIndex);
-            Debug.Log($"<color=cyan>[INVENTORY] Selected slot {selectedIndex}</color>");
+            if (inventoryData == null)
+                return;
+                
+            int oldIndex = inventoryData.SelectedIndex;
+            inventoryData.SelectedIndex--;
+            if (inventoryData.SelectedIndex < 0)
+                inventoryData.SelectedIndex = MAX_SLOTS - 1;
+            OnSelectionChanged?.Invoke(oldIndex, inventoryData.SelectedIndex);
+            Debug.Log($"<color=cyan>[INVENTORY] Selected slot {inventoryData.SelectedIndex}</color>");
         }
 
         public void SelectSlot(int index)
         {
-            if (index < 0 || index >= MAX_SLOTS)
+            if (index < 0 || index >= MAX_SLOTS || inventoryData == null)
                 return;
 
-            int oldIndex = selectedIndex;
-            selectedIndex = index;
-            OnSelectionChanged?.Invoke(oldIndex, selectedIndex);
+            int oldIndex = inventoryData.SelectedIndex;
+            inventoryData.SelectedIndex = index;
+            OnSelectionChanged?.Invoke(oldIndex, inventoryData.SelectedIndex);
         }
 
         private int FindEmptySlot()
         {
+            if (inventoryData == null)
+                return -1;
+                
             for (int i = 0; i < MAX_SLOTS; i++)
             {
-                if (items[i] == null)
+                ItemInstance item = inventoryData.GetItem(i);
+                if (item == null || item.itemData == null)
                     return i;
             }
             return -1;

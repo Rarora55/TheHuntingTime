@@ -20,12 +20,30 @@ namespace TheHunt.Inventory
         {
             if (weaponManager == null)
             {
-                weaponManager = FindFirstObjectByType<WeaponInventoryManager>();
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    weaponManager = player.GetComponent<WeaponInventoryManager>();
+                }
+                
+                if (weaponManager == null)
+                {
+                    weaponManager = FindFirstObjectByType<WeaponInventoryManager>();
+                }
             }
 
             if (uiController == null)
             {
-                uiController = FindFirstObjectByType<InventoryUIController>();
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    uiController = player.GetComponent<InventoryUIController>();
+                }
+                
+                if (uiController == null)
+                {
+                    uiController = FindFirstObjectByType<InventoryUIController>();
+                }
             }
 
             if (canvasGroup == null)
