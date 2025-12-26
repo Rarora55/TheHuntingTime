@@ -32,6 +32,14 @@ MonoBehaviour:
     quantity: 0
     instanceID: 
   selectedIndex: 0
-  ammoInventory: []
+  ammoInventory:
+  - type: 1
+    amount: 0
+  - type: 2
+    amount: 0
+  - type: 3
+    amount: 0
+  - type: 4
+    amount: 0
   primaryWeapon: {fileID: 0}
   secondaryWeapon: {fileID: 0}

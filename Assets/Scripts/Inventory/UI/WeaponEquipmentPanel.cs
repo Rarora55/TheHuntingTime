@@ -7,6 +7,7 @@ namespace TheHunt.Inventory
         [Header("References")]
         [SerializeField] private WeaponInventoryManager weaponManager;
         [SerializeField] private InventoryUIController uiController;
+        [SerializeField] private PlayerWeaponController playerWeaponController;
 
         [Header("Weapon Slots")]
         [SerializeField] private WeaponSlotUI primarySlot;
@@ -50,6 +51,20 @@ namespace TheHunt.Inventory
             {
                 canvasGroup = GetComponent<CanvasGroup>();
             }
+            
+            if (playerWeaponController == null)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    playerWeaponController = player.GetComponent<PlayerWeaponController>();
+                }
+                
+                if (playerWeaponController == null)
+                {
+                    playerWeaponController = FindFirstObjectByType<PlayerWeaponController>();
+                }
+            }
 
             ValidateSlots();
         }
@@ -62,6 +77,11 @@ namespace TheHunt.Inventory
                 weaponManager.OnWeaponUnequipped += OnWeaponUnequipped;
                 weaponManager.OnWeaponsSwapped += OnWeaponsSwapped;
             }
+            
+            if (playerWeaponController != null)
+            {
+                playerWeaponController.OnAmmoChanged += OnAmmoChanged;
+            }
 
             RefreshAllSlots();
         }
@@ -73,6 +93,11 @@ namespace TheHunt.Inventory
                 weaponManager.OnWeaponEquipped -= OnWeaponEquipped;
                 weaponManager.OnWeaponUnequipped -= OnWeaponUnequipped;
                 weaponManager.OnWeaponsSwapped -= OnWeaponsSwapped;
+            }
+            
+            if (playerWeaponController != null)
+            {
+                playerWeaponController.OnAmmoChanged -= OnAmmoChanged;
             }
         }
 
@@ -127,6 +152,19 @@ namespace TheHunt.Inventory
         private void OnWeaponsSwapped()
         {
             RefreshAllSlots();
+        }
+        
+        private void OnAmmoChanged(int magazine, int reserve)
+        {
+            if (playerWeaponController == null)
+                return;
+                
+            WeaponSlotUI activeSlot = GetSlotUI(playerWeaponController.ActiveWeaponSlot);
+            
+            if (activeSlot != null)
+            {
+                activeSlot.UpdateAmmoDisplay(magazine, reserve);
+            }
         }
 
         public void RefreshAllSlots()

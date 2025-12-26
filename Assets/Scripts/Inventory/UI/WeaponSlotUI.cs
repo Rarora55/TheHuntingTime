@@ -15,6 +15,7 @@ namespace TheHunt.Inventory
         [SerializeField] private Image weaponIcon;
         [SerializeField] private TextMeshProUGUI weaponNameText;
         [SerializeField] private TextMeshProUGUI slotLabel;
+        [SerializeField] private TextMeshProUGUI ammoText;
 
         [Header("Visual States")]
         [SerializeField] private Color emptySlotColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
@@ -24,6 +25,8 @@ namespace TheHunt.Inventory
 
         private WeaponItemData equippedWeapon;
         private bool isSelected;
+        private int magazineAmmo;
+        private int reserveAmmo;
 
         public EquipSlot SlotType => slotType;
         public WeaponItemData EquippedWeapon => equippedWeapon;
@@ -66,7 +69,28 @@ namespace TheHunt.Inventory
 
             UpdateVisualState();
 
+            UpdateAmmoDisplay(0, 0);
+            
             Debug.Log($"<color=green>[WEAPON SLOT UI] {slotType} slot equipped with {weapon.ItemName}</color>");
+        }
+        
+        public void UpdateAmmoDisplay(int magazine, int reserve)
+        {
+            magazineAmmo = magazine;
+            reserveAmmo = reserve;
+            
+            if (ammoText != null && equippedWeapon != null)
+            {
+                if (equippedWeapon.RequiredAmmo == AmmoType.None)
+                {
+                    ammoText.text = "∞";
+                }
+                else
+                {
+                    ammoText.text = $"{magazineAmmo}/{reserveAmmo}";
+                }
+                ammoText.enabled = true;
+            }
         }
 
         public void UnequipWeapon()
@@ -104,6 +128,11 @@ namespace TheHunt.Inventory
             {
                 weaponNameText.text = "Empty";
                 weaponNameText.enabled = true;
+            }
+            
+            if (ammoText != null)
+            {
+                ammoText.enabled = false;
             }
 
             UpdateVisualState();

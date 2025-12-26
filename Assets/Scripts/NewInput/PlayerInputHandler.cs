@@ -13,6 +13,8 @@ public class PlayerInputHandler : MonoBehaviour
     public bool JumpInput { get; private set; }
     public bool RunInput { get; private set; }
     public bool GrabInput { get; private set; }
+    public bool FireInput { get; private set; }
+    public bool ReloadInput { get; private set; }
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
@@ -25,6 +27,7 @@ public class PlayerInputHandler : MonoBehaviour
     private SimpleConfirmableInteraction simpleConfirmableInteraction;
     private InventoryUIController inventoryUIController;
     private DialogService dialogService;
+    private PlayerWeaponController weaponController;
 
     private void Awake()
     {
@@ -38,6 +41,7 @@ public class PlayerInputHandler : MonoBehaviour
         simpleConfirmableInteraction = GetComponent<SimpleConfirmableInteraction>();
         inventoryUIController = GetComponent<InventoryUIController>();
         dialogService = FindFirstObjectByType<DialogService>();
+        weaponController = GetComponent<PlayerWeaponController>();
     }
 
     private void Update()
@@ -215,6 +219,74 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.performed && inventoryUIController != null)
         {
             inventoryUIController.CancelCurrentAction();
+        }
+    }
+    
+    public void OnFireInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+        {
+            FireInput = false;
+            return;
+        }
+        
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            FireInput = false;
+            return;
+        }
+        
+        if (context.started)
+        {
+            FireInput = true;
+            
+            if (weaponController != null)
+            {
+                weaponController.Shoot();
+            }
+        }
+        
+        if (context.canceled)
+        {
+            FireInput = false;
+        }
+    }
+    
+    public void OnReloadInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+            return;
+            
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+            return;
+        
+        if (context.performed)
+        {
+            ReloadInput = true;
+            
+            if (weaponController != null)
+            {
+                weaponController.Reload();
+            }
+        }
+        
+        if (context.canceled)
+        {
+            ReloadInput = false;
+        }
+    }
+    
+    public void OnWeaponSwapInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+            return;
+            
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+            return;
+        
+        if (context.performed && weaponController != null)
+        {
+            weaponController.SwapWeapons();
         }
     }
 

@@ -54,19 +54,6 @@ namespace TheHunt.Inventory
                 return false;
             }
 
-            if (itemData is AmmoItemData ammoData)
-            {
-                if (ammoManager != null)
-                {
-                    ammoManager.AddAmmo(ammoData.AmmoType, ammoData.AmmoAmount);
-                }
-                else
-                {
-                    Debug.LogWarning("<color=yellow>[INVENTORY] AmmoInventoryManager not found!</color>");
-                }
-                return true;
-            }
-
             if (itemData.IsStackable)
             {
                 for (int i = 0; i < MAX_SLOTS; i++)
@@ -194,6 +181,61 @@ namespace TheHunt.Inventory
             }
             
             return success;
+        }
+
+        public int GetAmmoCount(AmmoType ammoType)
+        {
+            if (inventoryData == null || ammoType == AmmoType.None)
+                return 0;
+
+            int totalAmmo = 0;
+
+            for (int i = 0; i < MAX_SLOTS; i++)
+            {
+                ItemInstance item = inventoryData.GetItem(i);
+                if (item != null && item.itemData is AmmoItemData ammoData)
+                {
+                    if (ammoData.AmmoType == ammoType)
+                    {
+                        totalAmmo += item.quantity;
+                    }
+                }
+            }
+
+            return totalAmmo;
+        }
+
+        public bool ConsumeAmmo(AmmoType ammoType, int amount)
+        {
+            if (inventoryData == null || ammoType == AmmoType.None || amount <= 0)
+                return false;
+
+            int totalAvailable = GetAmmoCount(ammoType);
+
+            if (totalAvailable < amount)
+            {
+                Debug.LogWarning($"<color=yellow>[INVENTORY] Not enough {ammoType} ammo. Need: {amount}, Have: {totalAvailable}</color>");
+                return false;
+            }
+
+            int remaining = amount;
+
+            for (int i = 0; i < MAX_SLOTS && remaining > 0; i++)
+            {
+                ItemInstance item = inventoryData.GetItem(i);
+                if (item != null && item.itemData is AmmoItemData ammoData)
+                {
+                    if (ammoData.AmmoType == ammoType)
+                    {
+                        int toRemove = Mathf.Min(remaining, item.quantity);
+                        RemoveItem(i, toRemove);
+                        remaining -= toRemove;
+                    }
+                }
+            }
+
+            Debug.Log($"<color=green>[INVENTORY] Consumed {amount} {ammoType} ammo. Remaining: {GetAmmoCount(ammoType)}</color>");
+            return true;
         }
 
         public void UseCurrentItem()

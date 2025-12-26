@@ -14,7 +14,16 @@ namespace TheHunt.Inventory
 
         public override void Use(GameObject user)
         {
-            Debug.Log($"<color=yellow>[AMMO] Ammo is added automatically when picked up</color>");
+            Debug.Log($"<color=yellow>[AMMO] Cannot use ammo directly. Equip a weapon and press R to reload.</color>");
+        }
+
+        public override bool CanCombineWith(ItemData other)
+        {
+            if (other is AmmoItemData otherAmmo)
+            {
+                return otherAmmo.ammoType == this.ammoType;
+            }
+            return false;
         }
     }
 }

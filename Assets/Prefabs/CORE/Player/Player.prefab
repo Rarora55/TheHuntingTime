@@ -92,6 +92,7 @@ GameObject:
   - component: {fileID: 1571446291458784258}
   - component: {fileID: 5652036909615714610}
   - component: {fileID: 3018417222918289650}
+  - component: {fileID: 3629960329792281479}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -116,6 +117,7 @@ Transform:
   - {fileID: 2270593743713835897}
   - {fileID: 3200110692080600863}
   - {fileID: 4182698685626485290}
+  - {fileID: 7016956183950892249}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4854062045287973134
@@ -441,6 +443,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: e008b11c-d348-41a5-909f-b4fa0328f761
     m_ActionName: 'GamePlay/InventoryCancel[/Keyboard/tab]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1496723754436472679}
+        m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
+        m_MethodName: OnFireInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 26095524-04ca-4182-9c56-fe3944007a3d
+    m_ActionName: 'GamePlay/Fire[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1496723754436472679}
+        m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
+        m_MethodName: OnReloadInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4988f577-0857-4549-a101-5c54fb3da5f1
+    m_ActionName: 'GamePlay/Reload[/Keyboard/r]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: GamePlay
@@ -548,7 +582,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e5c775b80ff2c40ab01786c3cf149b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.InventoryUIController
-  inventoryCanvasPrefab: {fileID: 1373271694992870597, guid: 711fded6e9918d74f9f6a8db819d8ab9, type: 3}
+  inventoryCanvasPrefab: {fileID: 3667727314270157625, guid: 3e526af1fed24744f91df3d4b21bd91e, type: 3}
   inventorySystem: {fileID: 1470770840388276670}
   weaponManager: {fileID: 1343817880564136641}
   combinationManager: {fileID: 7550133035206482901}
@@ -684,10 +718,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e913d463a2a8a6d428b508783a66b72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.UI.DialogService
-  usePrefab: 0
+  usePrefab: 1
   simpleDialog: {fileID: 0}
   confirmationDialogPrefab: {fileID: 5520976464368168237, guid: 39752f8f83a351b43aa4b9c7d2ea34fb, type: 3}
   infoDialogPrefab: {fileID: 5520976464368168237, guid: ba7fe48a383fdb94fb6b504ef7dad5ba, type: 3}
+--- !u!114 &3629960329792281479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4807809795982176028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bf99a7abba60fd4c9f9d941a948af26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
+  weaponManager: {fileID: 1343817880564136641}
+  ammoManager: {fileID: 791752132528335838}
+  activeWeaponSlot: 0
+  firePoint: {fileID: 7016956183950892249}
+  fireRate: 0.5
 --- !u!1 &5889161546552969960
 GameObject:
   m_ObjectHideFlags: 0
@@ -745,6 +796,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.09, y: 0.93, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3936088870857016907}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7188500751167283780
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7016956183950892249}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7016956183950892249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7188500751167283780}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

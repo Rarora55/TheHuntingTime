@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19578acd1fe3e33418349400124276f0, type: 3}
+  m_Name: Revolver
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.WeaponItemData
+  itemName: Revolver
+  itemID: d354384e-cdd9-4c47-aab5-48b86d2c05e9
+  description: 
+  itemIcon: {fileID: -6308850436933624161, guid: 9d1a13d87249d6c42bc930470d0a60a8, type: 3}
+  itemDetailImage: {fileID: -6308850436933624161, guid: 9d1a13d87249d6c42bc930470d0a60a8, type: 3}
+  pickupPrefab: {fileID: 0}
+  itemType: 1
+  stackable: 0
+  canBeExamined: 1
+  examinationText: 
+  examinationImage: {fileID: 0}
+  canBeCombined: 0
+  combinationHint: 
+  damage: 10
+  attackRange: 10
+  attackSpeed: 1
+  weaponType: 0
+  requiredAmmo: 1
+  magazineSize: 12
+  ammoPerShot: 1
+  equipPrefab: {fileID: 0}
+  equipIcon: {fileID: -6308850436933624161, guid: 9d1a13d87249d6c42bc930470d0a60a8, type: 3}
+  equipAnimation: {fileID: 0}
