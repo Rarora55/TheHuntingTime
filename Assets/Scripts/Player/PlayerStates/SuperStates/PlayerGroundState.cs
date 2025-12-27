@@ -13,6 +13,7 @@ public class PlayerGroundState : PlayerState
     private bool JumpInput;
     private bool isTouchingWall;
     private bool GrabInput;
+    private bool AimInput;
 
     public PlayerGroundState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -59,9 +60,13 @@ public class PlayerGroundState : PlayerState
         yInput = player.InputHandler.NormInputY;
         JumpInput = player.InputHandler.JumpInput;
         GrabInput = player.InputHandler.GrabInput;
+        AimInput = player.InputHandler.AimInput;
 
-
-        if (JumpInput && isGrounded)
+        if (AimInput)
+        {
+            stateMachine.ChangeState(player.AimState);
+        }
+        else if (JumpInput && isGrounded)
         {
             player.InputHandler.JumpEnded();
             stateMachine.ChangeState(player.JumpState);

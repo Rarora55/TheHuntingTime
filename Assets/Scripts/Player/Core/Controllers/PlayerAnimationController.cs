@@ -16,6 +16,18 @@ public class PlayerAnimationController : IPlayerAnimation
     public void SetBool(string parameterName, bool value)
     {
         if (animator == null) return;
+        
+        if (parameterName == "fire" || parameterName == "reload" || parameterName == "aim")
+        {
+            var currentValue = animator.GetBool(parameterName);
+            if (currentValue != value)
+            {
+                Debug.Log($"<color=orange>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
+                Debug.Log($"<color=orange>[ANIMATOR BOOL CHANGE] {parameterName}: {currentValue} → {value}</color>");
+                Debug.Log($"<color=orange>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
+            }
+        }
+        
         animator.SetBool(parameterName, value);
     }
     

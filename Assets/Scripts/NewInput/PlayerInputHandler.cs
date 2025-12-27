@@ -15,9 +15,13 @@ public class PlayerInputHandler : MonoBehaviour
     public bool GrabInput { get; private set; }
     public bool FireInput { get; private set; }
     public bool ReloadInput { get; private set; }
+    public bool AimInput { get; private set; }
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
+    
+    private bool fireInputQueued = false;
+    private bool reloadInputQueued = false;
     
     [Header("Dependencies")]
     [SerializeField] private InputContextManager inputContextManager;
@@ -47,6 +51,22 @@ public class PlayerInputHandler : MonoBehaviour
     private void Update()
     {
         CheckJumpInputHoldTime();
+        ProcessQueuedInputs();
+    }
+    
+    private void ProcessQueuedInputs()
+    {
+        if (fireInputQueued)
+        {
+            FireInput = true;
+            fireInputQueued = false;
+        }
+        
+        if (reloadInputQueued)
+        {
+            ReloadInput = true;
+            reloadInputQueued = false;
+        }
     }
     
     private bool IsDialogOpen()
@@ -63,7 +83,6 @@ public class PlayerInputHandler : MonoBehaviour
         {
             if (dialogService != null && context.performed)
             {
-                Debug.Log($"<color=magenta>[INPUT] Movement input: {input}, X value: {input.x}</color>");
                 dialogService.OnNavigate(input.x);
             }
             
@@ -227,52 +246,42 @@ public class PlayerInputHandler : MonoBehaviour
         if (IsDialogOpen())
         {
             FireInput = false;
+            fireInputQueued = false;
             return;
         }
         
         if (inventoryUIController != null && inventoryUIController.IsOpen)
         {
             FireInput = false;
+            fireInputQueued = false;
             return;
         }
         
-        if (context.started)
+        if (context.started || context.performed)
         {
-            FireInput = true;
-            
-            if (weaponController != null)
-            {
-                weaponController.Shoot();
-            }
-        }
-        
-        if (context.canceled)
-        {
-            FireInput = false;
+            fireInputQueued = true;
         }
     }
     
     public void OnReloadInput(InputAction.CallbackContext context)
     {
         if (IsDialogOpen())
-            return;
-            
-        if (inventoryUIController != null && inventoryUIController.IsOpen)
-            return;
-        
-        if (context.performed)
-        {
-            ReloadInput = true;
-            
-            if (weaponController != null)
-            {
-                weaponController.Reload();
-            }
-        }
-        
-        if (context.canceled)
         {
             ReloadInput = false;
+            reloadInputQueued = false;
+            return;
+        }
+            
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            ReloadInput = false;
+            reloadInputQueued = false;
+            return;
+        }
+        
+        if (context.started || context.performed)
+        {
+            reloadInputQueued = true;
         }
     }
     
@@ -289,8 +298,43 @@ public class PlayerInputHandler : MonoBehaviour
             weaponController.SwapWeapons();
         }
     }
+    
+    public void OnAimInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+        {
+            AimInput = false;
+            return;
+        }
+        
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            AimInput = false;
+            return;
+        }
+        
+        if (context.started)
+        {
+            AimInput = true;
+        }
+        
+        if (context.canceled)
+        {
+            AimInput = false;
+        }
+    }
 
     public void JumpEnded() => JumpInput = false;
+    
+    public void FireEnded() 
+    {
+        FireInput = false;
+    }
+    
+    public void ReloadEnded()
+    {
+        ReloadInput = false;
+    }
 
     private void CheckJumpInputHoldTime()
     {

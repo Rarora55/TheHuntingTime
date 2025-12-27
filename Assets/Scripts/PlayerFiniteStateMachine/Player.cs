@@ -19,8 +19,11 @@ public class Player : MonoBehaviour
     public PlayerLedgeClimbState WallLedgeState { get; private set; }
     public PlayerCrouchIdleState CrouchIdleState { get; private set; }
     public PlayerCrouchMoveState CrouchMoveState { get; private set; }
+    
+    public PlayerAimState AimState { get; private set; }
+    public PlayerFireState FireState { get; private set; }
+    public PlayerReloadState ReloadState { get; private set; }
    
-
 
 
     [SerializeField] private PlayerData PlayerData;
@@ -91,6 +94,10 @@ public class Player : MonoBehaviour
         WallLedgeState = new PlayerLedgeClimbState(this, StateMachine, PlayerData, "ledge");
         CrouchIdleState = new PlayerCrouchIdleState(this, StateMachine, PlayerData, "crouchIdle");
         CrouchMoveState = new PlayerCrouchMoveState(this, StateMachine, PlayerData, "crouchMove");
+        
+        AimState = new PlayerAimState(this, StateMachine, PlayerData, "aim");
+        FireState = new PlayerFireState(this, StateMachine, PlayerData, "fire");
+        ReloadState = new PlayerReloadState(this, StateMachine, PlayerData, "reload");
     }
 
     private void Start()

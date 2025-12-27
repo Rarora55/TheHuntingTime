@@ -93,6 +93,8 @@ GameObject:
   - component: {fileID: 5652036909615714610}
   - component: {fileID: 3018417222918289650}
   - component: {fileID: 3629960329792281479}
+  - component: {fileID: 2769704086790333547}
+  - component: {fileID: 5973371124170011332}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -475,6 +477,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 4988f577-0857-4549-a101-5c54fb3da5f1
     m_ActionName: 'GamePlay/Reload[/Keyboard/r]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1496723754436472679}
+        m_TargetAssemblyTypeName: PlayerInputHandler, Assembly-CSharp
+        m_MethodName: OnAimInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 2faadf09-409b-4c5b-84c5-380888acd38b
+    m_ActionName: 'GamePlay/Aim[/Keyboard/c]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: GamePlay
@@ -735,10 +753,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
   weaponManager: {fileID: 1343817880564136641}
-  ammoManager: {fileID: 791752132528335838}
+  inventorySystem: {fileID: 0}
   activeWeaponSlot: 0
   firePoint: {fileID: 7016956183950892249}
   fireRate: 0.5
+--- !u!114 &2769704086790333547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4807809795982176028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 647b591ddb6f8964281c88aa240b1ebd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatorTransitionDebugger
+--- !u!114 &5973371124170011332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4807809795982176028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65b4a06fa9d18647bc32abf322b48aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimatorTransitionValidator
+  animator: {fileID: 1532904481709426483}
 --- !u!1 &5889161546552969960
 GameObject:
   m_ObjectHideFlags: 0
