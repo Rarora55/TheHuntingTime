@@ -1106,7 +1106,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 12/48
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2141,7 +2141,7 @@ MonoBehaviour:
   weaponIcon: {fileID: 836636542405687066}
   weaponNameText: {fileID: 343120758758143149}
   slotLabel: {fileID: 2914430451633564915}
-  ammoText: {fileID: 0}
+  ammoText: {fileID: 1125444963029144480}
   emptySlotColor: {r: 0.9622642, g: 0.104396604, b: 0.104396604, a: 0.5}
   equippedSlotColor: {r: 0.2, g: 0.6, b: 0.2, a: 0.8}
   selectedSlotColor: {r: 0.8, g: 0.8, b: 0.2, a: 1}

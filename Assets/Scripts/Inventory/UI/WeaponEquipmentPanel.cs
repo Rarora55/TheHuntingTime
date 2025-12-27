@@ -47,6 +47,20 @@ namespace TheHunt.Inventory
                 }
             }
 
+            if (playerWeaponController == null)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    playerWeaponController = player.GetComponent<PlayerWeaponController>();
+                }
+                
+                if (playerWeaponController == null)
+                {
+                    playerWeaponController = FindFirstObjectByType<PlayerWeaponController>();
+                }
+            }
+
             if (canvasGroup == null)
             {
                 canvasGroup = GetComponent<CanvasGroup>();
@@ -81,6 +95,11 @@ namespace TheHunt.Inventory
             if (playerWeaponController != null)
             {
                 playerWeaponController.OnAmmoChanged += OnAmmoChanged;
+                Debug.Log("<color=green>[WEAPON EQUIPMENT PANEL] ✓ Subscribed to OnAmmoChanged event</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[WEAPON EQUIPMENT PANEL] PlayerWeaponController is NULL! Cannot subscribe to OnAmmoChanged</color>");
             }
 
             RefreshAllSlots();
@@ -131,6 +150,13 @@ namespace TheHunt.Inventory
             if (slotUI != null)
             {
                 slotUI.EquipWeapon(weapon);
+                
+                if (playerWeaponController != null && slot == playerWeaponController.ActiveWeaponSlot)
+                {
+                    slotUI.UpdateAmmoDisplay(playerWeaponController.CurrentMagazineAmmo, playerWeaponController.ReserveAmmo);
+                    Debug.Log($"<color=cyan>[WEAPON EQUIPMENT PANEL] Force updated ammo after equipping: {playerWeaponController.CurrentMagazineAmmo}/{playerWeaponController.ReserveAmmo}</color>");
+                }
+                
                 slotUI.Pulse();
             }
 
@@ -156,14 +182,24 @@ namespace TheHunt.Inventory
         
         private void OnAmmoChanged(int magazine, int reserve)
         {
+            Debug.Log($"<color=cyan>[WEAPON EQUIPMENT PANEL] OnAmmoChanged called! Magazine: {magazine}, Reserve: {reserve}</color>");
+            
             if (playerWeaponController == null)
+            {
+                Debug.LogWarning("<color=yellow>[WEAPON EQUIPMENT PANEL] playerWeaponController is NULL in OnAmmoChanged!</color>");
                 return;
+            }
                 
             WeaponSlotUI activeSlot = GetSlotUI(playerWeaponController.ActiveWeaponSlot);
             
             if (activeSlot != null)
             {
+                Debug.Log($"<color=cyan>[WEAPON EQUIPMENT PANEL] Updating {playerWeaponController.ActiveWeaponSlot} slot UI</color>");
                 activeSlot.UpdateAmmoDisplay(magazine, reserve);
+            }
+            else
+            {
+                Debug.LogWarning($"<color=yellow>[WEAPON EQUIPMENT PANEL] Active slot UI is NULL for {playerWeaponController.ActiveWeaponSlot}</color>");
             }
         }
 

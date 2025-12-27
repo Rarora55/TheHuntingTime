@@ -56,14 +56,31 @@ public class PlayerWeaponController : MonoBehaviour
     void Start()
     {
         InitializeWeapon();
+        
+        StartCoroutine(DelayedUIUpdate());
+    }
+    
+    System.Collections.IEnumerator DelayedUIUpdate()
+    {
+        yield return new WaitForSeconds(0.5f);
+        
+        Debug.Log("<color=cyan>[WEAPON CONTROLLER] Forcing initial UI update...</color>");
+        NotifyAmmoChanged();
     }
     
     void InitializeWeapon()
     {
+        Debug.Log($"<color=cyan>[WEAPON CONTROLLER] InitializeWeapon called. ActiveWeapon: {ActiveWeapon?.ItemName ?? "NULL"}</color>");
+        
         if (ActiveWeapon != null)
         {
             currentMagazineAmmo = ActiveWeapon.MagazineSize;
+            Debug.Log($"<color=green>[WEAPON CONTROLLER] ✓ Weapon initialized: Magazine set to {currentMagazineAmmo}/{ActiveWeapon.MagazineSize}</color>");
             NotifyAmmoChanged();
+        }
+        else
+        {
+            Debug.LogWarning("<color=yellow>[WEAPON CONTROLLER] Cannot initialize weapon - ActiveWeapon is NULL</color>");
         }
     }
     
@@ -174,9 +191,16 @@ public class PlayerWeaponController : MonoBehaviour
     
     void OnWeaponEquipped(EquipSlot slot, WeaponItemData weapon)
     {
+        Debug.Log($"<color=cyan>[WEAPON CONTROLLER] OnWeaponEquipped: slot={slot}, weapon={weapon?.ItemName ?? "NULL"}, activeWeaponSlot={activeWeaponSlot}</color>");
+        
         if (slot == activeWeaponSlot)
         {
+            Debug.Log($"<color=green>[WEAPON CONTROLLER] ✓ Weapon equipped to active slot - Initializing...</color>");
             InitializeWeapon();
+        }
+        else
+        {
+            Debug.Log($"<color=yellow>[WEAPON CONTROLLER] Weapon equipped to non-active slot - Skipping initialization</color>");
         }
     }
     
@@ -191,7 +215,17 @@ public class PlayerWeaponController : MonoBehaviour
     
     void NotifyAmmoChanged()
     {
-        OnAmmoChanged?.Invoke(currentMagazineAmmo, ReserveAmmo);
+        Debug.Log($"<color=magenta>[WEAPON CONTROLLER] NotifyAmmoChanged: Magazine={currentMagazineAmmo}, Reserve={ReserveAmmo}</color>");
+        
+        if (OnAmmoChanged != null)
+        {
+            Debug.Log($"<color=magenta>[WEAPON CONTROLLER] ✓ Invoking OnAmmoChanged event (subscribers: {OnAmmoChanged.GetInvocationList().Length})</color>");
+            OnAmmoChanged?.Invoke(currentMagazineAmmo, ReserveAmmo);
+        }
+        else
+        {
+            Debug.LogWarning("<color=yellow>[WEAPON CONTROLLER] OnAmmoChanged has no subscribers!</color>");
+        }
     }
     
     void OnDrawGizmosSelected()

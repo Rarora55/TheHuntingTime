@@ -68,10 +68,8 @@ namespace TheHunt.Inventory
             }
 
             UpdateVisualState();
-
-            UpdateAmmoDisplay(0, 0);
             
-            Debug.Log($"<color=green>[WEAPON SLOT UI] {slotType} slot equipped with {weapon.ItemName}</color>");
+            Debug.Log($"<color=green>[WEAPON SLOT UI] {slotType} slot equipped with {weapon.ItemName} (ammo will be updated via OnAmmoChanged event)</color>");
         }
         
         public void UpdateAmmoDisplay(int magazine, int reserve)
@@ -79,17 +77,34 @@ namespace TheHunt.Inventory
             magazineAmmo = magazine;
             reserveAmmo = reserve;
             
-            if (ammoText != null && equippedWeapon != null)
+            Debug.Log($"<color=yellow>[WEAPON SLOT UI] UpdateAmmoDisplay called: Magazine={magazine}, Reserve={reserve}, equippedWeapon={equippedWeapon?.ItemName ?? "NULL"}</color>");
+            
+            if (ammoText != null)
             {
-                if (equippedWeapon.RequiredAmmo == AmmoType.None)
+                Debug.Log($"<color=yellow>[WEAPON SLOT UI] ammoText is NOT NULL</color>");
+                
+                if (equippedWeapon == null)
                 {
+                    Debug.Log($"<color=orange>[WEAPON SLOT UI] No weapon equipped - clearing ammo text</color>");
+                    ammoText.text = "";
+                    ammoText.enabled = false;
+                }
+                else if (equippedWeapon.RequiredAmmo == AmmoType.None)
+                {
+                    Debug.Log($"<color=cyan>[WEAPON SLOT UI] Weapon has infinite ammo</color>");
                     ammoText.text = "∞";
+                    ammoText.enabled = true;
                 }
                 else
                 {
+                    Debug.Log($"<color=green>[WEAPON SLOT UI] Setting ammo text to: {magazineAmmo}/{reserveAmmo}</color>");
                     ammoText.text = $"{magazineAmmo}/{reserveAmmo}";
+                    ammoText.enabled = true;
                 }
-                ammoText.enabled = true;
+            }
+            else
+            {
+                Debug.LogWarning($"<color=red>[WEAPON SLOT UI] ammoText is NULL! Cannot update ammo display!</color>");
             }
         }
 
@@ -132,6 +147,7 @@ namespace TheHunt.Inventory
             
             if (ammoText != null)
             {
+                ammoText.text = "";
                 ammoText.enabled = false;
             }
 

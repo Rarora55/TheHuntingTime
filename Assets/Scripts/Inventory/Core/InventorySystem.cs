@@ -54,6 +54,13 @@ namespace TheHunt.Inventory
                 return false;
             }
 
+            int quantityToAdd = 1;
+            
+            if (itemData is AmmoItemData ammoData)
+            {
+                quantityToAdd = ammoData.AmmoAmount;
+            }
+
             if (itemData.IsStackable)
             {
                 for (int i = 0; i < MAX_SLOTS; i++)
@@ -63,27 +70,46 @@ namespace TheHunt.Inventory
                         item.itemData == itemData &&
                         item.quantity < MAX_STACK_SIZE)
                     {
-                        item.quantity++;
+                        int spaceLeft = MAX_STACK_SIZE - item.quantity;
+                        int toAdd = Mathf.Min(quantityToAdd, spaceLeft);
+                        
+                        item.quantity += toAdd;
                         inventoryData.SetItem(i, item);
                         OnItemAdded?.Invoke(i, item);
-                        Debug.Log($"<color=green>[INVENTORY] Stacked {itemData.ItemName}. Total: {item.quantity}</color>");
-                        return true;
+                        
+                        quantityToAdd -= toAdd;
+                        
+                        Debug.Log($"<color=green>[INVENTORY] Stacked {toAdd} {itemData.ItemName}. Total: {item.quantity}</color>");
+                        
+                        if (quantityToAdd <= 0)
+                            return true;
                     }
                 }
             }
 
-            int emptySlot = FindEmptySlot();
-            if (emptySlot == -1)
+            while (quantityToAdd > 0)
             {
-                OnInventoryFull?.Invoke();
-                Debug.Log("<color=yellow>[INVENTORY] Inventory is full!</color>");
-                return false;
-            }
+                int emptySlot = FindEmptySlot();
+                if (emptySlot == -1)
+                {
+                    OnInventoryFull?.Invoke();
+                    Debug.Log("<color=yellow>[INVENTORY] Inventory is full!</color>");
+                    return quantityToAdd < (itemData is AmmoItemData ammo ? ammo.AmmoAmount : 1);
+                }
 
-            ItemInstance newItem = new ItemInstance(itemData, 1);
-            inventoryData.SetItem(emptySlot, newItem);
-            OnItemAdded?.Invoke(emptySlot, newItem);
-            Debug.Log($"<color=green>[INVENTORY] Added {itemData.ItemName} to slot {emptySlot}</color>");
+                int stackSize = itemData.IsStackable ? Mathf.Min(quantityToAdd, MAX_STACK_SIZE) : 1;
+                
+                ItemInstance newItem = new ItemInstance(itemData, stackSize);
+                inventoryData.SetItem(emptySlot, newItem);
+                OnItemAdded?.Invoke(emptySlot, newItem);
+                
+                Debug.Log($"<color=green>[INVENTORY] Added {stackSize} {itemData.ItemName} to slot {emptySlot}</color>");
+                
+                quantityToAdd -= stackSize;
+                
+                if (!itemData.IsStackable)
+                    break;
+            }
 
             return true;
         }

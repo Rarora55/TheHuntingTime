@@ -48,7 +48,9 @@ namespace TheHunt.Inventory
 
             if (quantityText != null)
             {
-                if (item.quantity > 1)
+                bool isAmmo = item.itemData is AmmoItemData;
+                
+                if (item.quantity > 1 || isAmmo)
                 {
                     quantityText.gameObject.SetActive(true);
                     quantityText.text = $"x{item.quantity}";

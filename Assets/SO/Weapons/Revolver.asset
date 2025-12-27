@@ -30,7 +30,7 @@ MonoBehaviour:
   attackSpeed: 1
   weaponType: 0
   requiredAmmo: 1
-  magazineSize: 12
+  magazineSize: 6
   ammoPerShot: 1
   equipPrefab: {fileID: 0}
   equipIcon: {fileID: -6308850436933624161, guid: 9d1a13d87249d6c42bc930470d0a60a8, type: 3}
