@@ -20,10 +20,11 @@ MonoBehaviour:
   pickupPrefab: {fileID: 9030210980498253486, guid: 68559b787cd83284eb9fdadc9dfd8277, type: 3}
   itemType: 2
   stackable: 1
+  maxStackSize: 48
   canBeExamined: 1
   examinationText: Revolver Colt Ammo
   examinationImage: {fileID: -8646187478981653000, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   canBeCombined: 1
   combinationHint: 
   ammoType: 1
-  ammoAmount: 12
+  ammoAmount: 6

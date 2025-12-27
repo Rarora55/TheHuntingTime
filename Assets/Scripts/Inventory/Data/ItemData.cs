@@ -16,6 +16,7 @@ namespace TheHunt.Inventory
         [Header("Item Type")]
         [SerializeField] private ItemType itemType;
         [SerializeField] private bool stackable;
+        [SerializeField] private int maxStackSize = 6;
 
         [Header("Examination")]
         [SerializeField] private bool canBeExamined = true;
@@ -34,6 +35,7 @@ namespace TheHunt.Inventory
         public GameObject PickupPrefab => pickupPrefab;
         public ItemType ItemType => itemType;
         public bool IsStackable => stackable;
+        public int MaxStackSize => stackable ? Mathf.Max(1, maxStackSize) : 1;
         public bool CanBeExamined => canBeExamined;
         public string ExaminationText => examinationText;
         public Sprite ExaminationImage => examinationImage;

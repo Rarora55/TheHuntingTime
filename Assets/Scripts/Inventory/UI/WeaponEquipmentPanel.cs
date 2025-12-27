@@ -1,4 +1,5 @@
 using UnityEngine;
+using TheHunt.Utilities;
 
 namespace TheHunt.Inventory
 {
@@ -16,69 +17,17 @@ namespace TheHunt.Inventory
         [Header("Settings")]
         [SerializeField] private bool autoHideWhenEmpty = false;
         [SerializeField] private CanvasGroup canvasGroup;
+        
+        private ComponentAutoAssigner autoAssigner;
 
         private void Awake()
         {
-            if (weaponManager == null)
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null)
-                {
-                    weaponManager = player.GetComponent<WeaponInventoryManager>();
-                }
-                
-                if (weaponManager == null)
-                {
-                    weaponManager = FindFirstObjectByType<WeaponInventoryManager>();
-                }
-            }
-
-            if (uiController == null)
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null)
-                {
-                    uiController = player.GetComponent<InventoryUIController>();
-                }
-                
-                if (uiController == null)
-                {
-                    uiController = FindFirstObjectByType<InventoryUIController>();
-                }
-            }
-
-            if (playerWeaponController == null)
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null)
-                {
-                    playerWeaponController = player.GetComponent<PlayerWeaponController>();
-                }
-                
-                if (playerWeaponController == null)
-                {
-                    playerWeaponController = FindFirstObjectByType<PlayerWeaponController>();
-                }
-            }
-
-            if (canvasGroup == null)
-            {
-                canvasGroup = GetComponent<CanvasGroup>();
-            }
+            autoAssigner = new ComponentAutoAssigner();
             
-            if (playerWeaponController == null)
-            {
-                GameObject player = GameObject.FindGameObjectWithTag("Player");
-                if (player != null)
-                {
-                    playerWeaponController = player.GetComponent<PlayerWeaponController>();
-                }
-                
-                if (playerWeaponController == null)
-                {
-                    playerWeaponController = FindFirstObjectByType<PlayerWeaponController>();
-                }
-            }
+            weaponManager = autoAssigner.GetOrFindComponent(weaponManager);
+            uiController = autoAssigner.GetOrFindComponent(uiController);
+            playerWeaponController = autoAssigner.GetOrFindComponent(playerWeaponController);
+            canvasGroup = canvasGroup != null ? canvasGroup : GetComponent<CanvasGroup>();
 
             ValidateSlots();
         }

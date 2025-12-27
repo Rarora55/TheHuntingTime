@@ -14,13 +14,17 @@ namespace TheHunt.Inventory
 
         private AmmoInventoryManager ammoManager;
         private WeaponInventoryManager weaponManager;
+        
+        private InventoryDropHandler dropHandler;
+        private AmmoInventoryQuery ammoQuery;
+        private InventorySlotNavigator slotNavigator;
 
         public ItemInstance CurrentItem => inventoryData != null && inventoryData.SelectedIndex >= 0 && inventoryData.SelectedIndex < MAX_SLOTS 
             ? inventoryData.GetItem(inventoryData.SelectedIndex) 
             : null;
         public bool IsFull => FindEmptySlot() == -1;
         public bool HasSpace => !IsFull;
-        public int SelectedSlot => inventoryData != null ? inventoryData.SelectedIndex : 0;
+        public int SelectedSlot => slotNavigator != null ? slotNavigator.CurrentSlot : 0;
         public ItemInstance[] Items => inventoryData != null ? inventoryData.Items : new ItemInstance[MAX_SLOTS];
 
         public event Action<int, ItemInstance> OnItemAdded;
@@ -37,7 +41,28 @@ namespace TheHunt.Inventory
             if (inventoryData == null)
             {
                 Debug.LogError("<color=red>[INVENTORY] InventoryDataSO reference is missing! Please assign it in the Inspector.</color>");
+                return;
             }
+            
+            InitializeComponents();
+        }
+        
+        private void InitializeComponents()
+        {
+            dropHandler = new InventoryDropHandler(transform);
+            ammoQuery = new AmmoInventoryQuery(inventoryData, OnAmmoRemovedFromSlot);
+            slotNavigator = new InventorySlotNavigator(inventoryData);
+            
+            slotNavigator.OnSelectionChanged += (oldIndex, newIndex) => 
+            {
+                OnSelectionChanged?.Invoke(oldIndex, newIndex);
+            };
+        }
+        
+        private void OnAmmoRemovedFromSlot(int slotIndex, int quantity)
+        {
+            ItemInstance item = inventoryData.GetItem(slotIndex);
+            OnItemRemoved?.Invoke(slotIndex, item);
         }
 
         public bool TryAddItem(ItemData itemData)
@@ -63,14 +88,22 @@ namespace TheHunt.Inventory
 
             if (itemData.IsStackable)
             {
+                Debug.Log($"<color=cyan>[INVENTORY] Item is stackable. Looking for existing stacks of {itemData.ItemName} (max stack: {itemData.MaxStackSize})...</color>");
+                
                 for (int i = 0; i < MAX_SLOTS; i++)
                 {
                     ItemInstance item = inventoryData.GetItem(i);
+                    if (item != null && item.itemData != null)
+                    {
+                        bool isSameItem = item.itemData == itemData;
+                        Debug.Log($"<color=cyan>[INVENTORY] Slot {i}: {item.itemData.ItemName}, IsSame={isSameItem}, Quantity={item.quantity}/{item.itemData.MaxStackSize}</color>");
+                    }
+                    
                     if (item != null &&
                         item.itemData == itemData &&
-                        item.quantity < MAX_STACK_SIZE)
+                        item.quantity < itemData.MaxStackSize)
                     {
-                        int spaceLeft = MAX_STACK_SIZE - item.quantity;
+                        int spaceLeft = itemData.MaxStackSize - item.quantity;
                         int toAdd = Mathf.Min(quantityToAdd, spaceLeft);
                         
                         item.quantity += toAdd;
@@ -97,7 +130,7 @@ namespace TheHunt.Inventory
                     return quantityToAdd < (itemData is AmmoItemData ammo ? ammo.AmmoAmount : 1);
                 }
 
-                int stackSize = itemData.IsStackable ? Mathf.Min(quantityToAdd, MAX_STACK_SIZE) : 1;
+                int stackSize = itemData.IsStackable ? Mathf.Min(quantityToAdd, itemData.MaxStackSize) : 1;
                 
                 ItemInstance newItem = new ItemInstance(itemData, stackSize);
                 inventoryData.SetItem(emptySlot, newItem);
@@ -211,57 +244,12 @@ namespace TheHunt.Inventory
 
         public int GetAmmoCount(AmmoType ammoType)
         {
-            if (inventoryData == null || ammoType == AmmoType.None)
-                return 0;
-
-            int totalAmmo = 0;
-
-            for (int i = 0; i < MAX_SLOTS; i++)
-            {
-                ItemInstance item = inventoryData.GetItem(i);
-                if (item != null && item.itemData is AmmoItemData ammoData)
-                {
-                    if (ammoData.AmmoType == ammoType)
-                    {
-                        totalAmmo += item.quantity;
-                    }
-                }
-            }
-
-            return totalAmmo;
+            return ammoQuery?.GetAmmoCount(ammoType) ?? 0;
         }
 
         public bool ConsumeAmmo(AmmoType ammoType, int amount)
         {
-            if (inventoryData == null || ammoType == AmmoType.None || amount <= 0)
-                return false;
-
-            int totalAvailable = GetAmmoCount(ammoType);
-
-            if (totalAvailable < amount)
-            {
-                Debug.LogWarning($"<color=yellow>[INVENTORY] Not enough {ammoType} ammo. Need: {amount}, Have: {totalAvailable}</color>");
-                return false;
-            }
-
-            int remaining = amount;
-
-            for (int i = 0; i < MAX_SLOTS && remaining > 0; i++)
-            {
-                ItemInstance item = inventoryData.GetItem(i);
-                if (item != null && item.itemData is AmmoItemData ammoData)
-                {
-                    if (ammoData.AmmoType == ammoType)
-                    {
-                        int toRemove = Mathf.Min(remaining, item.quantity);
-                        RemoveItem(i, toRemove);
-                        remaining -= toRemove;
-                    }
-                }
-            }
-
-            Debug.Log($"<color=green>[INVENTORY] Consumed {amount} {ammoType} ammo. Remaining: {GetAmmoCount(ammoType)}</color>");
-            return true;
+            return ammoQuery?.ConsumeAmmo(ammoType, amount) ?? false;
         }
 
         public void UseCurrentItem()
@@ -305,94 +293,7 @@ namespace TheHunt.Inventory
             
             RemoveItem(inventoryData.SelectedIndex, 1);
             
-            if (droppedItemData.PickupPrefab != null)
-            {
-                Vector3 dropPosition = CalculateDropPosition(droppedItemData.PickupPrefab);
-                GameObject droppedObject = Instantiate(droppedItemData.PickupPrefab, dropPosition, Quaternion.identity);
-                
-                Debug.Log($"<color=green>[INVENTORY] Spawned {droppedItemData.ItemName} at {dropPosition}</color>");
-            }
-            else
-            {
-                Debug.LogWarning($"<color=yellow>[INVENTORY] No pickup prefab assigned for {droppedItemData.ItemName}</color>");
-            }
-        }
-
-        private Vector3 CalculateDropPosition(GameObject prefab)
-        {
-            const float HORIZONTAL_OFFSET = 1.5f;
-            const float RAYCAST_DISTANCE = 50f;
-            
-            Vector3 horizontalOffset = transform.right * HORIZONTAL_OFFSET;
-            Vector3 startPosition = transform.position + horizontalOffset;
-            
-            int groundLayer = LayerMask.GetMask("Ground");
-            RaycastHit2D hit = Physics2D.Raycast(startPosition, Vector2.down, RAYCAST_DISTANCE, groundLayer);
-            
-            Vector3 groundContactPoint;
-            if (hit.collider != null)
-            {
-                groundContactPoint = hit.point;
-                Debug.Log($"<color=cyan>[DROP] Ground found at {groundContactPoint}</color>");
-            }
-            else
-            {
-                groundContactPoint = startPosition;
-                Debug.LogWarning($"<color=yellow>[DROP] No ground found, using horizontal position</color>");
-            }
-            
-            Vector3 detectionOffset = GetDetectionPointOffset(prefab);
-            
-            Vector3 finalPosition = new Vector3(
-                groundContactPoint.x,
-                groundContactPoint.y - detectionOffset.y,
-                groundContactPoint.z
-            );
-            
-            Debug.Log($"<color=green>[DROP] Detection offset: {detectionOffset}, Final position: {finalPosition}</color>");
-            return finalPosition;
-        }
-        
-        private Vector3 GetDetectionPointOffset(GameObject prefab)
-        {
-            Transform detectionPoint = FindDetectionPointInPrefab(prefab);
-            
-            if (detectionPoint != null)
-            {
-                Vector3 localPos = detectionPoint.localPosition;
-                Vector3 scale = prefab.transform.localScale;
-                
-                Vector3 worldOffset = new Vector3(
-                    localPos.x * scale.x,
-                    localPos.y * scale.y,
-                    localPos.z * scale.z
-                );
-                
-                Debug.Log($"<color=cyan>[DROP] Found detection point: local={localPos}, scale={scale}, worldOffset={worldOffset}</color>");
-                return worldOffset;
-            }
-            
-            Debug.LogWarning($"<color=yellow>[DROP] No 'detectionGround' found in prefab, using zero offset</color>");
-            return Vector3.zero;
-        }
-        
-        private Transform FindDetectionPointInPrefab(GameObject prefab)
-        {
-            Transform root = prefab.transform;
-            
-            Transform detectionPoint = root.Find("detectionGround");
-            if (detectionPoint != null)
-                return detectionPoint;
-            
-            detectionPoint = root.Find("detectioGround");
-            if (detectionPoint != null)
-                return detectionPoint;
-            
-            detectionPoint = root.Find("DetectionGround");
-            if (detectionPoint != null)
-                return detectionPoint;
-            
-            return null;
+            dropHandler?.DropItem(droppedItemData);
         }
 
         public void ExamineCurrentItem()
@@ -419,36 +320,17 @@ namespace TheHunt.Inventory
 
         public void SelectNext()
         {
-            if (inventoryData == null)
-                return;
-                
-            int oldIndex = inventoryData.SelectedIndex;
-            inventoryData.SelectedIndex = (inventoryData.SelectedIndex + 1) % MAX_SLOTS;
-            OnSelectionChanged?.Invoke(oldIndex, inventoryData.SelectedIndex);
-            Debug.Log($"<color=cyan>[INVENTORY] Selected slot {inventoryData.SelectedIndex}</color>");
+            slotNavigator?.SelectNext();
         }
 
         public void SelectPrevious()
         {
-            if (inventoryData == null)
-                return;
-                
-            int oldIndex = inventoryData.SelectedIndex;
-            inventoryData.SelectedIndex--;
-            if (inventoryData.SelectedIndex < 0)
-                inventoryData.SelectedIndex = MAX_SLOTS - 1;
-            OnSelectionChanged?.Invoke(oldIndex, inventoryData.SelectedIndex);
-            Debug.Log($"<color=cyan>[INVENTORY] Selected slot {inventoryData.SelectedIndex}</color>");
+            slotNavigator?.SelectPrevious();
         }
 
         public void SelectSlot(int index)
         {
-            if (index < 0 || index >= MAX_SLOTS || inventoryData == null)
-                return;
-
-            int oldIndex = inventoryData.SelectedIndex;
-            inventoryData.SelectedIndex = index;
-            OnSelectionChanged?.Invoke(oldIndex, inventoryData.SelectedIndex);
+            slotNavigator?.SelectSlot(index);
         }
 
         private int FindEmptySlot()

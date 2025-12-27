@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace TheHunt.Inventory
+namespace TheHunt.Inventory.EditorTools
 {
     [CustomEditor(typeof(WorldItem))]
-    public class WorldItemEditor : Editor
+    public class WorldItemEditor : UnityEditor.Editor
     {
         private SerializedProperty itemDataProp;
         private SerializedProperty quantityProp;
