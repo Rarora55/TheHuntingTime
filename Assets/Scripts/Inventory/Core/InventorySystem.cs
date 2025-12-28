@@ -118,6 +118,11 @@ namespace TheHunt.Inventory
                             return true;
                     }
                 }
+                
+                if (quantityToAdd > 0)
+                {
+                    Debug.Log($"<color=yellow>[INVENTORY] Still need to add {quantityToAdd} {itemData.ItemName} after stacking</color>");
+                }
             }
 
             while (quantityToAdd > 0)
@@ -125,7 +130,12 @@ namespace TheHunt.Inventory
                 int emptySlot = FindEmptySlot();
                 if (emptySlot == -1)
                 {
+                    Debug.Log("<color=red>[INVENTORY] ========== INVENTORY IS FULL ==========</color>");
+                    Debug.Log($"<color=red>[INVENTORY] Attempting to add {quantityToAdd} {itemData.ItemName}</color>");
+                    Debug.Log($"<color=red>[INVENTORY] OnInventoryFull has {(OnInventoryFull != null ? OnInventoryFull.GetInvocationList().Length : 0)} subscribers</color>");
+                    
                     OnInventoryFull?.Invoke();
+                    
                     Debug.Log("<color=yellow>[INVENTORY] Inventory is full!</color>");
                     return quantityToAdd < (itemData is AmmoItemData ammo ? ammo.AmmoAmount : 1);
                 }

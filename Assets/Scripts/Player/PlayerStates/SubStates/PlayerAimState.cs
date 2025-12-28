@@ -1,37 +1,24 @@
 using UnityEngine;
 
-public class PlayerAimState : PlayerAbilityState
+public class PlayerAimState : WeaponAbilityState
 {
-    private PlayerWeaponController weaponController;
     private bool isGrounded;
     
-    public PlayerAimState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
+    public PlayerAimState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) 
+        : base(player, stateMachine, playerData, animBoolName)
     {
     }
 
-    public override void Enter()
+    protected override void OnInvalidWeapon()
     {
-        base.Enter();
-        
-        weaponController = player.GetComponent<PlayerWeaponController>();
-        
-        if (weaponController == null || weaponController.ActiveWeapon == null)
-        {
-            isAbilityDone = true;
-            return;
-        }
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
+        isAbilityDone = true;
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
         
-        if (weaponController == null || weaponController.ActiveWeapon == null)
+        if (!HasValidWeapon())
         {
             isAbilityDone = true;
             return;
@@ -39,14 +26,25 @@ public class PlayerAimState : PlayerAbilityState
         
         if (player.InputHandler.FireInput)
         {
-            stateMachine.ChangeState(player.FireState);
-            return;
+            if (weaponController.CanShoot())
+            {
+                player.anim.SetBool(animBoolName, false);
+                player.InputHandler.FireEnded();
+                stateMachine.ChangeState(player.FireState);
+                return;
+            }
+            else
+            {
+                player.InputHandler.FireEnded();
+                weaponController.Shoot();
+            }
         }
         
         if (player.InputHandler.ReloadInput)
         {
             if (weaponController.CanReload())
             {
+                player.anim.SetBool(animBoolName, false);
                 stateMachine.ChangeState(player.ReloadState);
                 return;
             }

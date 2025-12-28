@@ -74,7 +74,6 @@ GameObject:
   - component: {fileID: 4854062045287973134}
   - component: {fileID: 2238368281390021344}
   - component: {fileID: 1984869080284809575}
-  - component: {fileID: 1532904481709426483}
   - component: {fileID: 7239312537353587453}
   - component: {fileID: 1496723754436472679}
   - component: {fileID: 4835428786129188768}
@@ -93,8 +92,6 @@ GameObject:
   - component: {fileID: 5652036909615714610}
   - component: {fileID: 3018417222918289650}
   - component: {fileID: 3629960329792281479}
-  - component: {fileID: 2769704086790333547}
-  - component: {fileID: 5973371124170011332}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -254,28 +251,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.3231031, y: 2.1456177}
   m_EdgeRadius: 0
---- !u!95 &1532904481709426483
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4807809795982176028}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bf58b805c3f0dc34d942b8a34c2b1c0e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &7239312537353587453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -757,31 +732,6 @@ MonoBehaviour:
   activeWeaponSlot: 0
   firePoint: {fileID: 7016956183950892249}
   fireRate: 0.5
---- !u!114 &2769704086790333547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4807809795982176028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 647b591ddb6f8964281c88aa240b1ebd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnimatorTransitionDebugger
---- !u!114 &5973371124170011332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4807809795982176028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c65b4a06fa9d18647bc32abf322b48aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AnimatorTransitionValidator
-  animator: {fileID: 1532904481709426483}
 --- !u!1 &5889161546552969960
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,14 +15,17 @@ namespace TheHunt.Inventory
 
         public bool CanInteract(GameObject interactor)
         {
+            Debug.Log($"<color=cyan>[PICKUP ITEM] CanInteract called for {itemData?.ItemName}</color>");
+            
             InventorySystem inventory = interactor.GetComponent<InventorySystem>();
             if (inventory == null)
+            {
+                Debug.LogWarning($"<color=yellow>[PICKUP ITEM] Interactor does not have InventorySystem</color>");
                 return false;
+            }
 
-            if (itemData is AmmoItemData)
-                return true;
-
-            return inventory.HasSpace;
+            Debug.Log($"<color=green>[PICKUP ITEM] Returning TRUE - Let TryAddItem decide if it can be added</color>");
+            return true;
         }
 
         public void Interact(GameObject interactor)

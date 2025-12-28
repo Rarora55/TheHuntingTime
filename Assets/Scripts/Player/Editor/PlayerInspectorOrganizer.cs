@@ -3,7 +3,8 @@ using UnityEditor;
 
 namespace TheHunt.Player.Editor
 {
-    [CustomEditor(typeof(GameObject))]
+    // DISABLED - Uncomment [CustomEditor] attribute to re-enable custom Player inspector organization
+    // [CustomEditor(typeof(GameObject))]
     public class PlayerInspectorOrganizer : UnityEditor.Editor
     {
         public override void OnInspectorGUI()

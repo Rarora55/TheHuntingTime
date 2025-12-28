@@ -1,66 +1,68 @@
 using UnityEngine;
 
-public class PlayerFireState : PlayerAbilityState
+public class PlayerFireState : WeaponAbilityState
 {
-    private PlayerWeaponController weaponController;
     private bool hasFired;
     private float fireTime;
-    private const float MIN_FIRE_DURATION = 0.2f;
+    private float animationDuration;
     
-    public PlayerFireState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
+    public PlayerFireState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) 
+        : base(player, stateMachine, playerData, animBoolName)
     {
     }
 
-    public override void Enter()
+    protected override void OnInvalidWeapon()
     {
-        base.Enter();
-        
-        weaponController = player.GetComponent<PlayerWeaponController>();
+        isAbilityDone = true;
+        player.InputHandler.FireEnded();
+    }
+
+    protected override void OnWeaponStateEnter()
+    {
         hasFired = false;
         fireTime = Time.time;
         
-        player.anim.SetBool("aim", true);
-        
-        if (weaponController == null || weaponController.ActiveWeapon == null)
+        if (!weaponController.CanShoot())
         {
             isAbilityDone = true;
             player.InputHandler.FireEnded();
             return;
         }
         
+        AnimatorStateInfo stateInfo = player.anim.GetCurrentAnimatorStateInfo(0);
+        animationDuration = stateInfo.length;
+        
+        if (animationDuration <= 0)
+            animationDuration = 0.3f;
+        
         PerformShot();
         player.InputHandler.FireEnded();
-    }
-
-    public override void Exit()
-    {
-        base.Exit();
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
         
-        if (hasFired && Time.time >= fireTime + MIN_FIRE_DURATION)
+        if (!hasFired)
+        {
+            if (Time.time - fireTime > 0.5f)
+            {
+                isAbilityDone = true;
+            }
+            return;
+        }
+        
+        float timeSinceFire = Time.time - fireTime;
+        
+        if (timeSinceFire >= animationDuration * 0.7f)
         {
             if (player.InputHandler.AimInput)
             {
                 stateMachine.ChangeState(player.AimState);
+                return;
             }
-            else
-            {
-                player.anim.SetBool("aim", false);
-                
-                bool isGrounded = player.CheckIsGrounded();
-                if (isGrounded && player.CurrentVelocity.y < 0.01f)
-                {
-                    stateMachine.ChangeState(player.IdleState);
-                }
-                else
-                {
-                    stateMachine.ChangeState(player.AirState);
-                }
-            }
+            
+            isAbilityDone = true;
         }
     }
 

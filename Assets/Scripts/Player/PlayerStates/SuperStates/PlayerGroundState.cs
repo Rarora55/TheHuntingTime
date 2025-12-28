@@ -14,6 +14,8 @@ public class PlayerGroundState : PlayerState
     private bool isTouchingWall;
     private bool GrabInput;
     private bool AimInput;
+    
+    private PlayerWeaponController weaponController;
 
     public PlayerGroundState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -27,24 +29,15 @@ public class PlayerGroundState : PlayerState
         bool wasGrounded = isGrounded;
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
-        
-        if (!player.JustFinishedLedgeClimb)
-        {
-            isTouchingCeiling = player.CheckForCeiling();
-        }
-        else
-        {
-            Debug.Log("<color=yellow>[GROUND DoChecks] Saltando ceiling check (JustFinishedLedgeClimb=true)</color>");
-        }
-        
-        if (wasGrounded != isGrounded)
-        {
-            Debug.Log($"<color=yellow>[GROUND DoChecks] isGrounded cambió: {wasGrounded} → {isGrounded} | Pos: {player.transform.position}</color>");
-        }
     }
     public override void Enter()
     {
         base.Enter();
+        
+        if (weaponController == null)
+        {
+            weaponController = player.WeaponController;
+        }
     }
 
     public override void Exit()
@@ -62,7 +55,7 @@ public class PlayerGroundState : PlayerState
         GrabInput = player.InputHandler.GrabInput;
         AimInput = player.InputHandler.AimInput;
 
-        if (AimInput)
+        if (AimInput && CanAim())
         {
             stateMachine.ChangeState(player.AimState);
         }
@@ -73,7 +66,6 @@ public class PlayerGroundState : PlayerState
         }
         else if (!isGrounded)
         {
-            Debug.Log($"<color=orange>[GROUND] !isGrounded detectado → AirState | Pos:{player.transform.position} | Estado actual: {this.GetType().Name}</color>");
             stateMachine.ChangeState(player.AirState);
         }
         else if (isTouchingWall && GrabInput && !isTouchingCeiling)
@@ -86,5 +78,12 @@ public class PlayerGroundState : PlayerState
     {
         base.PhysicsUpdate();
     }
-  
+    
+    private bool CanAim()
+    {
+        if (weaponController == null)
+            return false;
+            
+        return weaponController.ActiveWeapon != null;
+    }
 }

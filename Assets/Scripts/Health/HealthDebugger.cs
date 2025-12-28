@@ -28,6 +28,8 @@ public class HealthDebugger : MonoBehaviour
         }
     }
 
+    // DEBUG DISABLED - Uncomment to re-enable keyboard shortcuts
+    /*
     private void Update()
     {
         if (healthController == null)
@@ -48,6 +50,7 @@ public class HealthDebugger : MonoBehaviour
             ResetHealth();
         }
     }
+    */
 
     public void TakeDamage()
     {
@@ -85,6 +88,8 @@ public class HealthDebugger : MonoBehaviour
         }
     }
 
+    // DEBUG DISABLED - Uncomment to re-enable debug GUI
+    /*
     private void OnGUI()
     {
         if (healthController == null)
@@ -118,4 +123,5 @@ public class HealthDebugger : MonoBehaviour
 
         GUILayout.EndArea();
     }
+    */
 }

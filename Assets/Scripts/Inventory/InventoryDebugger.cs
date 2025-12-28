@@ -16,7 +16,7 @@ namespace TheHunt.Inventory
         [SerializeField] private ItemData testAmmo;
 
         [Header("Debug Info")]
-        [SerializeField] private bool showDebugInfo = true;
+        [SerializeField] private bool showDebugInfo = false;
 
         private void Awake()
         {

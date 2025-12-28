@@ -158,14 +158,12 @@ public class PlayerInputHandler : MonoBehaviour
                 if (dialogService != null)
                 {
                     dialogService.OnConfirmInput();
-                    Debug.Log("<color=cyan>[INPUT] E key sent to dialog for confirmation</color>");
                 }
                 return;
             }
             
             if (inventoryUIController != null && inventoryUIController.IsOpen)
             {
-                Debug.Log("<color=yellow>[INPUT] Cannot interact while inventory is open</color>");
                 return;
             }
             
@@ -193,7 +191,6 @@ public class PlayerInputHandler : MonoBehaviour
                 if (dialogService != null)
                 {
                     dialogService.OnCancelInput();
-                    Debug.Log("<color=yellow>[INPUT] Inventory toggle cancelled dialog</color>");
                 }
                 return;
             }
@@ -329,11 +326,13 @@ public class PlayerInputHandler : MonoBehaviour
     public void FireEnded() 
     {
         FireInput = false;
+        fireInputQueued = false;
     }
     
     public void ReloadEnded()
     {
         ReloadInput = false;
+        reloadInputQueued = false;
     }
 
     private void CheckJumpInputHoldTime()

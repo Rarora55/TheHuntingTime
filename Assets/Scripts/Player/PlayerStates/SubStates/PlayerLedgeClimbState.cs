@@ -118,12 +118,10 @@ public class PlayerLedgeClimbState : PlayerState
             
             if (isTouchingCeiling)
             {
-                Debug.Log("<color=red>[LEDGE] → CrouchIdleState (hay techo, marcado JustFinishedLedgeClimb)</color>");
                 stateMachine.ChangeState(player.CrouchIdleState);
             }
             else
             {
-                Debug.Log("<color=green>[LEDGE] → IdleState (sin techo, marcado JustFinishedLedgeClimb)</color>");
                 stateMachine.ChangeState(player.IdleState);
             }
         }

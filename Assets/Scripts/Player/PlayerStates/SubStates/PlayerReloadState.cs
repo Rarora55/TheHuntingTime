@@ -1,32 +1,26 @@
 using UnityEngine;
 
-public class PlayerReloadState : PlayerAbilityState
+public class PlayerReloadState : WeaponAbilityState
 {
-    private PlayerWeaponController weaponController;
     private bool hasReloaded;
     private float reloadStartTime;
     private float reloadDuration = 1.2f;
     
-    public PlayerReloadState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
+    public PlayerReloadState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) 
+        : base(player, stateMachine, playerData, animBoolName)
     {
     }
 
-    public override void Enter()
+    protected override void OnInvalidWeapon()
     {
-        base.Enter();
-        
-        weaponController = player.GetComponent<PlayerWeaponController>();
+        player.InputHandler.ReloadEnded();
+        stateMachine.ChangeState(player.AimState);
+    }
+
+    protected override void OnWeaponStateEnter()
+    {
         hasReloaded = false;
         reloadStartTime = Time.time;
-        
-        player.anim.SetBool("aim", true);
-        
-        if (weaponController == null || weaponController.ActiveWeapon == null)
-        {
-            player.InputHandler.ReloadEnded();
-            stateMachine.ChangeState(player.AimState);
-            return;
-        }
         
         if (!weaponController.CanReload())
         {
@@ -39,34 +33,24 @@ public class PlayerReloadState : PlayerAbilityState
         player.InputHandler.ReloadEnded();
     }
 
-    public override void Exit()
-    {
-        base.Exit();
-    }
-
     public override void LogicUpdate()
     {
         base.LogicUpdate();
         
-        if (!player.InputHandler.AimInput)
-        {
-            player.anim.SetBool("aim", false);
-            
-            bool isGrounded = player.CheckIsGrounded();
-            if (isGrounded && player.CurrentVelocity.y < 0.01f)
-            {
-                stateMachine.ChangeState(player.IdleState);
-            }
-            else
-            {
-                stateMachine.ChangeState(player.AirState);
-            }
+        if (!hasReloaded)
             return;
-        }
         
-        if (hasReloaded && Time.time >= reloadStartTime + reloadDuration)
+        float timeSinceReload = Time.time - reloadStartTime;
+        
+        if (timeSinceReload >= reloadDuration)
         {
-            stateMachine.ChangeState(player.AimState);
+            if (player.InputHandler.AimInput)
+            {
+                stateMachine.ChangeState(player.AimState);
+                return;
+            }
+            
+            isAbilityDone = true;
         }
     }
 

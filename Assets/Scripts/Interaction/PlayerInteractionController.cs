@@ -39,16 +39,33 @@ namespace TheHunt.Interaction
         {
             int numFound = Physics2D.OverlapCircle( transform.position, detectionRadius, contactFilter,detectionResults);
             
+            if (numFound > 0)
+            {
+                Debug.Log($"<color=cyan>[INTERACTION] Found {numFound} colliders in detection radius</color>");
+            }
+            
             IInteractable closestInteractable = null;
             float closestDistance = float.MaxValue;
             
             for (int i = 0; i < numFound; i++)
             {
+                Debug.Log($"<color=cyan>[INTERACTION] Checking collider {i}: {detectionResults[i].gameObject.name}</color>");
+                
                 IInteractable interactable = detectionResults[i].GetComponent<IInteractable>();
+                
+                if (interactable == null)
+                {
+                    Debug.Log($"<color=yellow>[INTERACTION] {detectionResults[i].gameObject.name} does NOT have IInteractable</color>");
+                    continue;
+                }
+                
+                Debug.Log($"<color=green>[INTERACTION] {detectionResults[i].gameObject.name} HAS IInteractable, IsInteractable={interactable.IsInteractable}</color>");
                 
                 if (interactable != null && interactable.IsInteractable)
                 {
                     float distance = Vector2.Distance(transform.position, detectionResults[i].transform.position);
+                    
+                    Debug.Log($"<color=green>[INTERACTION] {detectionResults[i].gameObject.name} distance={distance}</color>");
                     
                     if (distance < closestDistance)
                     {

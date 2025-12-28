@@ -1,31 +1,40 @@
 using UnityEngine;
 using TheHunt.Inventory;
 
-public class PlayerWeaponController : MonoBehaviour
+public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooting, IWeaponReloading
 {
+    #region Dependencies
     [Header("References")]
     [SerializeField] private WeaponInventoryManager weaponManager;
     [SerializeField] private InventorySystem inventorySystem;
     
-    [Header("Current Weapon State")]
-    [SerializeField] private EquipSlot activeWeaponSlot = EquipSlot.Primary;
-    private int currentMagazineAmmo;
-    
     [Header("Shooting Settings")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 0.5f;
-    private float nextFireTime;
+    #endregion
     
+    #region State
+    [Header("Current Weapon State")]
+    [SerializeField] private EquipSlot activeWeaponSlot = EquipSlot.Primary;
+    private int currentMagazineAmmo;
+    private float nextFireTime;
+    #endregion
+    
+    #region Public Properties (IWeaponState)
     public WeaponItemData ActiveWeapon => weaponManager.GetEquippedWeapon(activeWeaponSlot);
     public int CurrentMagazineAmmo => currentMagazineAmmo;
     public int ReserveAmmo => ActiveWeapon != null ? inventorySystem.GetAmmoCount(ActiveWeapon.RequiredAmmo) : 0;
     public EquipSlot ActiveWeaponSlot => activeWeaponSlot;
+    #endregion
     
-    public System.Action<int, int> OnAmmoChanged;
-    public System.Action OnWeaponFired;
-    public System.Action OnWeaponEmpty;
-    public System.Action OnReloadComplete;
+    #region Events
+    public event System.Action<int, int> OnAmmoChanged;
+    public event System.Action OnWeaponFired;
+    public event System.Action OnWeaponEmpty;
+    public event System.Action OnReloadComplete;
+    #endregion
     
+    #region Unity Lifecycle
     void Awake()
     {
         if (weaponManager == null)
@@ -39,8 +48,8 @@ public class PlayerWeaponController : MonoBehaviour
     {
         if (weaponManager != null)
         {
-            weaponManager.OnWeaponEquipped += OnWeaponEquipped;
-            weaponManager.OnWeaponUnequipped += OnWeaponUnequipped;
+            weaponManager.OnWeaponEquipped += HandleWeaponEquipped;
+            weaponManager.OnWeaponUnequipped += HandleWeaponUnequipped;
         }
     }
     
@@ -48,42 +57,73 @@ public class PlayerWeaponController : MonoBehaviour
     {
         if (weaponManager != null)
         {
-            weaponManager.OnWeaponEquipped -= OnWeaponEquipped;
-            weaponManager.OnWeaponUnequipped -= OnWeaponUnequipped;
+            weaponManager.OnWeaponEquipped -= HandleWeaponEquipped;
+            weaponManager.OnWeaponUnequipped -= HandleWeaponUnequipped;
         }
     }
     
     void Start()
     {
         InitializeWeapon();
-        
         StartCoroutine(DelayedUIUpdate());
     }
     
     System.Collections.IEnumerator DelayedUIUpdate()
     {
         yield return new WaitForSeconds(0.5f);
-        
-        Debug.Log("<color=cyan>[WEAPON CONTROLLER] Forcing initial UI update...</color>");
         NotifyAmmoChanged();
     }
+    #endregion
     
+    #region Weapon State Management
     void InitializeWeapon()
     {
-        Debug.Log($"<color=cyan>[WEAPON CONTROLLER] InitializeWeapon called. ActiveWeapon: {ActiveWeapon?.ItemName ?? "NULL"}</color>");
-        
         if (ActiveWeapon != null)
         {
             currentMagazineAmmo = ActiveWeapon.MagazineSize;
-            Debug.Log($"<color=green>[WEAPON CONTROLLER] ✓ Weapon initialized: Magazine set to {currentMagazineAmmo}/{ActiveWeapon.MagazineSize}</color>");
             NotifyAmmoChanged();
-        }
-        else
-        {
-            Debug.LogWarning("<color=yellow>[WEAPON CONTROLLER] Cannot initialize weapon - ActiveWeapon is NULL</color>");
         }
     }
     
+    public void SwitchWeapon(EquipSlot slot)
+    {
+        if (slot == activeWeaponSlot)
+            return;
+            
+        activeWeaponSlot = slot;
+        InitializeWeapon();
+    }
+    
+    public void SwapWeapons()
+    {
+        activeWeaponSlot = activeWeaponSlot == EquipSlot.Primary ? EquipSlot.Secondary : EquipSlot.Primary;
+        InitializeWeapon();
+    }
+    
+    void HandleWeaponEquipped(EquipSlot slot, WeaponItemData weapon)
+    {
+        if (slot == activeWeaponSlot)
+        {
+            InitializeWeapon();
+        }
+    }
+    
+    void HandleWeaponUnequipped(EquipSlot slot)
+    {
+        if (slot == activeWeaponSlot)
+        {
+            currentMagazineAmmo = 0;
+            NotifyAmmoChanged();
+        }
+    }
+    
+    void NotifyAmmoChanged()
+    {
+        OnAmmoChanged?.Invoke(currentMagazineAmmo, ReserveAmmo);
+    }
+    #endregion
+    
+    #region Shooting System (IWeaponShooting)
     public bool CanShoot()
     {
         if (ActiveWeapon == null)
@@ -105,7 +145,6 @@ public class PlayerWeaponController : MonoBehaviour
             if (ActiveWeapon != null && currentMagazineAmmo <= 0)
             {
                 OnWeaponEmpty?.Invoke();
-                Debug.Log("<color=yellow>[WEAPON] Magazine empty! Press R to reload</color>");
             }
             return;
         }
@@ -117,18 +156,16 @@ public class PlayerWeaponController : MonoBehaviour
         
         NotifyAmmoChanged();
         OnWeaponFired?.Invoke();
-        
-        Debug.Log($"<color=green>[WEAPON] Fired! Magazine: {currentMagazineAmmo}/{ActiveWeapon.MagazineSize} | Reserve: {ReserveAmmo}</color>");
     }
     
     void PerformShot()
     {
         if (ActiveWeapon == null)
             return;
-        
-        Debug.Log($"<color=cyan>[WEAPON] Shot performed with {ActiveWeapon.ItemName}</color>");
     }
+    #endregion
     
+    #region Reload System (IWeaponReloading)
     public bool CanReload()
     {
         if (ActiveWeapon == null)
@@ -150,10 +187,6 @@ public class PlayerWeaponController : MonoBehaviour
     {
         if (!CanReload())
         {
-            if (ReserveAmmo <= 0)
-            {
-                Debug.Log($"<color=red>[WEAPON] No reserve ammo for {ActiveWeapon.RequiredAmmo}!</color>");
-            }
             return;
         }
         
@@ -165,69 +198,11 @@ public class PlayerWeaponController : MonoBehaviour
             currentMagazineAmmo += ammoToReload;
             OnReloadComplete?.Invoke();
             NotifyAmmoChanged();
-            
-            Debug.Log($"<color=green>[WEAPON] Reloaded! Magazine: {currentMagazineAmmo}/{ActiveWeapon.MagazineSize} | Reserve: {ReserveAmmo}</color>");
         }
     }
+    #endregion
     
-    public void SwitchWeapon(EquipSlot slot)
-    {
-        if (slot == activeWeaponSlot)
-            return;
-            
-        activeWeaponSlot = slot;
-        InitializeWeapon();
-        
-        Debug.Log($"<color=cyan>[WEAPON] Switched to {activeWeaponSlot} weapon</color>");
-    }
-    
-    public void SwapWeapons()
-    {
-        activeWeaponSlot = activeWeaponSlot == EquipSlot.Primary ? EquipSlot.Secondary : EquipSlot.Primary;
-        InitializeWeapon();
-        
-        Debug.Log($"<color=cyan>[WEAPON] Swapped to {activeWeaponSlot} weapon</color>");
-    }
-    
-    void OnWeaponEquipped(EquipSlot slot, WeaponItemData weapon)
-    {
-        Debug.Log($"<color=cyan>[WEAPON CONTROLLER] OnWeaponEquipped: slot={slot}, weapon={weapon?.ItemName ?? "NULL"}, activeWeaponSlot={activeWeaponSlot}</color>");
-        
-        if (slot == activeWeaponSlot)
-        {
-            Debug.Log($"<color=green>[WEAPON CONTROLLER] ✓ Weapon equipped to active slot - Initializing...</color>");
-            InitializeWeapon();
-        }
-        else
-        {
-            Debug.Log($"<color=yellow>[WEAPON CONTROLLER] Weapon equipped to non-active slot - Skipping initialization</color>");
-        }
-    }
-    
-    void OnWeaponUnequipped(EquipSlot slot)
-    {
-        if (slot == activeWeaponSlot)
-        {
-            currentMagazineAmmo = 0;
-            NotifyAmmoChanged();
-        }
-    }
-    
-    void NotifyAmmoChanged()
-    {
-        Debug.Log($"<color=magenta>[WEAPON CONTROLLER] NotifyAmmoChanged: Magazine={currentMagazineAmmo}, Reserve={ReserveAmmo}</color>");
-        
-        if (OnAmmoChanged != null)
-        {
-            Debug.Log($"<color=magenta>[WEAPON CONTROLLER] ✓ Invoking OnAmmoChanged event (subscribers: {OnAmmoChanged.GetInvocationList().Length})</color>");
-            OnAmmoChanged?.Invoke(currentMagazineAmmo, ReserveAmmo);
-        }
-        else
-        {
-            Debug.LogWarning("<color=yellow>[WEAPON CONTROLLER] OnAmmoChanged has no subscribers!</color>");
-        }
-    }
-    
+    #region Debug Visualization
     void OnDrawGizmosSelected()
     {
         if (firePoint != null && ActiveWeapon != null)
@@ -237,4 +212,5 @@ public class PlayerWeaponController : MonoBehaviour
             Gizmos.DrawLine(firePoint.position, firePoint.position + firePoint.right * ActiveWeapon.AttackRange);
         }
     }
+    #endregion
 }
