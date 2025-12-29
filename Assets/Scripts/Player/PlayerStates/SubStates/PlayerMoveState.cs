@@ -8,6 +8,10 @@ public class PlayerMoveState : PlayerGroundState
     private bool turnStartTime;
     private bool runInput;
     private const float MAX_TURN_DURATION = 0.4f;
+    
+    private PlayerStaminaIntegration staminaIntegration;
+    private StaminaData staminaData;
+    
     public PlayerMoveState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
     }
@@ -24,6 +28,19 @@ public class PlayerMoveState : PlayerGroundState
         base.Enter();
         isTurning = false;
         player.anim.SetBool("turnIt", false);
+        
+        staminaIntegration = player.GetComponent<PlayerStaminaIntegration>();
+        StaminaController controller = player.GetComponent<StaminaController>();
+        
+        if (controller != null)
+        {
+            System.Reflection.FieldInfo field = typeof(StaminaController).GetField("staminaData", 
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (field != null)
+            {
+                staminaData = field.GetValue(controller) as StaminaData;
+            }
+        }
     }
 
     public override void Exit()
@@ -32,6 +49,11 @@ public class PlayerMoveState : PlayerGroundState
         player.anim.SetBool("turnIt", false);
         player.anim.SetBool("isRunning", false);
         isTurning = false;
+        
+        if (staminaIntegration != null)
+        {
+            staminaIntegration.StopRunning();
+        }
     }
 
     public override void LogicUpdate()
@@ -74,9 +96,21 @@ public class PlayerMoveState : PlayerGroundState
         }
         else
         {
-            float currentVelocity = runInput ? playerData.runVelocity : playerData.movementVelocity;
+            bool canRun = staminaIntegration == null || staminaIntegration.CanRun();
+            bool shouldRun = runInput && canRun;
+            
+            if (shouldRun && staminaIntegration != null && staminaData != null)
+            {
+                staminaIntegration.StartRunning(staminaData);
+            }
+            else if (!shouldRun && staminaIntegration != null)
+            {
+                staminaIntegration.StopRunning();
+            }
+            
+            float currentVelocity = shouldRun ? playerData.runVelocity : playerData.movementVelocity;
             player.SetVelocityX(currentVelocity * xInput);
-            player.anim.SetBool("isRunning", runInput);
+            player.anim.SetBool("isRunning", shouldRun);
         }
 
 

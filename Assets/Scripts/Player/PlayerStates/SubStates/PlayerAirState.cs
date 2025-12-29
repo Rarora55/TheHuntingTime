@@ -28,6 +28,16 @@ public class PlayerAirState : PlayerState
         base.Enter();
         player.anim.SetBool("inAir", true);
         player.anim.SetBool("isRunning", false);
+        
+        if (player.CurrentVelocity.y <= 0)
+        {
+            player.RB.gravityScale = playerData.fallGravityScale;
+            Debug.Log($"<color=orange>[AIR STATE] Enter - Cayendo, gravityScale = {playerData.fallGravityScale}</color>");
+        }
+        else
+        {
+            Debug.Log($"<color=cyan>[AIR STATE] Enter - Subiendo, gravityScale actual = {player.RB.gravityScale}</color>");
+        }
     }
 
     public override void Exit()
@@ -69,7 +79,10 @@ public class PlayerAirState : PlayerState
         }
         else if (isTouchingWall && xInput != 0 && xInput == player.FacingRight && !GrabInput)
         {
-            stateMachine.ChangeState(player.WallSlicedState);
+            if (player.CanSlideHere())
+            {
+                stateMachine.ChangeState(player.WallSlicedState);
+            }
         }
         else
         {
@@ -84,6 +97,30 @@ public class PlayerAirState : PlayerState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        ApplyGravityModifiers();
+    }
+
+    private void ApplyGravityModifiers()
+    {
+        if (player.CurrentVelocity.y < 0)
+        {
+            if (player.RB.gravityScale != playerData.fallGravityScale)
+            {
+                player.RB.gravityScale = playerData.fallGravityScale;
+            }
+            
+            if (player.CurrentVelocity.y < -playerData.maxFallSpeed)
+            {
+                player.SetVelocityY(-playerData.maxFallSpeed);
+            }
+        }
+        else if (player.CurrentVelocity.y > 0)
+        {
+            if (player.RB.gravityScale != playerData.jumpGravityScale)
+            {
+                player.RB.gravityScale = playerData.jumpGravityScale;
+            }
+        }
     }
 
 

@@ -13,7 +13,11 @@ MonoBehaviour:
   m_Name: PlayerData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   movementVelocity: 10
+  runVelocity: 12
   JumpVelocity: 14
+  jumpGravityScale: 3.5
+  fallGravityScale: 5
+  maxFallSpeed: 25
   GroundCheckRadius: 0.3
   WhatIsGround:
     serializedVersion: 2

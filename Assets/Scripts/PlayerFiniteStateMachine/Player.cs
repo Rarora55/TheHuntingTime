@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TheHunt.Environment;
 
 
 public class Player : MonoBehaviour
@@ -43,6 +44,12 @@ public class Player : MonoBehaviour
     public Rigidbody2D RB { get; private set; }
     public BoxCollider2D moveCollider { get; private set; }
     public PlayerWeaponController WeaponController { get; private set; }
+    #endregion
+
+    #region Environment Interaction Tracking
+    private IClimbable currentClimbable;
+    private ISlideable currentSlideable;
+    private IJumpZone currentJumpZone;
     #endregion
 
     #region Movements Vectors
@@ -326,6 +333,51 @@ public class Player : MonoBehaviour
             transform.Rotate(0.0f, 180f, 0.0f);
         }
     }
+
+    #region Environment Interaction Methods
+
+    public bool IsInJumpZone() => currentJumpZone != null;
+    public bool CanClimbHere() => currentClimbable != null;
+    public bool CanSlideHere() => currentSlideable != null;
+
+    public IJumpZone GetCurrentJumpZone() => currentJumpZone;
+    public IClimbable GetCurrentClimbable() => currentClimbable;
+    public ISlideable GetCurrentSlideable() => currentSlideable;
+
+    public void SetCurrentJumpZone(IJumpZone zone)
+    {
+        currentJumpZone = zone;
+    }
+
+    public void ClearCurrentJumpZone(IJumpZone zone)
+    {
+        if (currentJumpZone == zone)
+            currentJumpZone = null;
+    }
+
+    public void SetCurrentClimbable(IClimbable climbable)
+    {
+        currentClimbable = climbable;
+    }
+
+    public void ClearCurrentClimbable(IClimbable climbable)
+    {
+        if (currentClimbable == climbable)
+            currentClimbable = null;
+    }
+
+    public void SetCurrentSlideable(ISlideable slideable)
+    {
+        currentSlideable = slideable;
+    }
+
+    public void ClearCurrentSlideable(ISlideable slideable)
+    {
+        if (currentSlideable == slideable)
+            currentSlideable = null;
+    }
+
+    #endregion
 
     private void OnDrawGizmos()
     {

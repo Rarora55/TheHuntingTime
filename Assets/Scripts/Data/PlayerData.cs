@@ -12,6 +12,9 @@ public class PlayerData: ScriptableObject
 
     [Header("Jump State")]
     public float JumpVelocity = 15f;
+    public float jumpGravityScale = 3.5f;
+    public float fallGravityScale = 8f;
+    public float maxFallSpeed = 25f;
 
     [Header("Check Ground")]
     public float GroundCheckRadius = 0.3f;

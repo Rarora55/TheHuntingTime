@@ -1,7 +1,10 @@
 using UnityEngine;
+using TheHunt.Environment;
 
 public class PlayerWallSlicedState : PlayerTouchingWallState
 {
+    private ISlideable currentSlideable;
+    private float slideSpeed;
     
     public PlayerWallSlicedState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -15,8 +18,27 @@ public class PlayerWallSlicedState : PlayerTouchingWallState
     public override void Enter()
     {
         base.Enter();
+
+        if (!player.CanSlideHere())
+        {
+            Debug.LogWarning("<color=red>[WALLSLIDE] No hay superficie deslizable, cancelando slide</color>");
+            stateMachine.ChangeState(player.AirState);
+            return;
+        }
+
+        currentSlideable = player.GetCurrentSlideable();
+        
+        if (!currentSlideable.CanSlide(player))
+        {
+            Debug.LogWarning("<color=red>[WALLSLIDE] La superficie no permite deslizamiento, cancelando</color>");
+            stateMachine.ChangeState(player.AirState);
+            return;
+        }
+
+        slideSpeed = currentSlideable.GetSlideSpeed();
         player.SetVelocityX(0);
-        Debug.Log("<color=magenta>[WALLSLIDE] Enter - Deslizando por pared</color>");
+        
+        Debug.Log($"<color=magenta>[WALLSLIDE] Enter - Deslizando a velocidad {slideSpeed} (ángulo: {currentSlideable.GetSurfaceAngle()}°)</color>");
     }
 
    
@@ -26,6 +48,16 @@ public class PlayerWallSlicedState : PlayerTouchingWallState
         xInput = player.InputHandler.NormInputX;
         yInput = player.InputHandler.NormInputY;
         grabInput = player.InputHandler.GrabInput;
+
+        if (!player.CanSlideHere())
+        {
+            Debug.LogWarning("<color=red>[WALLSLIDE] -> AirState (perdió contacto con superficie deslizable)</color>");
+            stateMachine.ChangeState(player.AirState);
+            return;
+        }
+
+        currentSlideable = player.GetCurrentSlideable();
+        slideSpeed = currentSlideable.GetSlideSpeed();
         
         Debug.Log($"[WALLSLIDE] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | FacingRight:{player.FacingRight} | Grab:{grabInput} | Pressing:{xInput == player.FacingRight} | Vel.y:{player.CurrentVelocity.y:F2}");
         
@@ -46,7 +78,7 @@ public class PlayerWallSlicedState : PlayerTouchingWallState
         }
         else
         {
-            player.SetVelocityY(-playerData.WallSlicedVelocity);
+            player.SetVelocityY(-slideSpeed);
             player.SetVelocityX(0);
         }
     }

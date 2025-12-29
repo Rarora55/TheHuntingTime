@@ -13,6 +13,8 @@ public class PlayerLandState : PlayerGroundState
         base.Enter();
         player.anim.SetBool("isRunning", false);
         
+        player.RB.gravityScale = 1f;
+        
         PlayerHealthIntegration healthIntegration = player.GetComponent<PlayerHealthIntegration>();
         if (healthIntegration != null)
         {
