@@ -37,6 +37,14 @@ namespace TheHunt.Equipment
             }
         }
         
+        void Update()
+        {
+            if (UnityEngine.InputSystem.Keyboard.current.lKey.wasPressedThisFrame)
+            {
+                ToggleFlashlightManual();
+            }
+        }
+        
         void OnToggleFlashlight(InputAction.CallbackContext context)
         {
             if (equipmentController != null)

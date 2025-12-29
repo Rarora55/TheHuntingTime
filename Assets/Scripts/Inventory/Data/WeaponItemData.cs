@@ -11,6 +11,9 @@ namespace TheHunt.Inventory
         [SerializeField] private float attackSpeed = 1f;
         [SerializeField] private WeaponType weaponType;
 
+        [Header("Tool Configuration")]
+        [SerializeField] private ToolType toolType = ToolType.None;
+
         [Header("Ammo Configuration")]
         [SerializeField] private AmmoType requiredAmmo = AmmoType.None;
         [SerializeField] private int magazineSize = 12;
@@ -25,6 +28,7 @@ namespace TheHunt.Inventory
         public float AttackRange => attackRange;
         public float AttackSpeed => attackSpeed;
         public WeaponType WeaponType => weaponType;
+        public ToolType ToolType => toolType;
         public AmmoType RequiredAmmo => requiredAmmo;
         public int MagazineSize => magazineSize;
         public int AmmoPerShot => ammoPerShot;

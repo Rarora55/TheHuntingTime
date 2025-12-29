@@ -78,7 +78,8 @@ namespace TheHunt.Equipment
             if (weapon == null)
                 return false;
             
-            return weapon.ItemName.Contains("Flashlight") || weapon.ItemName.Contains("Linterna");
+            return weapon.WeaponType == WeaponType.Tool && 
+                   weapon.ToolType == ToolType.Flashlight;
         }
         
         void EquipFlashlight()

@@ -4,6 +4,7 @@ using TheHunt.Interaction;
 using TheHunt.Inventory;
 using TheHunt.UI;
 using TheHunt.Input;
+using TheHunt.Equipment;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class PlayerInputHandler : MonoBehaviour
     private InventoryUIController inventoryUIController;
     private DialogService dialogService;
     private PlayerWeaponController weaponController;
+    private SecondaryEquipmentController secondaryEquipmentController;
 
     private void Awake()
     {
@@ -46,6 +48,7 @@ public class PlayerInputHandler : MonoBehaviour
         inventoryUIController = GetComponent<InventoryUIController>();
         dialogService = FindFirstObjectByType<DialogService>();
         weaponController = GetComponent<PlayerWeaponController>();
+        secondaryEquipmentController = GetComponent<SecondaryEquipmentController>();
     }
 
     private void Update()
@@ -318,6 +321,20 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.canceled)
         {
             AimInput = false;
+        }
+    }
+    
+    public void OnFlashlightInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+            return;
+            
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+            return;
+        
+        if (context.performed && secondaryEquipmentController != null)
+        {
+            secondaryEquipmentController.ToggleFlashlight();
         }
     }
 
