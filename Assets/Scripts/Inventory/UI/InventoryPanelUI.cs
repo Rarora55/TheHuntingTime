@@ -122,8 +122,6 @@ namespace TheHunt.Inventory
                     Debug.LogError($"[INVENTORY UI] Slot prefab missing InventorySlotUI component!");
                 }
             }
-
-            Debug.Log($"<color=cyan>[INVENTORY UI] Created {slotUIList.Count} slots</color>");
         }
 
         private void RefreshAllSlots()
@@ -146,7 +144,6 @@ namespace TheHunt.Inventory
             if (slotIndex >= 0 && slotIndex < slotUIList.Count)
             {
                 slotUIList[slotIndex].UpdateSlot(item);
-                Debug.Log($"<color=cyan>[INVENTORY UI] Updated slot {slotIndex}</color>");
             }
         }
 

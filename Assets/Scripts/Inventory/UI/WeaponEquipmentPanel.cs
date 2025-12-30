@@ -44,7 +44,6 @@ namespace TheHunt.Inventory
             if (playerWeaponController != null)
             {
                 playerWeaponController.OnAmmoChanged += OnAmmoChanged;
-                Debug.Log("<color=green>[WEAPON EQUIPMENT PANEL] ✓ Subscribed to OnAmmoChanged event</color>");
             }
             else
             {

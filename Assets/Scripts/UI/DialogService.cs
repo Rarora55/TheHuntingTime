@@ -37,22 +37,11 @@ namespace TheHunt.UI
         
         void Awake()
         {
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] ========== AWAKE ==========</color>");
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] usePrefab: {usePrefab}</color>");
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] confirmationDialogPrefab: {(confirmationDialogPrefab != null ? confirmationDialogPrefab.name : "NULL")}</color>");
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] infoDialogPrefab: {(infoDialogPrefab != null ? infoDialogPrefab.name : "NULL")}</color>");
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] simpleDialog: {(simpleDialog != null ? "assigned" : "NULL")}</color>");
-            
             if (usePrefab)
             {
-                Debug.Log("<color=cyan>[DIALOG SERVICE] Using PREFAB mode</color>");
-                
                 if (confirmationDialogPrefab != null && confirmationDialogInstance == null)
                 {
-                    Debug.Log("<color=cyan>[DIALOG SERVICE] Instantiating confirmation dialog prefab...</color>");
-                    
                     GameObject instance = Instantiate(confirmationDialogPrefab, transform);
-                    Debug.Log($"<color=cyan>[DIALOG SERVICE] Instance created: {instance.name}</color>");
                     
                     confirmationDialogInstance = instance.GetComponent<PrefabConfirmationDialog>();
                     
@@ -68,10 +57,6 @@ namespace TheHunt.UI
                         }
                         Debug.LogError($"[DIALOG SERVICE] Components on instance: {componentList}");
                     }
-                    else
-                    {
-                        Debug.Log("<color=green>[DIALOG SERVICE] Connected to PrefabConfirmationDialog ✓</color>");
-                    }
                 }
                 else if (confirmationDialogPrefab == null)
                 {
@@ -80,20 +65,13 @@ namespace TheHunt.UI
                 
                 if (infoDialogPrefab != null && infoDialogInstance == null)
                 {
-                    Debug.Log("<color=cyan>[DIALOG SERVICE] Instantiating info dialog prefab...</color>");
-                    
                     GameObject instance = Instantiate(infoDialogPrefab, transform);
-                    Debug.Log($"<color=cyan>[DIALOG SERVICE] Instance created: {instance.name}</color>");
                     
                     infoDialogInstance = instance.GetComponent<InfoDialog>();
                     
                     if (infoDialogInstance == null)
                     {
                         Debug.LogError("[DIALOG SERVICE] Prefab does not have InfoDialog component!");
-                    }
-                    else
-                    {
-                        Debug.Log("<color=green>[DIALOG SERVICE] Connected to InfoDialog ✓</color>");
                     }
                 }
                 else if (infoDialogPrefab == null)
@@ -103,8 +81,6 @@ namespace TheHunt.UI
             }
             else
             {
-                Debug.Log("<color=cyan>[DIALOG SERVICE] Using CODE-BASED mode</color>");
-                
                 if (simpleDialog == null)
                 {
                     simpleDialog = GetComponent<SimpleConfirmationDialog>();
@@ -118,14 +94,8 @@ namespace TheHunt.UI
                     {
                         Debug.LogError("[DIALOG SERVICE] No SimpleConfirmationDialog found!");
                     }
-                    else
-                    {
-                        Debug.Log("<color=green>[DIALOG SERVICE] Connected to SimpleConfirmationDialog ✓</color>");
-                    }
                 }
             }
-            
-            Debug.Log($"<color=yellow>[DIALOG SERVICE] ===========================</color>");
         }
         
         public void ShowConfirmation(string title, string description, Action onConfirm, Action onCancel = null)

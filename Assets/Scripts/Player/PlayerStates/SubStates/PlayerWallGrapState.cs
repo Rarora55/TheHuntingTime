@@ -48,8 +48,6 @@ public class PlayerWallGrapState : PlayerTouchingWallState
             staminaIntegration.StartGrappingWall(staminaData);
         }
         
-        IClimbable climbable = player.GetCurrentClimbable();
-        Debug.Log($"<color=orange>[WALLGRAB] Enter - Agarrado a {climbable.GetClimbType()}</color>");
     }
 
     public override void LogicUpdate()
@@ -60,7 +58,6 @@ public class PlayerWallGrapState : PlayerTouchingWallState
 
         if (!player.CanClimbHere())
         {
-            Debug.LogWarning("<color=red>[WALLGRAB] -> AirState (perdió contacto con objeto escalable)</color>");
             if (staminaIntegration != null)
             {
                 staminaIntegration.StopGrappingWall();
@@ -71,11 +68,8 @@ public class PlayerWallGrapState : PlayerTouchingWallState
         
         HoldPosition();
         
-        Debug.Log($"[WALLGRAB] Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | xIn:{xInput} | yIn:{yInput} | Grab:{grabInput} | FacingRight:{player.FacingRight}");
-
         if (!isTouchingWall)
         {
-            Debug.Log("[WALLGRAB] -> AirState (no toca pared)");
             if (staminaIntegration != null)
             {
                 staminaIntegration.StopGrappingWall();
@@ -84,7 +78,6 @@ public class PlayerWallGrapState : PlayerTouchingWallState
         }
         else if (yInput > 0)
         {
-            Debug.Log("[WALLGRAB] -> WallClimbState (subiendo)");
             if (staminaIntegration != null)
             {
                 staminaIntegration.StopGrappingWall();
@@ -96,16 +89,11 @@ public class PlayerWallGrapState : PlayerTouchingWallState
             IClimbable climbable = player.GetCurrentClimbable();
             if (climbable.AllowsWallSlide())
             {
-                Debug.Log("[WALLGRAB] -> WallSlicedState (bajando con Grab - objeto permite slide)");
                 if (staminaIntegration != null)
                 {
                     staminaIntegration.StopGrappingWall();
                 }
                 stateMachine.ChangeState(player.WallSlicedState);
-            }
-            else
-            {
-                Debug.Log("[WALLGRAB] -> Permanece agarrado (objeto no permite slide hacia abajo)");
             }
         }
         else if (!grabInput)
@@ -118,18 +106,15 @@ public class PlayerWallGrapState : PlayerTouchingWallState
             
             if (climbable.AllowsWallSlide() && xInput != 0 && xInput == player.FacingRight)
             {
-                Debug.Log("[WALLGRAB] -> WallSlicedState (soltó Grab pero el objeto permite slide)");
                 stateMachine.ChangeState(player.WallSlicedState);
             }
             else
             {
-                Debug.Log("[WALLGRAB] -> AirState (soltó Grab y objeto no permite slide)");
                 stateMachine.ChangeState(player.AirState);
             }
         }
         else if (staminaIntegration != null && !staminaIntegration.CanGrapWall())
         {
-            Debug.Log("<color=red>[WALLGRAB] -> AirState (sin estamina para seguir agarrado)</color>");
             staminaIntegration.StopGrappingWall();
             stateMachine.ChangeState(player.AirState);
         }

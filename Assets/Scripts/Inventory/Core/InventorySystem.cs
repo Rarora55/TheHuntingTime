@@ -88,16 +88,9 @@ namespace TheHunt.Inventory
 
             if (itemData.IsStackable)
             {
-                Debug.Log($"<color=cyan>[INVENTORY] Item is stackable. Looking for existing stacks of {itemData.ItemName} (max stack: {itemData.MaxStackSize})...</color>");
-                
                 for (int i = 0; i < MAX_SLOTS; i++)
                 {
                     ItemInstance item = inventoryData.GetItem(i);
-                    if (item != null && item.itemData != null)
-                    {
-                        bool isSameItem = item.itemData == itemData;
-                        Debug.Log($"<color=cyan>[INVENTORY] Slot {i}: {item.itemData.ItemName}, IsSame={isSameItem}, Quantity={item.quantity}/{item.itemData.MaxStackSize}</color>");
-                    }
                     
                     if (item != null &&
                         item.itemData == itemData &&
@@ -112,16 +105,9 @@ namespace TheHunt.Inventory
                         
                         quantityToAdd -= toAdd;
                         
-                        Debug.Log($"<color=green>[INVENTORY] Stacked {toAdd} {itemData.ItemName}. Total: {item.quantity}</color>");
-                        
                         if (quantityToAdd <= 0)
                             return true;
                     }
-                }
-                
-                if (quantityToAdd > 0)
-                {
-                    Debug.Log($"<color=yellow>[INVENTORY] Still need to add {quantityToAdd} {itemData.ItemName} after stacking</color>");
                 }
             }
 
@@ -130,13 +116,8 @@ namespace TheHunt.Inventory
                 int emptySlot = FindEmptySlot();
                 if (emptySlot == -1)
                 {
-                    Debug.Log("<color=red>[INVENTORY] ========== INVENTORY IS FULL ==========</color>");
-                    Debug.Log($"<color=red>[INVENTORY] Attempting to add {quantityToAdd} {itemData.ItemName}</color>");
-                    Debug.Log($"<color=red>[INVENTORY] OnInventoryFull has {(OnInventoryFull != null ? OnInventoryFull.GetInvocationList().Length : 0)} subscribers</color>");
-                    
                     OnInventoryFull?.Invoke();
                     
-                    Debug.Log("<color=yellow>[INVENTORY] Inventory is full!</color>");
                     return quantityToAdd < (itemData is AmmoItemData ammo ? ammo.AmmoAmount : 1);
                 }
 
@@ -145,8 +126,6 @@ namespace TheHunt.Inventory
                 ItemInstance newItem = new ItemInstance(itemData, stackSize);
                 inventoryData.SetItem(emptySlot, newItem);
                 OnItemAdded?.Invoke(emptySlot, newItem);
-                
-                Debug.Log($"<color=green>[INVENTORY] Added {stackSize} {itemData.ItemName} to slot {emptySlot}</color>");
                 
                 quantityToAdd -= stackSize;
                 
@@ -174,12 +153,10 @@ namespace TheHunt.Inventory
             if (item.quantity <= 0)
             {
                 inventoryData.SetItem(slotIndex, null);
-                Debug.Log($"<color=orange>[INVENTORY] Removed {item.itemData.ItemName} completely from slot {slotIndex}</color>");
             }
             else
             {
                 inventoryData.SetItem(slotIndex, item);
-                Debug.Log($"<color=orange>[INVENTORY] Removed {quantity} {item.itemData.ItemName}. Remaining: {item.quantity}</color>");
             }
 
             OnItemRemoved?.Invoke(slotIndex, item);
@@ -240,15 +217,6 @@ namespace TheHunt.Inventory
             
             bool success = remaining == 0;
             
-            if (success)
-            {
-                Debug.Log($"<color=green>[INVENTORY] Successfully removed {quantity} {itemData.ItemName}</color>");
-            }
-            else
-            {
-                Debug.LogWarning($"<color=yellow>[INVENTORY] Could not remove {quantity} {itemData.ItemName}, only had {quantity - remaining}</color>");
-            }
-            
             return success;
         }
 
@@ -266,7 +234,6 @@ namespace TheHunt.Inventory
         {
             if (CurrentItem == null)
             {
-                Debug.Log("<color=yellow>[INVENTORY] No item selected</color>");
                 return;
             }
 
@@ -274,7 +241,6 @@ namespace TheHunt.Inventory
             {
                 if (!usable.CanUse(gameObject))
                 {
-                    Debug.Log($"<color=yellow>[INVENTORY] Cannot use {CurrentItem.itemData.ItemName}</color>");
                     return;
                 }
 
@@ -285,10 +251,6 @@ namespace TheHunt.Inventory
                 {
                     RemoveItem(inventoryData.SelectedIndex, 1);
                 }
-            }
-            else
-            {
-                Debug.Log($"<color=yellow>[INVENTORY] {CurrentItem.itemData.ItemName} is not usable</color>");
             }
         }
 

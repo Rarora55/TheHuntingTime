@@ -28,7 +28,6 @@ namespace TheHunt.Environment
             
             if (climbCollider != null && !climbCollider.isTrigger)
             {
-                Debug.LogWarning($"[CLIMBABLE] {name}: Collider should be a trigger. Setting isTrigger = true");
                 climbCollider.isTrigger = true;
             }
         }
@@ -42,7 +41,6 @@ namespace TheHunt.Environment
                 {
                     currentPlayer = player;
                     player.SetCurrentClimbable(this);
-                    Debug.Log($"<color=lime>[CLIMBABLE] Player entró en zona de {climbType}</color>");
                 }
             }
         }
@@ -56,7 +54,6 @@ namespace TheHunt.Environment
                 {
                     player.ClearCurrentClimbable(this);
                     currentPlayer = null;
-                    Debug.Log($"<color=yellow>[CLIMBABLE] Player salió de zona de {climbType}</color>");
                 }
             }
         }
@@ -73,11 +70,8 @@ namespace TheHunt.Environment
         {
             if (!canBePickedUp || itemData == null)
             {
-                Debug.LogWarning($"[CLIMBABLE] {name} cannot be picked up");
                 return;
             }
-
-            Debug.Log($"<color=cyan>[CLIMBABLE] {player.name} recogió {climbType}</color>");
             
             if (currentPlayer == player)
             {

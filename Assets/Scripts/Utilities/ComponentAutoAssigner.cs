@@ -12,7 +12,6 @@ namespace TheHunt.Utilities
                 T component = taggedObject.GetComponent<T>();
                 if (component != null)
                 {
-                    Debug.Log($"<color=green>[AUTO ASSIGNER] Found {typeof(T).Name} on GameObject with tag '{tag}'</color>");
                     return component;
                 }
             }
@@ -20,7 +19,6 @@ namespace TheHunt.Utilities
             T sceneComponent = Object.FindFirstObjectByType<T>();
             if (sceneComponent != null)
             {
-                Debug.Log($"<color=yellow>[AUTO ASSIGNER] Found {typeof(T).Name} in scene (no tag match)</color>");
                 return sceneComponent;
             }
             
@@ -32,7 +30,6 @@ namespace TheHunt.Utilities
         {
             if (existingComponent != null)
             {
-                Debug.Log($"<color=cyan>[AUTO ASSIGNER] Using existing {typeof(T).Name} reference</color>");
                 return existingComponent;
             }
 

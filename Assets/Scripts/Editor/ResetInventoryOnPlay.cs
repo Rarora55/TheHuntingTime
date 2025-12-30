@@ -27,10 +27,6 @@ namespace TheHuntEditor
         {
             IsEnabled = !IsEnabled;
             Menu.SetChecked(MENU_NAME, IsEnabled);
-            
-            Debug.Log(IsEnabled 
-                ? "<color=green>[AUTO RESET] ✓ Inventory will reset on Play Mode</color>" 
-                : "<color=yellow>[AUTO RESET] Inventory reset disabled</color>");
         }
         
         private static void OnPlayModeStateChanged(PlayModeStateChange state)
@@ -73,11 +69,6 @@ namespace TheHuntEditor
             }
             
             AssetDatabase.SaveAssets();
-            
-            if (resetCount > 0)
-            {
-                Debug.Log($"<color=cyan>[RESET] ✓ Reset {resetCount} InventoryDataSO asset(s)</color>");
-            }
         }
     }
 }

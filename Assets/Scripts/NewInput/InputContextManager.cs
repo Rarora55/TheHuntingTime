@@ -21,13 +21,11 @@ namespace TheHunt.Input
         void Awake()
         {
             PushContext(InputContext.Gameplay);
-            Debug.Log("<color=green>[INPUT CONTEXT] ✓ Initialized with Gameplay context</color>");
         }
         
         public void PushContext(InputContext context)
         {
             contextStack.Push(context);
-            Debug.Log($"<color=cyan>[INPUT CONTEXT] Pushed: {context} (Stack: {contextStack.Count})</color>");
         }
         
         public void PopContext()
@@ -35,7 +33,6 @@ namespace TheHunt.Input
             if (contextStack.Count > 1)
             {
                 InputContext popped = contextStack.Pop();
-                Debug.Log($"<color=yellow>[INPUT CONTEXT] Popped: {popped} (Stack: {contextStack.Count})</color>");
             }
             else
             {
@@ -57,7 +54,6 @@ namespace TheHunt.Input
         {
             contextStack.Clear();
             PushContext(InputContext.Gameplay);
-            Debug.Log("<color=magenta>[INPUT CONTEXT] Reset to Gameplay</color>");
         }
     }
 }

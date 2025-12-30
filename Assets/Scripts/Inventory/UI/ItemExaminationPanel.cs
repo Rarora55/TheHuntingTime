@@ -48,15 +48,12 @@ namespace TheHunt.Inventory
 
             if (!itemData.CanBeExamined)
             {
-                Debug.LogWarning($"<color=yellow>[EXAMINE PANEL] {itemData.ItemName} cannot be examined!</color>");
                 return;
             }
 
             currentItem = itemData;
             UpdateDisplay();
             Show();
-
-            Debug.Log($"<color=cyan>[EXAMINE PANEL] Showing {itemData.ItemName}</color>");
         }
 
         public void Hide(bool immediate = false)
@@ -75,7 +72,6 @@ namespace TheHunt.Inventory
             }
 
             currentItem = null;
-            Debug.Log("<color=cyan>[EXAMINE PANEL] Hidden</color>");
         }
 
         private void Show()

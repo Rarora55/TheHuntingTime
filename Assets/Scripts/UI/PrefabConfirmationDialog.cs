@@ -32,13 +32,6 @@ namespace TheHunt.UI
                 inputContextManager = FindFirstObjectByType<InputContextManager>();
             }
             
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] ========== AWAKE ==========</color>");
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] panel: {(panel != null ? panel.name : "NULL")}</color>");
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] titleText: {(titleText != null ? "OK" : "NULL")}</color>");
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] descriptionText: {(descriptionText != null ? "OK" : "NULL")}</color>");
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] yesButton: {(yesButton != null ? yesButton.name : "NULL")}</color>");
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] noButton: {(noButton != null ? noButton.name : "NULL")}</color>");
-            
             if (yesButton != null)
                 yesButton.onClick.AddListener(OnYesClicked);
             
@@ -47,8 +40,6 @@ namespace TheHunt.UI
             
             SetupButtonNavigation();
             Hide();
-            
-            Debug.Log($"<color=yellow>[PREFAB DIALOG] ===========================</color>");
         }
         
         void SetupButtonNavigation()
@@ -201,19 +192,16 @@ namespace TheHunt.UI
             onConfirm = null;
             onCancel = null;
             
-            Debug.Log("<color=yellow>[PREFAB DIALOG] Hidden</color>");
         }
         
         void OnYesClicked()
         {
-            Debug.Log("<color=green>[PREFAB DIALOG] YES clicked</color>");
             onConfirm?.Invoke();
             Hide();
         }
         
         void OnNoClicked()
         {
-            Debug.Log("<color=yellow>[PREFAB DIALOG] NO clicked</color>");
             onCancel?.Invoke();
             Hide();
         }

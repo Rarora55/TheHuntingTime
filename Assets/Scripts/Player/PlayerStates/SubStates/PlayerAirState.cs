@@ -32,11 +32,6 @@ public class PlayerAirState : PlayerState
         if (player.CurrentVelocity.y <= 0)
         {
             player.RB.gravityScale = playerData.fallGravityScale;
-            Debug.Log($"<color=orange>[AIR STATE] Enter - Cayendo, gravityScale = {playerData.fallGravityScale}</color>");
-        }
-        else
-        {
-            Debug.Log($"<color=cyan>[AIR STATE] Enter - Subiendo, gravityScale actual = {player.RB.gravityScale}</color>");
         }
     }
 

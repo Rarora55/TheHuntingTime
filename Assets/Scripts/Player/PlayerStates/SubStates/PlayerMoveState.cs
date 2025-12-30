@@ -63,7 +63,6 @@ public class PlayerMoveState : PlayerGroundState
         
         if (player.JustFinishedLedgeClimb)
         {
-            Debug.Log("<color=yellow>[MOVE] Reseteando JustFinishedLedgeClimb flag AL INICIO</color>");
             player.JustFinishedLedgeClimb = false;
         }
 

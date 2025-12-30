@@ -49,7 +49,6 @@ namespace TheHunt.Inventory
 
             if (totalAvailable < amount)
             {
-                Debug.LogWarning($"<color=yellow>[AMMO QUERY] Not enough {ammoType} ammo. Need: {amount}, Have: {totalAvailable}</color>");
                 return false;
             }
 
@@ -69,7 +68,6 @@ namespace TheHunt.Inventory
                 }
             }
 
-            Debug.Log($"<color=green>[AMMO QUERY] Consumed {amount} {ammoType} ammo. Remaining: {GetAmmoCount(ammoType)}</color>");
             return true;
         }
 
@@ -80,12 +78,10 @@ namespace TheHunt.Inventory
             if (item.quantity <= 0)
             {
                 inventoryData.SetItem(slotIndex, null);
-                Debug.Log($"<color=orange>[AMMO QUERY] Removed {item.itemData.ItemName} completely from slot {slotIndex}</color>");
             }
             else
             {
                 inventoryData.SetItem(slotIndex, item);
-                Debug.Log($"<color=orange>[AMMO QUERY] Removed {quantity} {item.itemData.ItemName}. Remaining: {item.quantity}</color>");
             }
 
             onItemRemovedCallback?.Invoke(slotIndex, quantity);

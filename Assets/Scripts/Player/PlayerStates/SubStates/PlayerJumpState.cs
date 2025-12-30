@@ -39,7 +39,6 @@ public class PlayerJumpState : PlayerAbilityState
                 {
                     if (!staminaIntegration.TryConsumeJumpStamina(staminaData))
                     {
-                        Debug.Log("<color=red>[JUMP] Not enough stamina! Jump cancelled.</color>");
                         stateMachine.ChangeState(player.IdleState);
                         return;
                     }
@@ -58,13 +57,10 @@ public class PlayerJumpState : PlayerAbilityState
                 player.SetVelocityX(jumpForce.x);
                 player.SetVelocityY(jumpForce.y);
                 isContextualJump = true;
-                
-                Debug.Log($"<color=yellow>[JUMP ZONE] Salto contextual: {usedJumpZone.GetJumpType()} en dirección {jumpDirection} con fuerza {jumpForce}</color>");
             }
             else
             {
                 PerformNormalJump();
-                Debug.Log($"<color=orange>[JUMP ZONE] Dirección {jumpDirection} no permitida, usando salto normal</color>");
             }
         }
         else
@@ -78,7 +74,6 @@ public class PlayerJumpState : PlayerAbilityState
         player.SetVelocityY(playerData.JumpVelocity);
         player.RB.gravityScale = playerData.jumpGravityScale;
         isContextualJump = false;
-        Debug.Log($"<color=cyan>[JUMP] Salto normal con velocidad {playerData.JumpVelocity}</color>");
     }
 
     private JumpDirection DetermineJumpDirection(int xInput, int yInput)

@@ -56,8 +56,6 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         {
             staminaIntegration.StartClimbing(staminaData);
         }
-        
-        Debug.Log($"<color=lime>[WALLCLIMB] Enter - Escalando {currentClimbable.GetClimbType()} desde Y:{startYPosition:F2} a velocidad {climbSpeed}</color>");
     }
 
     public override void LogicUpdate()
@@ -68,7 +66,6 @@ public class PlayerWallClimbState : PlayerTouchingWallState
 
         if (!player.CanClimbHere())
         {
-            Debug.LogWarning("<color=red>[WALLCLIMB] -> AirState (perdió contacto con objeto escalable)</color>");
             if (staminaIntegration != null)
             {
                 staminaIntegration.StopClimbing();
@@ -84,11 +81,8 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         bool canTriggerLedge = distanceClimbed >= MIN_CLIMB_DISTANCE;
         bool isValidLedge = player.Collision.IsValidLedge(MIN_LEDGE_HEIGHT);
 
-        Debug.Log($"[WALLCLIMB] Type:{currentClimbable.GetClimbType()} | Ground:{isGrounded} | Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Climbed:{distanceClimbed:F2} | CanTrigger:{canTriggerLedge} | ValidLedge:{isValidLedge} | hasTriggered:{hasTriggeredLedge}");
-
         if (isTouchingWall && !isTouchingLedge && yInput == 1 && grabInput && !hasTriggeredLedge && canTriggerLedge && isValidLedge)
         {
-            Debug.Log("<color=yellow>[WALLCLIMB] -> WallLedgeState (llegó al borde válido después de escalar suficiente)</color>");
             hasTriggeredLedge = true;
             if (staminaIntegration != null)
             {
@@ -100,7 +94,6 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         
         if (!isTouchingWall)
         {
-            Debug.Log("[WALLCLIMB] -> AirState (no toca pared)");
             if (staminaIntegration != null)
             {
                 staminaIntegration.StopClimbing();
@@ -118,12 +111,10 @@ public class PlayerWallClimbState : PlayerTouchingWallState
             
             if (currentClimbable.AllowsWallSlide() && xInput != 0 && xInput == player.FacingRight)
             {
-                Debug.Log("[WALLCLIMB] -> WallSlicedState (soltó Grab pero el objeto permite deslizamiento)");
                 stateMachine.ChangeState(player.WallSlicedState);
             }
             else
             {
-                Debug.Log("[WALLCLIMB] -> AirState (soltó Grab y el objeto no permite deslizamiento)");
                 stateMachine.ChangeState(player.AirState);
             }
             return;
@@ -131,7 +122,6 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         
         if (yInput != 1)
         {
-            Debug.Log("[WALLCLIMB] -> WallGrapState (dejó de subir pero mantiene Grab)");
             if (staminaIntegration != null)
             {
                 staminaIntegration.StopClimbing();
@@ -142,7 +132,6 @@ public class PlayerWallClimbState : PlayerTouchingWallState
         
         if (staminaIntegration != null && !staminaIntegration.CanClimb())
         {
-            Debug.Log("<color=red>[WALLCLIMB] -> WallGrapState (sin estamina para continuar escalando)</color>");
             staminaIntegration.StopClimbing();
             stateMachine.ChangeState(player.WallGrapState);
             return;

@@ -29,7 +29,6 @@ namespace TheHunt.UI
                 inputContextManager = FindFirstObjectByType<InputContextManager>();
             }
             
-            Debug.Log("<color=yellow>[INFO DIALOG] Awake</color>");
             Hide();
         }
         
@@ -40,13 +39,11 @@ namespace TheHunt.UI
             if (titleText != null)
             {
                 titleText.text = title;
-                Debug.Log($"<color=cyan>[INFO DIALOG] Title set to: {title}</color>");
             }
             
             if (messageText != null)
             {
                 messageText.text = message;
-                Debug.Log($"<color=cyan>[INFO DIALOG] Message set to: {message}</color>");
             }
             
             if (closeHintText != null)
@@ -57,18 +54,11 @@ namespace TheHunt.UI
             if (panel != null)
             {
                 panel.SetActive(true);
-                Debug.Log("<color=green>[INFO DIALOG] Panel activated</color>");
             }
             
             isOpen = true;
             
             inputContextManager?.PushContext(InputContext.Dialog);
-            
-            Debug.Log($"<color=green>[INFO DIALOG] ========== SHOWN ==========</color>");
-            Debug.Log($"<color=green>[INFO DIALOG] Title: {title}</color>");
-            Debug.Log($"<color=green>[INFO DIALOG] Message: {message}</color>");
-            Debug.Log($"<color=green>[INFO DIALOG] Press E to close</color>");
-            Debug.Log($"<color=green>[INFO DIALOG] ===========================</color>");
         }
         
         public void Hide()
@@ -86,8 +76,6 @@ namespace TheHunt.UI
             
             onClose?.Invoke();
             onClose = null;
-            
-            Debug.Log("<color=yellow>[INFO DIALOG] Hidden</color>");
         }
         
         public void OnConfirmInput()

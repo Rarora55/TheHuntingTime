@@ -32,8 +32,6 @@ namespace TheHunt.Inventory
             
             OnAmmoChanged?.Invoke(type, inventoryData.GetAmmo(type));
             OnAmmoAdded?.Invoke(type, amount);
-            
-            Debug.Log($"<color=green>[AMMO] Added {amount} {type}. Total: {inventoryData.GetAmmo(type)}</color>");
         }
 
         public bool RemoveAmmo(AmmoType type, int amount)
@@ -52,7 +50,6 @@ namespace TheHunt.Inventory
                 OnAmmoEmpty?.Invoke(type);
             }
             
-            Debug.Log($"<color=yellow>[AMMO] Removed {amount} {type}. Remaining: {inventoryData.GetAmmo(type)}</color>");
             return true;
         }
 
@@ -82,8 +79,6 @@ namespace TheHunt.Inventory
 
             inventoryData.SetAmmo(type, Mathf.Max(0, amount));
             OnAmmoChanged?.Invoke(type, inventoryData.GetAmmo(type));
-            
-            Debug.Log($"<color=cyan>[AMMO] Set {type} to {inventoryData.GetAmmo(type)}</color>");
         }
 
         public Dictionary<AmmoType, int> GetAllAmmo()

@@ -47,26 +47,20 @@ public class PlayerStaminaIntegration : MonoBehaviour
     
     void HandleStaminaDepleted()
     {
-        Debug.Log("<color=red>[PLAYER STAMINA] Player exhausted! No more stamina actions allowed.</color>");
-        
         player.anim.SetBool("isExhausted", true);
     }
     
     void HandleStaminaRecovered()
     {
-        Debug.Log("<color=green>[PLAYER STAMINA] Player stamina fully recovered!</color>");
-        
         player.anim.SetBool("isExhausted", false);
     }
     
     void HandleCooldownStarted()
     {
-        Debug.Log("<color=yellow>[PLAYER STAMINA] Cooldown started. Player cannot use stamina abilities.</color>");
     }
     
     void HandleCooldownEnded()
     {
-        Debug.Log("<color=cyan>[PLAYER STAMINA] Cooldown ended. Stamina abilities available again.</color>");
     }
     
     public bool CanRun()
@@ -94,14 +88,7 @@ public class PlayerStaminaIntegration : MonoBehaviour
         if (staminaController == null || data == null)
             return true;
         
-        if (staminaController.ConsumeStamina(data.jumpCost))
-        {
-            Debug.Log($"<color=cyan>[STAMINA] Jump cost: {data.jumpCost}. Remaining: {staminaController.CurrentStamina:F1}</color>");
-            return true;
-        }
-        
-        Debug.Log("<color=red>[STAMINA] Not enough stamina to jump!</color>");
-        return false;
+        return staminaController.ConsumeStamina(data.jumpCost);
     }
     
     public void StartRunning(StaminaData data)
@@ -157,7 +144,6 @@ public class PlayerStaminaIntegration : MonoBehaviour
             if (!staminaController.ConsumeStamina(runCost))
             {
                 StopRunning();
-                Debug.Log("<color=orange>[STAMINA] Not enough stamina to continue running!</color>");
             }
         }
         
@@ -167,7 +153,6 @@ public class PlayerStaminaIntegration : MonoBehaviour
             if (!staminaController.ConsumeStamina(climbCost))
             {
                 StopClimbing();
-                Debug.Log("<color=orange>[STAMINA] Not enough stamina to continue climbing!</color>");
             }
         }
         
@@ -177,7 +162,6 @@ public class PlayerStaminaIntegration : MonoBehaviour
             if (!staminaController.ConsumeStamina(grapCost))
             {
                 StopGrappingWall();
-                Debug.Log("<color=orange>[STAMINA] Not enough stamina to continue grapping wall!</color>");
             }
         }
     }
