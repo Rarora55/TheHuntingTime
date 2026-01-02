@@ -12,7 +12,7 @@ public class PlayerGroundState : PlayerState
 
     private bool JumpInput;
     private bool isTouchingWall;
-    private bool GrabInput;
+    protected bool grabInput;
     private bool AimInput;
     
     private PlayerWeaponController weaponController;
@@ -52,10 +52,14 @@ public class PlayerGroundState : PlayerState
         xInput = player.InputHandler.NormInputX;
         yInput = player.InputHandler.NormInputY;
         JumpInput = player.InputHandler.JumpInput;
-        GrabInput = player.InputHandler.GrabInput;
+        grabInput = player.InputHandler.GrabInput;
         AimInput = player.InputHandler.AimInput;
 
-        if (AimInput && CanAim())
+        if (player.IsOnLadder() && grabInput && (yInput == 1 || yInput == -1))
+        {
+            stateMachine.ChangeState(player.LadderClimbState);
+        }
+        else if (AimInput && CanAim())
         {
             stateMachine.ChangeState(player.AimState);
         }
@@ -64,13 +68,13 @@ public class PlayerGroundState : PlayerState
             player.InputHandler.JumpEnded();
             stateMachine.ChangeState(player.JumpState);
         }
+        else if (isTouchingWall && grabInput && !isTouchingCeiling)
+        {
+            stateMachine.ChangeState(player.WallGrapState);
+        }
         else if (!isGrounded)
         {
             stateMachine.ChangeState(player.AirState);
-        }
-        else if (isTouchingWall && GrabInput && !isTouchingCeiling)
-        {
-            stateMachine.ChangeState(player.WallGrapState);
         }
     }
 

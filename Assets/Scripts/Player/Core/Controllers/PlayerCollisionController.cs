@@ -100,6 +100,95 @@ public class PlayerCollisionController : IPlayerCollision
             playerData.WhatIsGround);
     }
     
+    public bool CheckGroundEdgeAhead()
+    {
+        Vector2 edgeCheckPosition = groundCheck.position;
+        edgeCheckPosition.x += orientation.FacingDirection * 0.6f;
+        
+        bool hasGroundAhead = Physics2D.Raycast(
+            edgeCheckPosition,
+            Vector2.down,
+            playerData.GroundCheckRadius * 2f,
+            playerData.WhatIsGround);
+        
+        Color debugColor = hasGroundAhead ? Color.green : Color.red;
+        Debug.DrawRay(edgeCheckPosition, Vector2.down * playerData.GroundCheckRadius * 2f, debugColor);
+        
+        return !hasGroundAhead;
+    }
+    
+    public bool ShouldAutoGrabLedge()
+    {
+        Vector2 forwardCheckPos = groundCheck.position;
+        forwardCheckPos.x += orientation.FacingDirection * 0.5f;
+        
+        bool noGroundAhead = !Physics2D.Raycast(
+            forwardCheckPos,
+            Vector2.down,
+            playerData.GroundCheckRadius * 2.5f,
+            playerData.WhatIsGround);
+        
+        if (!noGroundAhead) 
+        {
+            return false;
+        }
+        
+        Vector2 wallCheckPos = wallCheck.position;
+        wallCheckPos.x += orientation.FacingDirection * 0.3f;
+        
+        RaycastHit2D wallHit = Physics2D.Raycast(
+            wallCheckPos,
+            Vector2.down,
+            2.5f,
+            playerData.WhatIsGround);
+        
+        Color edgeColor = noGroundAhead ? Color.yellow : Color.green;
+        Color wallColor = wallHit ? Color.cyan : Color.red;
+        
+        Debug.DrawRay(forwardCheckPos, Vector2.down * (playerData.GroundCheckRadius * 2.5f), edgeColor);
+        Debug.DrawRay(wallCheckPos, Vector2.down * 2.5f, wallColor);
+        
+        bool shouldGrab = noGroundAhead && wallHit;
+        
+        if (shouldGrab)
+        {
+            Debug.Log($"<color=magenta>[AUTO LEDGE] ¡Detectado! NoGroundAhead={noGroundAhead}, WallBelow={wallHit.collider.name} at {wallHit.point}</color>");
+        }
+        
+        return shouldGrab;
+    }
+    
+    public bool CheckCanGrabLedgeFromAbove()
+    {
+        Vector2 forwardCheckPos = groundCheck.position;
+        forwardCheckPos.x += orientation.FacingDirection * 0.4f;
+        
+        bool noGroundAhead = !Physics2D.Raycast(
+            forwardCheckPos,
+            Vector2.down,
+            playerData.GroundCheckRadius * 3f,
+            playerData.WhatIsGround);
+        
+        if (!noGroundAhead) return false;
+        
+        Vector2 wallCheckPos = wallCheck.position;
+        wallCheckPos.x += orientation.FacingDirection * 0.3f;
+        
+        RaycastHit2D wallHit = Physics2D.Raycast(
+            wallCheckPos,
+            Vector2.down,
+            2.0f,
+            playerData.WhatIsGround);
+        
+        Color edgeColor = noGroundAhead ? Color.yellow : Color.green;
+        Color wallColor = wallHit ? Color.cyan : Color.red;
+        
+        Debug.DrawRay(forwardCheckPos, Vector2.down * (playerData.GroundCheckRadius * 3f), edgeColor);
+        Debug.DrawRay(wallCheckPos, Vector2.down * 2.0f, wallColor);
+        
+        return noGroundAhead && wallHit;
+    }
+    
     public Vector2 DetermineCornerPosition()
     {
         RaycastHit2D xHit = Physics2D.Raycast(
@@ -135,6 +224,51 @@ public class PlayerCollisionController : IPlayerCollision
         return calculatedCorner;
     }
     
+    public Vector2 DetermineCornerPositionFromAbove()
+    {
+        Vector2 forwardCheckPos = groundCheck.position;
+        forwardCheckPos.x += orientation.FacingDirection * 0.5f;
+        
+        RaycastHit2D groundEdgeHit = Physics2D.Raycast(
+            forwardCheckPos,
+            Vector2.down,
+            2.5f,
+            playerData.WhatIsGround);
+        
+        if (!groundEdgeHit)
+        {
+            Debug.Log("<color=red>[CORNER FROM ABOVE] No se detectó suelo adelante</color>");
+            return Vector2.zero;
+        }
+        
+        Vector2 wallCheckPos = wallCheck.position;
+        wallCheckPos.x += orientation.FacingDirection * 0.3f;
+        
+        RaycastHit2D wallHit = Physics2D.Raycast(
+            wallCheckPos,
+            Vector2.down,
+            2.5f,
+            playerData.WhatIsGround);
+        
+        if (!wallHit)
+        {
+            Debug.Log("<color=red>[CORNER FROM ABOVE] No se detectó pared debajo</color>");
+            return Vector2.zero;
+        }
+        
+        Vector2 cornerPos = new Vector2(
+            wallHit.point.x + (orientation.FacingDirection * 0.05f),
+            wallHit.point.y + 0.05f
+        );
+        
+        Debug.Log($"<color=magenta>[CORNER FROM ABOVE] Corner calculado: {cornerPos} | WallHit: {wallHit.point} | GroundCheck: {groundCheck.position}</color>");
+        Debug.DrawLine(cornerPos, cornerPos + Vector2.up * 0.5f, Color.magenta, 2f);
+        Debug.DrawLine(wallHit.point, wallHit.point + Vector2.right * orientation.FacingDirection * 0.3f, Color.cyan, 2f);
+        Debug.DrawLine(cornerPos, cornerPos + Vector2.left * orientation.FacingDirection * 0.3f, Color.yellow, 2f);
+        
+        return cornerPos;
+    }
+    
     public bool IsValidLedge(float minHeight)
     {
         RaycastHit2D xHit = Physics2D.Raycast(
@@ -156,8 +290,6 @@ public class PlayerCollisionController : IPlayerCollision
         
         float yDist = yHit.distance;
         bool isValid = yDist >= minHeight;
-        
-        Debug.Log($"<color=cyan>[VALID LEDGE CHECK] yDist: {yDist:F3} | MIN: {minHeight:F3} | Valid: {isValid}</color>");
         
         return isValid;
     }

@@ -13,8 +13,8 @@ public class PlayerIdleState : PlayerGroundState
     public override void DoChecks()
     {
         base.DoChecks();
-        
     }
+    
     public override void Enter()
     {
         base.Enter();
@@ -29,12 +29,21 @@ public class PlayerIdleState : PlayerGroundState
 
     public override void LogicUpdate()
     {
-        base.LogicUpdate();
+        xInput = player.InputHandler.NormInputX;
+        yInput = player.InputHandler.NormInputY;
+        grabInput = player.InputHandler.GrabInput;
         
         if (player.JustFinishedLedgeClimb)
         {
             player.JustFinishedLedgeClimb = false;
         }
+        
+        if (CheckGrabLedgeFromAbove())
+        {
+            return;
+        }
+        
+        base.LogicUpdate();
 
         if (xInput != 0)
         {
@@ -49,6 +58,47 @@ public class PlayerIdleState : PlayerGroundState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+    }
+    
+    bool CheckGrabLedgeFromAbove()
+    {
+        if (player.Collision.ShouldAutoGrabLedge())
+        {
+            Debug.Log("<color=yellow>[AUTO LEDGE IDLE] Entrando automáticamente en LedgeState!</color>");
+            
+            Vector2 cornerPos = player.Collision.DetermineCornerPositionFromAbove();
+            
+            if (cornerPos != Vector2.zero)
+            {
+                Debug.Log($"<color=green>[AUTO LEDGE IDLE] Corner: {cornerPos}, Player: {player.transform.position}, FacingRight: {player.FacingRight}</color>");
+                
+                float playerX = player.transform.position.x;
+                float cornerX = cornerPos.x;
+                
+                bool shouldFaceRight = playerX > cornerX;
+                
+                if (shouldFaceRight && player.FacingRight != 1)
+                {
+                    Debug.Log("<color=magenta>[AUTO LEDGE IDLE] Volteando a la derecha</color>");
+                    player.Flip();
+                }
+                else if (!shouldFaceRight && player.FacingRight != -1)
+                {
+                    Debug.Log("<color=magenta>[AUTO LEDGE IDLE] Volteando a la izquierda</color>");
+                    player.Flip();
+                }
+                
+                player.SetVelocityZero();
+                stateMachine.ChangeState(player.WallLedgeState);
+                return true;
+            }
+            else
+            {
+                Debug.Log("<color=red>[AUTO LEDGE IDLE] cornerPos es Zero, no se puede agarrar</color>");
+            }
+        }
+        
+        return false;
     }
 
    

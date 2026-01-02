@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad02a75ac697c444c872f7f8d00c970f, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
-  movementVelocity: 10
+  movementVelocity: 6
   runVelocity: 12
-  JumpVelocity: 14
+  JumpVelocity: 6
   jumpGravityScale: 3.5
   fallGravityScale: 5
   maxFallSpeed: 25

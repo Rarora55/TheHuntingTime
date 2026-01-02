@@ -6,6 +6,7 @@ public class PlayerAirState : PlayerState
 {
     private bool isGrounded;
     private int xInput;
+    private int yInput;
     private bool isTouchingWall;
     private bool jumpInput;
     private bool GrabInput;
@@ -48,10 +49,15 @@ public class PlayerAirState : PlayerState
         base.LogicUpdate();
 
         xInput = player.InputHandler.NormInputX;
+        yInput = player.InputHandler.NormInputY;
         jumpInput = player.InputHandler.JumpInput;
         GrabInput = player.InputHandler.GrabInput;
 
-        if (isGrounded && player.CurrentVelocity.y < 0.01f)
+        if (player.IsOnLadder() && GrabInput && (yInput == 1 || yInput == -1))
+        {
+            stateMachine.ChangeState(player.LadderClimbState);
+        }
+        else if (isGrounded && player.CurrentVelocity.y < 0.01f)
         {
             stateMachine.ChangeState(player.LandState);
         }

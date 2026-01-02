@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
     public PlayerLedgeClimbState WallLedgeState { get; private set; }
     public PlayerCrouchIdleState CrouchIdleState { get; private set; }
     public PlayerCrouchMoveState CrouchMoveState { get; private set; }
+    public PlayerLadderClimbState LadderClimbState { get; private set; }
     
     public PlayerAimState AimState { get; private set; }
     public PlayerFireState FireState { get; private set; }
@@ -50,6 +51,7 @@ public class Player : MonoBehaviour
     private IClimbable currentClimbable;
     private ISlideable currentSlideable;
     private IJumpZone currentJumpZone;
+    private Collider2D currentLadder;
     #endregion
 
     #region Movements Vectors
@@ -102,6 +104,7 @@ public class Player : MonoBehaviour
         WallLedgeState = new PlayerLedgeClimbState(this, StateMachine, PlayerData, "ledge");
         CrouchIdleState = new PlayerCrouchIdleState(this, StateMachine, PlayerData, "crouchIdle");
         CrouchMoveState = new PlayerCrouchMoveState(this, StateMachine, PlayerData, "crouchMove");
+        LadderClimbState = new PlayerLadderClimbState(this, StateMachine, PlayerData, "ladderClimb");
         
         AimState = new PlayerAimState(this, StateMachine, PlayerData, "aim");
         FireState = new PlayerFireState(this, StateMachine, PlayerData, "fire");
@@ -131,13 +134,15 @@ public class Player : MonoBehaviour
             Physics.UpdateVelocity();
         else
             CurrentVelocity = RB.linearVelocity;
-            
-        StateMachine.CurrentState.LogicUpdate();
+        
+        if (StateMachine?.CurrentState != null)
+            StateMachine.CurrentState.LogicUpdate();
     }
 
     private void FixedUpdate()
     {
-        StateMachine.CurrentState.PhysicsUpdate();
+        if (StateMachine?.CurrentState != null)
+            StateMachine.CurrentState.PhysicsUpdate();
     }
 
     #endregion
@@ -278,8 +283,6 @@ public class Player : MonoBehaviour
         RaycastHit2D xHit = Physics2D.Raycast(WallCheck.position, Vector2.right * FacingRight, PlayerData.WallCheckDistance, PlayerData.WhatIsGround);
         float xDist = xHit.distance;
         
-        Debug.Log($"<color=cyan>[CORNER] xRaycast desde WallCheck.pos: {WallCheck.position} → Hit: {xHit.point} | Dist: {xDist:F3}</color>");
-        
         workSpace.Set((xDist + 0.015f) * FacingRight, 0f);
         
         Vector3 yRayStart = LedgeCheck.position + (Vector3)workSpace;
@@ -288,18 +291,10 @@ public class Player : MonoBehaviour
         RaycastHit2D yHit = Physics2D.Raycast(yRayStart, Vector2.down, yRayMaxDist, PlayerData.WhatIsGround);
         float yDist = yHit.distance;
         
-        Debug.Log($"<color=cyan>[CORNER] yRaycast desde LedgeCheck offset: {yRayStart} → Hit: {yHit.point} | Dist: {yDist:F3} | MaxDist: {yRayMaxDist:F3}</color>");
-        
         Vector2 calculatedCorner = new Vector2(
             WallCheck.position.x + (xDist * FacingRight), 
             LedgeCheck.position.y - yDist
         );
-        
-        Debug.Log($"<color=green>[CORNER] Resultado final: {calculatedCorner}</color>");
-        
-        Debug.DrawRay(WallCheck.position, Vector2.right * FacingRight * xDist, Color.red, 3f);
-        Debug.DrawRay(yRayStart, Vector2.down * yDist, Color.blue, 3f);
-        Debug.DrawLine(calculatedCorner, calculatedCorner + Vector2.up * 0.5f, Color.green, 3f);
         
         workSpace = calculatedCorner;
         return workSpace;
@@ -375,6 +370,22 @@ public class Player : MonoBehaviour
     {
         if (currentSlideable == slideable)
             currentSlideable = null;
+    }
+
+    public bool IsOnLadder() => currentLadder != null;
+    public Collider2D GetCurrentLadder() => currentLadder;
+
+    public void SetCurrentLadder(Collider2D ladder)
+    {
+        currentLadder = ladder;
+    }
+
+    public void ClearCurrentLadder(Collider2D ladder)
+    {
+        if (currentLadder == ladder)
+        {
+            currentLadder = null;
+        }
     }
 
     #endregion
