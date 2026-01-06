@@ -18,7 +18,7 @@ MonoBehaviour:
   jumpGravityScale: 3.5
   fallGravityScale: 5
   maxFallSpeed: 25
-  GroundCheckRadius: 0.3
+  GroundCheckRadius: 0.1
   WhatIsGround:
     serializedVersion: 2
     m_Bits: 128
@@ -31,3 +31,5 @@ MonoBehaviour:
   crouchMovementVelocity: 4
   crouchColliderHeight: 0.8
   standColliderHeight: 1.6
+  ladderClimbSpeed: 4
+  ladderSlideSpeed: 2

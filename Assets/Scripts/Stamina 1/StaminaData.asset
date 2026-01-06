@@ -19,6 +19,6 @@ MonoBehaviour:
   recoveryDelay: 1
   runningCostPerSecond: 10
   jumpCost: 15
-  climbingCostPerSecond: 10
+  climbingCostPerSecond: 5
   wallGrapCostPerSecond: 10
   minimumStaminaThreshold: 40

@@ -173,6 +173,15 @@ namespace TheHunt.Inventory
                 return;
             }
 
+            if (currentItem.itemData is WeaponItemData weaponData && weaponManager != null)
+            {
+                if (weaponManager.IsWeaponEquipped(weaponData))
+                {
+                    Debug.Log("<color=yellow>[INVENTORY UI] Cannot interact with equipped weapon</color>");
+                    return;
+                }
+            }
+
             availableActions.Clear();
             contextMenuIndex = 0;
 

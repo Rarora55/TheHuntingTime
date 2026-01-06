@@ -29,6 +29,7 @@ public class PlayerGroundState : PlayerState
         bool wasGrounded = isGrounded;
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
+        isTouchingCeiling = player.CheckForCeiling();
     }
     public override void Enter()
     {

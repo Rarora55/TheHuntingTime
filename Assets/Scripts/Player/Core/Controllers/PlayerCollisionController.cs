@@ -294,6 +294,82 @@ public class PlayerCollisionController : IPlayerCollision
         return isValid;
     }
     
+    public LedgeType DetectLedgeType()
+    {
+        bool touchingWall = CheckIfTouchingWall();
+        bool touchingLedge = CheckTouchingLedge();
+        
+        RaycastHit2D wallHit = Physics2D.Raycast(
+            wallCheck.position, 
+            Vector2.right * orientation.FacingDirection, 
+            playerData.WallCheckDistance, 
+            playerData.WhatIsGround);
+            
+        RaycastHit2D ledgeHit = Physics2D.Raycast(
+            ledgeCheck.position, 
+            Vector2.right * orientation.FacingDirection, 
+            playerData.LedgeCheckDistance, 
+            playerData.WhatIsGround);
+        
+        Debug.Log($"<color=magenta>[LEDGE TYPE] WallCheck: {touchingWall} (at {wallCheck.position.y}) | LedgeCheck: {touchingLedge} (at {ledgeCheck.position.y})</color>");
+        
+        if (wallHit && ledgeHit)
+        {
+            float heightDifference = Mathf.Abs(wallHit.point.y - ledgeHit.point.y);
+            Debug.Log($"<color=yellow>[LEDGE TYPE] Ambos hits - WallY: {wallHit.point.y:F2} | LedgeY: {ledgeHit.point.y:F2} | Diff: {heightDifference:F2}</color>");
+            
+            if (heightDifference < 0.2f)
+            {
+                Debug.Log("<color=cyan>[LEDGE TYPE] ✅ Edge detectado (misma altura - plataforma one-way)</color>");
+                return LedgeType.Edge;
+            }
+            else
+            {
+                Debug.Log("<color=green>[LEDGE TYPE] ✅ Corner detectado (diferente altura)</color>");
+                return LedgeType.Corner;
+            }
+        }
+        
+        if (!touchingWall && touchingLedge)
+        {
+            Debug.Log("<color=cyan>[LEDGE TYPE] ✅ Edge detectado (sin pared, con ledge)</color>");
+            return LedgeType.Edge;
+        }
+        
+        if (touchingWall && !touchingLedge)
+        {
+            Debug.Log("<color=green>[LEDGE TYPE] ✅ Corner detectado (con pared, sin ledge)</color>");
+            return LedgeType.Corner;
+        }
+        
+        return LedgeType.None;
+    }
+    
+    public Vector2 DetermineEdgePosition()
+    {
+        RaycastHit2D ledgeHit = Physics2D.Raycast(
+            ledgeCheck.position, 
+            Vector2.right * orientation.FacingDirection, 
+            playerData.LedgeCheckDistance, 
+            playerData.WhatIsGround);
+        
+        if (!ledgeHit)
+        {
+            Debug.Log("<color=red>[EDGE POSITION] No se detectó edge</color>");
+            return Vector2.zero;
+        }
+        
+        Vector2 edgePos = new Vector2(
+            ledgeHit.point.x - (orientation.FacingDirection * 0.05f),
+            ledgeHit.point.y - 0.05f
+        );
+        
+        Debug.Log($"<color=yellow>[EDGE POSITION] Edge detectado en: {edgePos} | Hit: {ledgeHit.point}</color>");
+        Debug.DrawLine(edgePos, edgePos + Vector2.up * 0.5f, Color.yellow, 2f);
+        
+        return edgePos;
+    }
+    
     public void SetColliderHeight(float height)
     {
         if (collider == null) return;

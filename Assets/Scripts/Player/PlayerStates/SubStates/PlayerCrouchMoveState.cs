@@ -37,9 +37,20 @@ public class PlayerCrouchMoveState : PlayerGroundState
         player.CheckFlip(xInput);
 
         if (xInput == 0)
+        {
             stateMachine.ChangeState(player.CrouchIdleState);
-        else if (yInput != -1 && !isTouchingCeiling)
-            stateMachine.ChangeState(player.MoveState);
+        }
+        else if (yInput != -1)
+        {
+            if (!isTouchingCeiling)
+            {
+                stateMachine.ChangeState(player.MoveState);
+            }
+            else
+            {
+                Debug.Log("<color=yellow>[CROUCH MOVE] No se puede levantar: hay techo encima</color>");
+            }
+        }
     }
     
     bool CheckGrabLedgeFromAbove()

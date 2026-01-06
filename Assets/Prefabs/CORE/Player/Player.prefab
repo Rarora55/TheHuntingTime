@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 1571446291458784258}
   - component: {fileID: 5652036909615714610}
   - component: {fileID: 3018417222918289650}
-  - component: {fileID: 3629960329792281479}
+  - component: {fileID: 2383240838999611043}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -239,7 +239,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.053195298, y: 0.06634724}
+  m_Offset: {x: 0.002322793, y: 0.06634724}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -249,7 +249,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.3231031, y: 2.1456177}
+  m_Size: {x: 1.2120669, y: 2.1456177}
   m_EdgeRadius: 0
 --- !u!114 &7239312537353587453
 MonoBehaviour:
@@ -468,6 +468,10 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2faadf09-409b-4c5b-84c5-380888acd38b
     m_ActionName: 'GamePlay/Aim[/Keyboard/c]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 67f6e9b1-f431-4bd7-a1e1-c5cde3a8d791
+    m_ActionName: 'GamePlay/ToggleFlashLight[/Keyboard/f]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: GamePlay
@@ -715,7 +719,7 @@ MonoBehaviour:
   simpleDialog: {fileID: 0}
   confirmationDialogPrefab: {fileID: 5520976464368168237, guid: 39752f8f83a351b43aa4b9c7d2ea34fb, type: 3}
   infoDialogPrefab: {fileID: 5520976464368168237, guid: ba7fe48a383fdb94fb6b504ef7dad5ba, type: 3}
---- !u!114 &3629960329792281479
+--- !u!114 &2383240838999611043
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -724,14 +728,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 4807809795982176028}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bf99a7abba60fd4c9f9d941a948af26, type: 3}
+  m_Script: {fileID: 11500000, guid: cda076d361071ab4d81a55da74335ae3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWeaponController
   weaponManager: {fileID: 1343817880564136641}
-  inventorySystem: {fileID: 0}
-  activeWeaponSlot: 0
-  firePoint: {fileID: 7016956183950892249}
+  inventorySystem: {fileID: 1470770840388276670}
+  firePoint: {fileID: 0}
   fireRate: 0.5
+  activeWeaponSlot: 0
 --- !u!1 &5889161546552969960
 GameObject:
   m_ObjectHideFlags: 0
@@ -757,8 +761,8 @@ Transform:
   m_GameObject: {fileID: 5889161546552969960}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.542, y: -1.027, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.04, y: -1.08, z: 0}
+  m_LocalScale: {x: 0.73, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3936088870857016907}

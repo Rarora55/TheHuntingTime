@@ -13,6 +13,7 @@ public class PlayerLedgeClimbState : PlayerState
     private bool isTouchingCeiling;
     private bool hasDetectedLadderBelow;
     private bool enteredFromAbove;
+    private LedgeType currentLedgeType;
 
     private int xInput;
     private int yInput;
@@ -47,10 +48,12 @@ public class PlayerLedgeClimbState : PlayerState
 
         player.SetVelocityZero();
         
+        currentLedgeType = player.Collision.DetectLedgeType();
+        
         if (enteredFromAbove)
         {
             cornerPos = player.Collision.DetermineCornerPositionFromAbove();
-            Debug.Log($"<color=cyan>[LEDGE ENTER] Entrando desde arriba. Corner: {cornerPos}, FacingRight: {player.FacingRight}</color>");
+            Debug.Log($"<color=cyan>[LEDGE ENTER] Entrando desde arriba. Type: {currentLedgeType}, Corner: {cornerPos}, FacingRight: {player.FacingRight}</color>");
             
             startPos.Set(
                 cornerPos.x - (player.FacingRight * playerData.startOffSet.x), 
@@ -64,8 +67,16 @@ public class PlayerLedgeClimbState : PlayerState
         }
         else
         {
-            cornerPos = player.DeterminetCornerPos();
-            Debug.Log($"<color=cyan>[LEDGE ENTER] Entrando desde el lado. Corner: {cornerPos}, FacingRight: {player.FacingRight}</color>");
+            if (currentLedgeType == LedgeType.Corner)
+            {
+                cornerPos = player.DeterminetCornerPos();
+                Debug.Log($"<color=cyan>[LEDGE ENTER] Corner desde el lado. Corner: {cornerPos}, FacingRight: {player.FacingRight}</color>");
+            }
+            else if (currentLedgeType == LedgeType.Edge)
+            {
+                cornerPos = player.Collision.DetermineEdgePosition();
+                Debug.Log($"<color=yellow>[LEDGE ENTER] Edge desde el lado. Edge: {cornerPos}, FacingRight: {player.FacingRight}</color>");
+            }
             
             startPos.Set(
                 cornerPos.x - (player.FacingRight * playerData.startOffSet.x), 
@@ -80,8 +91,9 @@ public class PlayerLedgeClimbState : PlayerState
         
         player.transform.position = startPos;
         
-        Debug.Log($"<color=yellow>[LEDGE ENTER] StartPos: {startPos}, StopPos: {stopPos}</color>");
+        Debug.Log($"<color=yellow>[LEDGE ENTER] LedgeType: {currentLedgeType}, StartPos: {startPos}, StopPos: {stopPos}</color>");
 
+        SetLedgeAnimation();
         isHanging = true;
     }
 
@@ -89,6 +101,7 @@ public class PlayerLedgeClimbState : PlayerState
     {
         base.Exit();
         player.anim.SetBool("ledge", false);
+        player.anim.SetBool("edgeLedge", false);
         player.anim.SetBool("isTouchingCeiling", false);
         isHanging = false;
         
@@ -254,6 +267,22 @@ public class PlayerLedgeClimbState : PlayerState
         
         isTouchingCeiling = hit.collider != null;
         player.anim.SetBool("isTouchingCeiling", isTouchingCeiling);
+    }
+    
+    private void SetLedgeAnimation()
+    {
+        if (currentLedgeType == LedgeType.Corner)
+        {
+            player.anim.SetBool("ledge", true);
+            player.anim.SetBool("edgeLedge", false);
+            Debug.Log("<color=green>[LEDGE ANIM] Activando animación Corner (ledge)</color>");
+        }
+        else if (currentLedgeType == LedgeType.Edge)
+        {
+            player.anim.SetBool("ledge", false);
+            player.anim.SetBool("edgeLedge", true);
+            Debug.Log("<color=yellow>[LEDGE ANIM] Activando animación Edge (edgeLedge)</color>");
+        }
     }
 }
 

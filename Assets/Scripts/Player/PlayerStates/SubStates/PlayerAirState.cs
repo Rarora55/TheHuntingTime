@@ -52,6 +52,8 @@ public class PlayerAirState : PlayerState
         yInput = player.InputHandler.NormInputY;
         jumpInput = player.InputHandler.JumpInput;
         GrabInput = player.InputHandler.GrabInput;
+        
+        player.anim.SetBool("isRunning", false);
 
         if (player.IsOnLadder() && GrabInput && (yInput == 1 || yInput == -1))
         {

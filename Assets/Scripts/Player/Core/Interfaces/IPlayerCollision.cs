@@ -13,4 +13,6 @@ public interface IPlayerCollision
     Vector2 DetermineCornerPositionFromAbove();
     bool IsValidLedge(float minHeight);
     void SetColliderHeight(float height);
+    LedgeType DetectLedgeType();
+    Vector2 DetermineEdgePosition();
 }

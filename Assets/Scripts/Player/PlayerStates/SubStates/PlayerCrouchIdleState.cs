@@ -38,9 +38,20 @@ public class PlayerCrouchIdleState : PlayerGroundState
         base.LogicUpdate();
         
         if (xInput != 0)
+        {
             stateMachine.ChangeState(player.CrouchMoveState);
-        else if (yInput != -1 && !isTouchingCeiling)
-            stateMachine.ChangeState(player.IdleState);
+        }
+        else if (yInput != -1)
+        {
+            if (!isTouchingCeiling)
+            {
+                stateMachine.ChangeState(player.IdleState);
+            }
+            else
+            {
+                Debug.Log("<color=yellow>[CROUCH IDLE] No se puede levantar: hay techo encima</color>");
+            }
+        }
     }
     
     bool CheckGrabLedgeFromAbove()

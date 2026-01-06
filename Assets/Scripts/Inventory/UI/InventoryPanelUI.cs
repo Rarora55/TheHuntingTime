@@ -9,6 +9,7 @@ namespace TheHunt.Inventory
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private InventoryUIController uiController;
+        [SerializeField] private WeaponInventoryManager weaponManager;
 
         [Header("Slot Settings")]
         [SerializeField] private Transform slotsContainer;
@@ -48,6 +49,15 @@ namespace TheHunt.Inventory
                 }
             }
 
+            if (weaponManager == null)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    weaponManager = player.GetComponent<WeaponInventoryManager>();
+                }
+            }
+
             if (canvasGroup == null)
                 canvasGroup = GetComponent<CanvasGroup>();
 
@@ -67,6 +77,12 @@ namespace TheHunt.Inventory
             {
                 uiController.OnStateChanged += OnInventoryStateChanged;
             }
+
+            if (weaponManager != null)
+            {
+                weaponManager.OnWeaponEquipped += OnWeaponEquipped;
+                weaponManager.OnWeaponUnequipped += OnWeaponUnequipped;
+            }
         }
 
         private void OnDisable()
@@ -81,6 +97,12 @@ namespace TheHunt.Inventory
             if (uiController != null)
             {
                 uiController.OnStateChanged -= OnInventoryStateChanged;
+            }
+
+            if (weaponManager != null)
+            {
+                weaponManager.OnWeaponEquipped -= OnWeaponEquipped;
+                weaponManager.OnWeaponUnequipped -= OnWeaponUnequipped;
             }
         }
 
@@ -161,6 +183,18 @@ namespace TheHunt.Inventory
         {
             UpdateHighlight(newSlot);
             UpdateCarouselPositions(newSlot, false);
+        }
+
+        private void OnWeaponEquipped(EquipSlot slot, WeaponItemData weapon)
+        {
+            RefreshAllSlots();
+            Debug.Log($"<color=cyan>[INVENTORY PANEL] Refreshed slots after equipping {weapon.ItemName}</color>");
+        }
+
+        private void OnWeaponUnequipped(EquipSlot slot)
+        {
+            RefreshAllSlots();
+            Debug.Log($"<color=cyan>[INVENTORY PANEL] Refreshed slots after unequipping weapon from {slot}</color>");
         }
 
         private void UpdateHighlight(int slotIndex)
@@ -319,6 +353,11 @@ namespace TheHunt.Inventory
 
         private void SetSlotVisibility(InventorySlotUI slot, bool visible, bool immediate)
         {
+            if (slot.IsDisabled)
+            {
+                visible = false;
+            }
+
             CanvasGroup slotCanvas = slot.GetComponent<CanvasGroup>();
             if (slotCanvas == null)
             {

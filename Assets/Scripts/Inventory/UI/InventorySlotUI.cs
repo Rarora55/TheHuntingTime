@@ -17,11 +17,31 @@ namespace TheHunt.Inventory
         [SerializeField] private Color highlightColor = new Color(1f, 1f, 0f, 1f);
         [SerializeField] private Color emptyIconColor = new Color(1f, 1f, 1f, 0.3f);
         [SerializeField] private Color fullIconColor = new Color(1f, 1f, 1f, 1f);
+        [SerializeField] private Color disabledColor = new Color(0.3f, 0.3f, 0.3f, 0.3f);
 
         private int slotIndex;
         private bool isHighlighted = false;
+        private bool isDisabled = false;
+        private WeaponInventoryManager weaponManager;
+        private CanvasGroup canvasGroup;
 
         public int SlotIndex => slotIndex;
+        public bool IsDisabled => isDisabled;
+
+        private void Awake()
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                weaponManager = player.GetComponent<WeaponInventoryManager>();
+            }
+
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+        }
 
         public void Initialize(int index)
         {
@@ -35,8 +55,26 @@ namespace TheHunt.Inventory
             if (item == null || item.itemData == null)
             {
                 ClearSlot();
+                EnableSlot();
                 return;
             }
+
+            bool isWeapon = item.itemData is WeaponItemData;
+            bool isEquipped = false;
+
+            if (isWeapon && weaponManager != null)
+            {
+                isEquipped = weaponManager.IsWeaponEquipped(item.itemData as WeaponItemData);
+            }
+
+            if (isEquipped)
+            {
+                ClearSlot();
+                DisableSlot();
+                return;
+            }
+
+            EnableSlot();
 
             if (iconImage != null)
             {
@@ -83,6 +121,9 @@ namespace TheHunt.Inventory
 
         public void Highlight()
         {
+            if (isDisabled)
+                return;
+
             isHighlighted = true;
             
             if (highlightImage != null)
@@ -107,6 +148,40 @@ namespace TheHunt.Inventory
             }
 
             if (backgroundImage != null)
+            {
+                backgroundImage.color = normalColor;
+            }
+        }
+
+        private void DisableSlot()
+        {
+            isDisabled = true;
+            
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0.3f;
+                canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+            }
+
+            if (backgroundImage != null)
+            {
+                backgroundImage.color = disabledColor;
+            }
+        }
+
+        private void EnableSlot()
+        {
+            isDisabled = false;
+            
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
+            }
+
+            if (backgroundImage != null && !isHighlighted)
             {
                 backgroundImage.color = normalColor;
             }
