@@ -39,23 +39,65 @@ public class PlayerCollisionController : IPlayerCollision
     
     public bool CheckIsGrounded()
     {
-        bool isGrounded = Physics2D.Raycast(
+        bool centerGrounded = Physics2D.Raycast(
             groundCheck.position, 
             Vector2.down, 
             playerData.GroundCheckRadius, 
             playerData.WhatIsGround);
         
-        if (wasGrounded != isGrounded)
+        float horizontalOffset = 0.3f;
+        
+        Vector2 leftCheckPos = groundCheck.position;
+        leftCheckPos.x -= horizontalOffset;
+        bool leftGrounded = Physics2D.Raycast(
+            leftCheckPos,
+            Vector2.down,
+            playerData.GroundCheckRadius,
+            playerData.WhatIsGround);
+        
+        Vector2 rightCheckPos = groundCheck.position;
+        rightCheckPos.x += horizontalOffset;
+        bool rightGrounded = Physics2D.Raycast(
+            rightCheckPos,
+            Vector2.down,
+            playerData.GroundCheckRadius,
+            playerData.WhatIsGround);
+        
+        int groundedCount = (centerGrounded ? 1 : 0) + (leftGrounded ? 1 : 0) + (rightGrounded ? 1 : 0);
+        bool isFullyGrounded = groundedCount >= 1;
+        
+        if (groundedCount == 0)
+        {
+            Debug.Log($"<color=red>[GROUND] Ningún raycast tocando - Center: {centerGrounded} | Left: {leftGrounded} | Right: {rightGrounded} → AIRSTATE</color>");
+        }
+        else if (groundedCount == 1)
+        {
+            Debug.Log($"<color=yellow>[GROUND] Solo 1 raycast tocando - Center: {centerGrounded} | Left: {leftGrounded} | Right: {rightGrounded} → GROUNDED (muy en borde)</color>");
+        }
+        else if (groundedCount == 2)
+        {
+            Debug.Log($"<color=cyan>[GROUND] 2 raycasts tocando - Center: {centerGrounded} | Left: {leftGrounded} | Right: {rightGrounded} → GROUNDED (borde)</color>");
+        }
+        
+        Color centerColor = centerGrounded ? Color.green : Color.red;
+        Color leftColor = leftGrounded ? Color.green : Color.red;
+        Color rightColor = rightGrounded ? Color.green : Color.red;
+        
+        Debug.DrawRay(groundCheck.position, Vector2.down * playerData.GroundCheckRadius, centerColor);
+        Debug.DrawRay(leftCheckPos, Vector2.down * playerData.GroundCheckRadius, leftColor);
+        Debug.DrawRay(rightCheckPos, Vector2.down * playerData.GroundCheckRadius, rightColor);
+        
+        if (wasGrounded != isFullyGrounded)
         {
             events?.InvokeGroundedChanged(new PlayerCollisionData
             {
                 WasGrounded = wasGrounded,
-                IsGrounded = isGrounded
+                IsGrounded = isFullyGrounded
             });
-            wasGrounded = isGrounded;
+            wasGrounded = isFullyGrounded;
         }
         
-        return isGrounded;
+        return isFullyGrounded;
     }
     
     public bool CheckIfTouchingWall()
@@ -119,6 +161,13 @@ public class PlayerCollisionController : IPlayerCollision
     
     public bool ShouldAutoGrabLedge()
     {
+        bool currentlyGrounded = CheckIsGrounded();
+        if (currentlyGrounded)
+        {
+            Debug.Log("<color=red>[AUTO LEDGE] Cancelado: Player está grounded (completamente sobre terreno)</color>");
+            return false;
+        }
+        
         Vector2 forwardCheckPos = groundCheck.position;
         forwardCheckPos.x += orientation.FacingDirection * 0.5f;
         
@@ -160,6 +209,13 @@ public class PlayerCollisionController : IPlayerCollision
     
     public bool CheckCanGrabLedgeFromAbove()
     {
+        bool currentlyGrounded = CheckIsGrounded();
+        if (currentlyGrounded)
+        {
+            Debug.Log("<color=red>[LEDGE FROM ABOVE] Cancelado: Player está grounded (completamente sobre terreno)</color>");
+            return false;
+        }
+        
         Vector2 forwardCheckPos = groundCheck.position;
         forwardCheckPos.x += orientation.FacingDirection * 0.4f;
         
