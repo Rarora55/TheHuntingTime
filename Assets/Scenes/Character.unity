@@ -273,8 +273,8 @@ Transform:
   m_GameObject: {fileID: 122160974}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 20.63, y: 2.1193, z: 0}
-  m_LocalScale: {x: 1, y: 9.34616, z: 1}
+  m_LocalPosition: {x: 20.63, y: 2.9069, z: 0}
+  m_LocalScale: {x: 1, y: 10.920987, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1032,7 +1032,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.008841708, y: 0.35730717}
+  m_Offset: {x: -0.0024333596, y: 0.35730717}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1042,7 +1042,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.9823166, y: 0.28538567}
+  m_Size: {x: 0.96949995, y: 0.28538567}
   m_EdgeRadius: 0
 --- !u!212 &945315332
 SpriteRenderer:
@@ -1177,6 +1177,35 @@ Transform:
   - {fileID: 1706865122}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1065176317 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+  m_PrefabInstance: {fileID: 6989695496897086677}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &1065176318 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8398256922646695784, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+  m_PrefabInstance: {fileID: 6989695496897086677}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1065176323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065176317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2234f238b94f81149818f0707aa685f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.RopeAnchorPassiveItem
+  interactionPrompt: Deploy Rope
+  isInteractable: 1
+  ropeLength: 10
+  ropePrefab: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+  spawnPoint: {fileID: 2083918204}
+  anchorSprite: {fileID: 1065176318}
+  deployedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1001 &1191797836
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1421,7 +1450,66 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
   m_PrefabInstance: {fileID: 8074362318487483685}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1359491999
+--- !u!212 &1359492004
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359491994}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 2917461726506920745, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.48, y: 0.32}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!114 &1359492005
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1434,7 +1522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.PickupItem
   itemData: {fileID: 11400000, guid: 72051d6b70b30ec458dafe2a2da9d8fe, type: 2}
-  interactionPrompt: Pick up
+  interactionPrompt: Pick up Rope
   destroyOnPickup: 1
 --- !u!1 &1444622505
 GameObject:
@@ -2714,6 +2802,11 @@ MonoBehaviour:
   doorAnimator: {fileID: 0}
   openAnimationTrigger: Open
   disableAfterOpen: 1
+--- !u!4 &2083918204 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+  m_PrefabInstance: {fileID: 6989695496897086677}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2102128581 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3936088870857016907, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
@@ -2855,6 +2948,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StaminaController
   staminaData: {fileID: 11400000, guid: 5a65adbff68d6ec449c1155771ef5b78, type: 2}
+--- !u!114 &2102128664 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2478639749003906692, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+  m_PrefabInstance: {fileID: 2219890278127870089}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352036802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 567e50b45b198ea42bf326929c6f2972, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.PlayerInteractionController
+--- !u!114 &2102128670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352036802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f1573193372c0469f1fd77fe85eac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.SimpleConfirmableInteraction
+  interactionController: {fileID: 2102128664}
+  dialogService: {fileID: 2102128611}
+  requireConfirmation: 1
 --- !u!1 &2116715138
 GameObject:
   m_ObjectHideFlags: 0
@@ -3456,6 +3575,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3629960329792281479, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+    - {fileID: 1571446291458784258, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3936088870857016907, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
@@ -3480,6 +3600,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2102128651}
+    - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2102128670}
   m_SourcePrefab: {fileID: 100100000, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
 --- !u!1001 &3250230852500300805
 PrefabInstance:
@@ -3794,6 +3917,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 420119773536554133, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_Radius
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 420119773536554133, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.87
+      objectReference: {fileID: 0}
     - target: {fileID: 3822495116473397098, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
       propertyPath: ropePrefab
       value: 
@@ -3802,13 +3941,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: RopeAnchor
       objectReference: {fileID: 0}
+    - target: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_TagString
+      value: Interactable
+      objectReference: {fileID: 0}
     - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 29.18
+      value: 6.93
       objectReference: {fileID: 0}
     - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.18
+      value: 7.01
       objectReference: {fileID: 0}
     - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3842,10 +3989,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8394582463263539576, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: interactionPrompt
+      value: Deploy Rope
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8394582463263539576, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1065176323}
   m_SourcePrefab: {fileID: 100100000, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
 --- !u!1001 &7449119142978092650
 PrefabInstance:
@@ -3989,13 +4144,37 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3810208068593787307, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3810208068593787307, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_Offset.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3810208068593787307, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.x
+      value: 0.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 3810208068593787307, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_SpriteTilingProperty.newSize.y
+      value: 0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 3810208068593787307, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 0.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 3810208068593787307, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 0.16
+      objectReference: {fileID: 0}
     - target: {fileID: 4233130776959014828, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4233130776959014828, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
       propertyPath: m_LocalScale.y
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4233130776959014828, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4041,13 +4220,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: RopeClimbable
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      propertyPath: m_TagString
+      value: Interactable
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5223075526655915609, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+    - {fileID: 5940615909764543588, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1359491999}
+      addedObject: {fileID: 1359492004}
+    - targetCorrespondingSourceObject: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1359492005}
   m_SourcePrefab: {fileID: 100100000, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
 --- !u!1001 &8707261832586120578
 PrefabInstance:

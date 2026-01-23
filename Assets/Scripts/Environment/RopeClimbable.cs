@@ -13,7 +13,7 @@ public class RopeClimbable : MonoBehaviour
     [SerializeField] private Color ropeColor = new Color(0.6f, 0.4f, 0.2f);
     [SerializeField] private float ropeWidth = 0.1f;
     
-    private RopeAnchorPoint anchorPoint;
+    private object anchorReference;
     private Collider2D ropeCollider;
     private global::Player playerInRange;
     private BoxCollider2D boxCollider;
@@ -36,13 +36,33 @@ public class RopeClimbable : MonoBehaviour
         }
     }
     
-    public void Initialize(RopeAnchorPoint anchor, float length)
+    void Start()
     {
-        anchorPoint = anchor;
+        if (anchorReference == null)
+        {
+            SetupCollider();
+            SetupVisual();
+        }
+    }
+    
+    public void Initialize(object anchor, float length)
+    {
+        anchorReference = anchor;
         ropeLength = length;
+        
+        Debug.Log($"<color=cyan>[ROPE CLIMBABLE] Initializing rope with length {length}</color>");
+        
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = false;
+            Debug.Log($"<color=cyan>[ROPE CLIMBABLE] Disabled SpriteRenderer</color>");
+        }
         
         SetupCollider();
         SetupVisual();
+        
+        Debug.Log($"<color=green>[ROPE CLIMBABLE] Rope initialized successfully - Collider offset: {boxCollider.offset}, size: {boxCollider.size}</color>");
     }
     
     void SetupCollider()
@@ -51,6 +71,7 @@ public class RopeClimbable : MonoBehaviour
         {
             boxCollider.offset = new Vector2(0, -ropeLength / 2f);
             boxCollider.size = new Vector2(0.5f, ropeLength);
+            Debug.Log($"<color=cyan>[ROPE CLIMBABLE] Collider configured - offset: {boxCollider.offset}, size: {boxCollider.size}</color>");
         }
     }
     
@@ -68,17 +89,20 @@ public class RopeClimbable : MonoBehaviour
         lineRenderer.startColor = ropeColor;
         lineRenderer.endColor = ropeColor;
         lineRenderer.sortingOrder = -1;
+        lineRenderer.useWorldSpace = false;
         
         for (int i = 0; i < ropeSegments; i++)
         {
             float t = i / (float)(ropeSegments - 1);
-            Vector3 pos = transform.position + Vector3.down * (ropeLength * t);
+            Vector3 pos = Vector3.down * (ropeLength * t);
             
             float sway = Mathf.Sin(t * Mathf.PI) * 0.1f;
             pos.x += sway;
             
             lineRenderer.SetPosition(i, pos);
         }
+        
+        Debug.Log($"<color=cyan>[ROPE CLIMBABLE] LineRenderer configured with {ropeSegments} segments, length: {ropeLength}</color>");
     }
     
     void OnTriggerEnter2D(Collider2D other)

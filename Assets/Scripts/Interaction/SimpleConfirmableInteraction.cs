@@ -32,6 +32,8 @@ namespace TheHunt.Interaction
         
         public void RequestInteraction()
         {
+            Debug.Log($"<color=magenta>[SIMPLE CONFIRMABLE] ===== RequestInteraction() CALLED =====</color>");
+            
             if (dialogService != null && dialogService.IsDialogOpen)
             {
                 Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] Dialog already open, ignoring interaction</color>");
@@ -46,17 +48,41 @@ namespace TheHunt.Interaction
             
             if (!interactionController.CanInteract)
             {
-                Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] Cannot interact</color>");
+                Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] Cannot interact - CanInteract is false</color>");
                 return;
             }
             
             IInteractable interactable = interactionController.CurrentInteractable;
             
             if (interactable == null)
+            {
+                Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] CurrentInteractable is null</color>");
                 return;
+            }
+            
+            Debug.Log($"<color=cyan>[SIMPLE CONFIRMABLE] CurrentInteractable: {interactable.InteractionPrompt}</color>");
+            
+            MonoBehaviour interactableMono = interactable as MonoBehaviour;
+            if (interactableMono != null)
+            {
+                Debug.Log($"<color=cyan>[SIMPLE CONFIRMABLE] Interactable is MonoBehaviour, checking for PickupItem...</color>");
+                PickupItem pickup = interactableMono.GetComponent<PickupItem>();
+                
+                if (pickup == null)
+                {
+                    Debug.Log($"<color=green>[SIMPLE CONFIRMABLE] Not a pickup item ({interactableMono.gameObject.name}), delegating to PlayerInteractionController.TryInteract()</color>");
+                    interactionController.TryInteract();
+                    return;
+                }
+                else
+                {
+                    Debug.Log($"<color=yellow>[SIMPLE CONFIRMABLE] IS a pickup item, showing confirmation dialog</color>");
+                }
+            }
             
             if (!requireConfirmation)
             {
+                Debug.Log($"<color=cyan>[SIMPLE CONFIRMABLE] No confirmation required, calling TryInteract</color>");
                 interactionController.TryInteract();
                 return;
             }

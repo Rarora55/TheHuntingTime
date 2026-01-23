@@ -39,21 +39,33 @@ namespace TheHunt.Interaction
         {
             int numFound = Physics2D.OverlapCircle( transform.position, detectionRadius, contactFilter,detectionResults);
             
+            if (numFound > 0)
+            {
+                Debug.Log($"<color=cyan>[PLAYER INTERACTION] Found {numFound} objects in detection radius</color>");
+            }
+            
             IInteractable closestInteractable = null;
             float closestDistance = float.MaxValue;
             
             for (int i = 0; i < numFound; i++)
             {
+                Debug.Log($"<color=cyan>[PLAYER INTERACTION] Checking object: {detectionResults[i].gameObject.name}, layer: {LayerMask.LayerToName(detectionResults[i].gameObject.layer)}</color>");
+                
                 IInteractable interactable = detectionResults[i].GetComponent<IInteractable>();
                 
                 if (interactable == null)
                 {
+                    Debug.Log($"<color=yellow>[PLAYER INTERACTION] {detectionResults[i].gameObject.name} has no IInteractable component</color>");
                     continue;
                 }
+                
+                Debug.Log($"<color=green>[PLAYER INTERACTION] {detectionResults[i].gameObject.name} has IInteractable, IsInteractable: {interactable.IsInteractable}</color>");
                 
                 if (interactable != null && interactable.IsInteractable)
                 {
                     float distance = Vector2.Distance(transform.position, detectionResults[i].transform.position);
+                    
+                    Debug.Log($"<color=green>[PLAYER INTERACTION] {detectionResults[i].gameObject.name} is interactable, distance: {distance}</color>");
                     
                     if (distance < closestDistance)
                     {
@@ -67,11 +79,13 @@ namespace TheHunt.Interaction
             {
                 if (currentInteractable != null)
                 {
+                    Debug.Log($"<color=yellow>[PLAYER INTERACTION] Clearing current interactable</color>");
                     ClearInteractable();
                 }
                 
                 if (closestInteractable != null)
                 {
+                    Debug.Log($"<color=green>[PLAYER INTERACTION] Setting new interactable: {((MonoBehaviour)closestInteractable).gameObject.name}</color>");
                     SetInteractable(closestInteractable);
                 }
             }
@@ -91,11 +105,15 @@ namespace TheHunt.Interaction
         
         public void TryInteract()
         {
+            Debug.Log($"<color=magenta>[PLAYER INTERACTION] TryInteract() called - currentInteractable: {(currentInteractable != null ? ((MonoBehaviour)currentInteractable).gameObject.name : "NULL")}</color>");
+            
             if (!CanInteract)
             {
+                Debug.Log($"<color=yellow>[PLAYER INTERACTION] CanInteract is FALSE - currentInteractable null: {currentInteractable == null}, can interact: {(currentInteractable != null ? currentInteractable.CanInteract(gameObject).ToString() : "N/A")}</color>");
                 return;
             }
             
+            Debug.Log($"<color=green>[PLAYER INTERACTION] Calling Interact() on {((MonoBehaviour)currentInteractable).gameObject.name}</color>");
             currentInteractable.Interact(gameObject);
             OnInteracted?.Invoke(currentInteractable);
         }

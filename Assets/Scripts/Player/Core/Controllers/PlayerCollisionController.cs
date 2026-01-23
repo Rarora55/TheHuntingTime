@@ -66,19 +66,6 @@ public class PlayerCollisionController : IPlayerCollision
         int groundedCount = (centerGrounded ? 1 : 0) + (leftGrounded ? 1 : 0) + (rightGrounded ? 1 : 0);
         bool isFullyGrounded = groundedCount >= 1;
         
-        if (groundedCount == 0)
-        {
-            Debug.Log($"<color=red>[GROUND] Ningún raycast tocando - Center: {centerGrounded} | Left: {leftGrounded} | Right: {rightGrounded} → AIRSTATE</color>");
-        }
-        else if (groundedCount == 1)
-        {
-            Debug.Log($"<color=yellow>[GROUND] Solo 1 raycast tocando - Center: {centerGrounded} | Left: {leftGrounded} | Right: {rightGrounded} → GROUNDED (muy en borde)</color>");
-        }
-        else if (groundedCount == 2)
-        {
-            Debug.Log($"<color=cyan>[GROUND] 2 raycasts tocando - Center: {centerGrounded} | Left: {leftGrounded} | Right: {rightGrounded} → GROUNDED (borde)</color>");
-        }
-        
         Color centerColor = centerGrounded ? Color.green : Color.red;
         Color leftColor = leftGrounded ? Color.green : Color.red;
         Color rightColor = rightGrounded ? Color.green : Color.red;
@@ -164,7 +151,6 @@ public class PlayerCollisionController : IPlayerCollision
         bool currentlyGrounded = CheckIsGrounded();
         if (currentlyGrounded)
         {
-            Debug.Log("<color=red>[AUTO LEDGE] Cancelado: Player está grounded (completamente sobre terreno)</color>");
             return false;
         }
         
@@ -199,11 +185,6 @@ public class PlayerCollisionController : IPlayerCollision
         
         bool shouldGrab = noGroundAhead && wallHit;
         
-        if (shouldGrab)
-        {
-            Debug.Log($"<color=magenta>[AUTO LEDGE] ¡Detectado! NoGroundAhead={noGroundAhead}, WallBelow={wallHit.collider.name} at {wallHit.point}</color>");
-        }
-        
         return shouldGrab;
     }
     
@@ -212,7 +193,6 @@ public class PlayerCollisionController : IPlayerCollision
         bool currentlyGrounded = CheckIsGrounded();
         if (currentlyGrounded)
         {
-            Debug.Log("<color=red>[LEDGE FROM ABOVE] Cancelado: Player está grounded (completamente sobre terreno)</color>");
             return false;
         }
         
@@ -254,8 +234,6 @@ public class PlayerCollisionController : IPlayerCollision
             playerData.WhatIsGround);
         float xDist = xHit.distance;
         
-        Debug.Log($"<color=cyan>[CORNER] xRaycast desde WallCheck.pos: {wallCheck.position} → Hit: {xHit.point} | Dist: {xDist:F3}</color>");
-        
         workSpace.Set((xDist + 0.015f) * orientation.FacingDirection, 0f);
         
         Vector3 yRayStart = ledgeCheck.position + (Vector3)workSpace;
@@ -264,14 +242,10 @@ public class PlayerCollisionController : IPlayerCollision
         RaycastHit2D yHit = Physics2D.Raycast(yRayStart, Vector2.down, yRayMaxDist, playerData.WhatIsGround);
         float yDist = yHit.distance;
         
-        Debug.Log($"<color=cyan>[CORNER] yRaycast desde LedgeCheck offset: {yRayStart} → Hit: {yHit.point} | Dist: {yDist:F3} | MaxDist: {yRayMaxDist:F3}</color>");
-        
         Vector2 calculatedCorner = new Vector2(
             wallCheck.position.x + (xDist * orientation.FacingDirection), 
             ledgeCheck.position.y - yDist
         );
-        
-        Debug.Log($"<color=green>[CORNER] Resultado final: {calculatedCorner}</color>");
         
         Debug.DrawRay(wallCheck.position, Vector2.right * orientation.FacingDirection * xDist, Color.red, 3f);
         Debug.DrawRay(yRayStart, Vector2.down * yDist, Color.blue, 3f);
@@ -293,7 +267,6 @@ public class PlayerCollisionController : IPlayerCollision
         
         if (!groundEdgeHit)
         {
-            Debug.Log("<color=red>[CORNER FROM ABOVE] No se detectó suelo adelante</color>");
             return Vector2.zero;
         }
         
@@ -308,7 +281,6 @@ public class PlayerCollisionController : IPlayerCollision
         
         if (!wallHit)
         {
-            Debug.Log("<color=red>[CORNER FROM ABOVE] No se detectó pared debajo</color>");
             return Vector2.zero;
         }
         
@@ -317,7 +289,6 @@ public class PlayerCollisionController : IPlayerCollision
             wallHit.point.y + 0.05f
         );
         
-        Debug.Log($"<color=magenta>[CORNER FROM ABOVE] Corner calculado: {cornerPos} | WallHit: {wallHit.point} | GroundCheck: {groundCheck.position}</color>");
         Debug.DrawLine(cornerPos, cornerPos + Vector2.up * 0.5f, Color.magenta, 2f);
         Debug.DrawLine(wallHit.point, wallHit.point + Vector2.right * orientation.FacingDirection * 0.3f, Color.cyan, 2f);
         Debug.DrawLine(cornerPos, cornerPos + Vector2.left * orientation.FacingDirection * 0.3f, Color.yellow, 2f);
@@ -367,34 +338,27 @@ public class PlayerCollisionController : IPlayerCollision
             playerData.LedgeCheckDistance, 
             playerData.WhatIsGround);
         
-        Debug.Log($"<color=magenta>[LEDGE TYPE] WallCheck: {touchingWall} (at {wallCheck.position.y}) | LedgeCheck: {touchingLedge} (at {ledgeCheck.position.y})</color>");
-        
         if (wallHit && ledgeHit)
         {
             float heightDifference = Mathf.Abs(wallHit.point.y - ledgeHit.point.y);
-            Debug.Log($"<color=yellow>[LEDGE TYPE] Ambos hits - WallY: {wallHit.point.y:F2} | LedgeY: {ledgeHit.point.y:F2} | Diff: {heightDifference:F2}</color>");
             
             if (heightDifference < 0.2f)
             {
-                Debug.Log("<color=cyan>[LEDGE TYPE] ✅ Edge detectado (misma altura - plataforma one-way)</color>");
                 return LedgeType.Edge;
             }
             else
             {
-                Debug.Log("<color=green>[LEDGE TYPE] ✅ Corner detectado (diferente altura)</color>");
                 return LedgeType.Corner;
             }
         }
         
         if (!touchingWall && touchingLedge)
         {
-            Debug.Log("<color=cyan>[LEDGE TYPE] ✅ Edge detectado (sin pared, con ledge)</color>");
             return LedgeType.Edge;
         }
         
         if (touchingWall && !touchingLedge)
         {
-            Debug.Log("<color=green>[LEDGE TYPE] ✅ Corner detectado (con pared, sin ledge)</color>");
             return LedgeType.Corner;
         }
         
@@ -411,7 +375,6 @@ public class PlayerCollisionController : IPlayerCollision
         
         if (!ledgeHit)
         {
-            Debug.Log("<color=red>[EDGE POSITION] No se detectó edge</color>");
             return Vector2.zero;
         }
         
@@ -420,7 +383,6 @@ public class PlayerCollisionController : IPlayerCollision
             ledgeHit.point.y - 0.05f
         );
         
-        Debug.Log($"<color=yellow>[EDGE POSITION] Edge detectado en: {edgePos} | Hit: {ledgeHit.point}</color>");
         Debug.DrawLine(edgePos, edgePos + Vector2.up * 0.5f, Color.yellow, 2f);
         
         return edgePos;
@@ -435,7 +397,6 @@ public class PlayerCollisionController : IPlayerCollision
             originalColliderOffset = collider.offset;
             originalColliderHeight = collider.size.y;
             colliderInitialized = true;
-            Debug.Log($"<color=cyan>[COLLIDER INIT] Offset original: {originalColliderOffset} | Height original: {originalColliderHeight}</color>");
         }
         
         Vector2 size = collider.size;
@@ -446,13 +407,7 @@ public class PlayerCollisionController : IPlayerCollision
         
         size.y = height;
         
-        Debug.Log($"<color=yellow>[COLLIDER] Cambiando altura de {collider.size.y:F2} a {height:F2}</color>");
-        Debug.Log($"<color=yellow>[COLLIDER] HeightDiff: {heightDifference:F3} | Offset anterior: {collider.offset} → Nuevo: {newOffset}</color>");
-        Debug.Log($"<color=yellow>[COLLIDER] GroundCheck.localPos ANTES: {groundCheck.localPosition}</color>");
-        
         collider.size = size;
         collider.offset = newOffset;
-        
-        Debug.Log($"<color=yellow>[COLLIDER] GroundCheck.localPos DESPUÉS: {groundCheck.localPosition}</color>");
     }
 }

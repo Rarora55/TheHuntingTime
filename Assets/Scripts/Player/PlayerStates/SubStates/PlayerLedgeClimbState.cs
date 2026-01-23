@@ -53,7 +53,6 @@ public class PlayerLedgeClimbState : PlayerState
         if (enteredFromAbove)
         {
             cornerPos = player.Collision.DetermineCornerPositionFromAbove();
-            Debug.Log($"<color=cyan>[LEDGE ENTER] Entrando desde arriba. Type: {currentLedgeType}, Corner: {cornerPos}, FacingRight: {player.FacingRight}</color>");
             
             startPos.Set(
                 cornerPos.x - (player.FacingRight * playerData.startOffSet.x), 
@@ -70,12 +69,10 @@ public class PlayerLedgeClimbState : PlayerState
             if (currentLedgeType == LedgeType.Corner)
             {
                 cornerPos = player.DeterminetCornerPos();
-                Debug.Log($"<color=cyan>[LEDGE ENTER] Corner desde el lado. Corner: {cornerPos}, FacingRight: {player.FacingRight}</color>");
             }
             else if (currentLedgeType == LedgeType.Edge)
             {
                 cornerPos = player.Collision.DetermineEdgePosition();
-                Debug.Log($"<color=yellow>[LEDGE ENTER] Edge desde el lado. Edge: {cornerPos}, FacingRight: {player.FacingRight}</color>");
             }
             
             startPos.Set(
@@ -91,8 +88,6 @@ public class PlayerLedgeClimbState : PlayerState
         
         player.transform.position = startPos;
         
-        Debug.Log($"<color=yellow>[LEDGE ENTER] LedgeType: {currentLedgeType}, StartPos: {startPos}, StopPos: {stopPos}</color>");
-
         SetLedgeAnimation();
         isHanging = true;
     }
@@ -155,14 +150,12 @@ public class PlayerLedgeClimbState : PlayerState
             
             if (yInput == 1 && isHanging && !isClimbing)
             {
-                Debug.Log("<color=green>[LEDGE] Subiendo! yInput=1</color>");
                 CheckForSpace();
                 isClimbing = true;
                 player.anim.SetBool("climbLedge", true);
             }
             else if (yInput == -1 && isHanging && !isClimbing)
             {
-                Debug.Log("<color=yellow>[LEDGE] Bajando/Soltando! yInput=-1</color>");
                 
                 if (grabInput && CheckForLadderBelow())
                 {
@@ -180,38 +173,6 @@ public class PlayerLedgeClimbState : PlayerState
     
     bool CheckForLadderAfterClimb()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(player.transform.position, 1.5f);
-        
-        foreach (var collider in colliders)
-        {
-            if (collider.CompareTag("FrontLadder"))
-            {
-                TheHunt.Environment.Ladder ladder = collider.GetComponent<TheHunt.Environment.Ladder>();
-                
-                if (ladder != null && ladder.IsPlayerAtTop(player.transform.position))
-                {
-                    player.SetCurrentLadder(collider);
-                    
-                    int yInput = player.InputHandler.NormInputY;
-                    bool grabInput = player.InputHandler.GrabInput;
-                    
-                    if (yInput == -1 && grabInput)
-                    {
-                        if (player.FacingRight == 1)
-                        {
-                            player.Flip();
-                        }
-                        
-                        player.SetVelocityZero();
-                        player.RB.gravityScale = 0f;
-                        
-                        stateMachine.ChangeState(player.LadderClimbState);
-                        return true;
-                    }
-                }
-            }
-        }
-        
         return false;
     }
     
@@ -275,13 +236,11 @@ public class PlayerLedgeClimbState : PlayerState
         {
             player.anim.SetBool("ledge", true);
             player.anim.SetBool("edgeLedge", false);
-            Debug.Log("<color=green>[LEDGE ANIM] Activando animación Corner (ledge)</color>");
         }
         else if (currentLedgeType == LedgeType.Edge)
         {
             player.anim.SetBool("ledge", false);
             player.anim.SetBool("edgeLedge", true);
-            Debug.Log("<color=yellow>[LEDGE ANIM] Activando animación Edge (edgeLedge)</color>");
         }
     }
 }

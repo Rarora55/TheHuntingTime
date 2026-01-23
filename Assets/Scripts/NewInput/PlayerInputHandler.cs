@@ -167,19 +167,25 @@ public class PlayerInputHandler : MonoBehaviour
             
             if (inventoryUIController != null && inventoryUIController.IsOpen)
             {
+                Debug.Log($"<color=yellow>[INPUT HANDLER] Inventory is open, blocking interaction</color>");
                 return;
             }
             
+            Debug.Log($"<color=cyan>[INPUT HANDLER] OnInteractInput - simpleConfirmable: {simpleConfirmableInteraction != null}, confirmable: {confirmableInteraction != null}, controller: {interactionController != null}</color>");
+            
             if (simpleConfirmableInteraction != null)
             {
+                Debug.Log($"<color=magenta>[INPUT HANDLER] Calling simpleConfirmableInteraction.RequestInteraction()</color>");
                 simpleConfirmableInteraction.RequestInteraction();
             }
             else if (confirmableInteraction != null)
             {
+                Debug.Log($"<color=magenta>[INPUT HANDLER] Calling confirmableInteraction.RequestInteraction()</color>");
                 confirmableInteraction.RequestInteraction();
             }
             else if (interactionController != null)
             {
+                Debug.Log($"<color=green>[INPUT HANDLER] Calling interactionController.TryInteract()</color>");
                 interactionController.TryInteract();
             }
         }

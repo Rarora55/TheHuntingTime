@@ -39,6 +39,7 @@ public class RopeAnchorPoint : MonoBehaviour
     {
         if (isRopeDeployed || ropePrefab == null)
         {
+            Debug.Log($"<color=yellow>[ROPE ANCHOR] Cannot deploy - isRopeDeployed: {isRopeDeployed}, ropePrefab null: {ropePrefab == null}</color>");
             return false;
         }
         
@@ -49,7 +50,17 @@ public class RopeAnchorPoint : MonoBehaviour
             return false;
         }
         
+        Debug.Log($"<color=cyan>[ROPE ANCHOR] WeaponManager found, checking secondary weapon...</color>");
+        
         WeaponItemData secondaryWeapon = weaponManager.SecondaryWeapon;
+        
+        Debug.Log($"<color=cyan>[ROPE ANCHOR] Secondary weapon: {(secondaryWeapon != null ? secondaryWeapon.ItemName : "NULL")}</color>");
+        
+        if (secondaryWeapon != null)
+        {
+            Debug.Log($"<color=cyan>[ROPE ANCHOR] Weapon Type: {secondaryWeapon.WeaponType}, Tool Type: {secondaryWeapon.ToolType}</color>");
+        }
+        
         if (secondaryWeapon == null || 
             secondaryWeapon.WeaponType != WeaponType.Tool || 
             secondaryWeapon.ToolType != ToolType.Rope)
@@ -57,6 +68,8 @@ public class RopeAnchorPoint : MonoBehaviour
             Debug.Log($"<color=yellow>[ROPE ANCHOR] No rope equipped in secondary slot</color>");
             return false;
         }
+        
+        Debug.Log($"<color=green>[ROPE ANCHOR] Rope detected! Deploying...</color>");
         
         deployedRope = Instantiate(ropePrefab, ropeSpawnPoint.position, Quaternion.identity, transform);
         
