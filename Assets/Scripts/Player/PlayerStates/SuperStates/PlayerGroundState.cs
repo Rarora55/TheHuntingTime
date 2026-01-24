@@ -69,9 +69,7 @@ public class PlayerGroundState : PlayerState
         else if (JumpInput && isGrounded)
         {
             player.InputHandler.JumpEnded();
-            // stateMachine.ChangeState(player.JumpState);
-            // DESHABILITADO - Usar LedgeJumpState en su lugar para saltos asistidos a ledges
-            stateMachine.ChangeState(player.LedgeJumpState);
+            stateMachine.ChangeState(player.JumpState);
         }
         else if (isTouchingWall && grabInput && !isTouchingCeiling)
         {

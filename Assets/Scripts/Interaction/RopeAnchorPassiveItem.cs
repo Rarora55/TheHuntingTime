@@ -3,6 +3,9 @@ using TheHunt.Inventory;
 using TheHunt.Environment;
 using TheHunt.UI;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace TheHunt.Interaction
 {
@@ -49,6 +52,8 @@ namespace TheHunt.Interaction
                 spawnPoint = transform;
             }
             
+            LoadRopePrefabIfNeeded();
+            
             dialogService = FindFirstObjectByType<DialogService>();
             if (dialogService == null)
             {
@@ -58,6 +63,30 @@ namespace TheHunt.Interaction
             DisableSpawnPoints();
             
             interactionPrompt = "Press E to use anchor";
+        }
+        
+        private void LoadRopePrefabIfNeeded()
+        {
+            if (ropePrefab != null)
+            {
+                Debug.Log($"<color=green>[ROPE ANCHOR] ropePrefab already assigned: {ropePrefab.name}</color>");
+                return;
+            }
+            
+            #if UNITY_EDITOR
+            string prefabPath = "Assets/Prefabs/ObjectsForTests/RopeClimbable.prefab";
+            ropePrefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (ropePrefab != null)
+            {
+                Debug.Log($"<color=cyan>[ROPE ANCHOR] ✓ Auto-loaded RopeClimbable prefab from {prefabPath}</color>");
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[ROPE ANCHOR] ✗ Failed to auto-load RopeClimbable prefab from {prefabPath}</color>");
+            }
+            #else
+            Debug.LogError($"<color=red>[ROPE ANCHOR] ✗ ropePrefab is null and cannot auto-load in build!</color>");
+            #endif
         }
         
         protected override bool CanExecuteAction(GameObject interactor)
@@ -237,15 +266,35 @@ namespace TheHunt.Interaction
                 return;
             }
             
+            Debug.Log($"<color=cyan>[ROPE ANCHOR DEBUG] About to remove item:</color>\n" +
+                     $"  - ItemData reference: {usedRopeItem}\n" +
+                     $"  - ItemName: {usedRopeItem.ItemName}\n" +
+                     $"  - ItemID: {usedRopeItem.ItemID}\n" +
+                     $"  - Current count in inventory: {inventory.GetItemCount(usedRopeItem)}");
+            
             bool removed = inventory.RemoveItem(usedRopeItem, 1);
             
             if (removed)
             {
-                Debug.Log($"<color=green>[ROPE ANCHOR] Consumed {usedRopeItem.ItemName} from inventory</color>");
+                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ Successfully consumed {usedRopeItem.ItemName} from inventory</color>");
+                Debug.Log($"<color=cyan>[ROPE ANCHOR] Remaining count: {inventory.GetItemCount(usedRopeItem)}</color>");
             }
             else
             {
-                Debug.LogWarning($"<color=yellow>[ROPE ANCHOR] Failed to remove {usedRopeItem.ItemName} from inventory</color>");
+                Debug.LogWarning($"<color=red>[ROPE ANCHOR] ✗ FAILED to remove {usedRopeItem.ItemName} from inventory!</color>");
+                Debug.LogWarning($"<color=yellow>[ROPE ANCHOR DEBUG] Current inventory state:</color>");
+                
+                // Debug all inventory items
+                var inventoryData = inventory.InventoryData;
+                for (int i = 0; i < 6; i++)
+                {
+                    var item = inventoryData.GetItem(i);
+                    if (item != null && item.itemData != null)
+                    {
+                        Debug.LogWarning($"  Slot {i}: {item.itemData.ItemName} (ID: {item.itemData.ItemID}) x{item.quantity} " +
+                                       $"[Reference match: {item.itemData == usedRopeItem}]");
+                    }
+                }
             }
         }
         
@@ -296,17 +345,33 @@ namespace TheHunt.Interaction
         
         private void EnableSpawnPoints()
         {
+            Debug.Log("<color=cyan>[ROPE ANCHOR] === EnableSpawnPoints() called ===</color>");
+            
             if (topSpawnPoint != null)
             {
+                Debug.Log($"<color=cyan>[ROPE ANCHOR] Top spawn point found: {topSpawnPoint.gameObject.name}</color>");
+                Debug.Log($"<color=cyan>[ROPE ANCHOR]   - Current active state: {topSpawnPoint.gameObject.activeSelf}</color>");
                 topSpawnPoint.gameObject.SetActive(true);
-                Debug.Log("<color=green>[ROPE ANCHOR] Top spawn point enabled</color>");
+                Debug.Log($"<color=green>[ROPE ANCHOR]   - ✓ Set to ACTIVE</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ Top spawn point is NULL!</color>");
             }
             
             if (bottomSpawnPoint != null)
             {
+                Debug.Log($"<color=cyan>[ROPE ANCHOR] Bottom spawn point found: {bottomSpawnPoint.gameObject.name}</color>");
+                Debug.Log($"<color=cyan>[ROPE ANCHOR]   - Current active state: {bottomSpawnPoint.gameObject.activeSelf}</color>");
                 bottomSpawnPoint.gameObject.SetActive(true);
-                Debug.Log("<color=green>[ROPE ANCHOR] Bottom spawn point enabled</color>");
+                Debug.Log($"<color=green>[ROPE ANCHOR]   - ✓ Set to ACTIVE</color>");
             }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ Bottom spawn point is NULL!</color>");
+            }
+            
+            Debug.Log("<color=green>[ROPE ANCHOR] === EnableSpawnPoints() completed ===</color>");
         }
         
         public void RetractRope()

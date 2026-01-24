@@ -26,6 +26,7 @@ namespace TheHunt.Inventory
         public bool HasSpace => !IsFull;
         public int SelectedSlot => slotNavigator != null ? slotNavigator.CurrentSlot : 0;
         public ItemInstance[] Items => inventoryData != null ? inventoryData.Items : new ItemInstance[MAX_SLOTS];
+        public InventoryDataSO InventoryData => inventoryData;
 
         public event Action<int, ItemInstance> OnItemAdded;
         public event Action<int, ItemInstance> OnItemRemoved;
@@ -188,7 +189,8 @@ namespace TheHunt.Inventory
             for (int i = 0; i < MAX_SLOTS; i++)
             {
                 ItemInstance item = inventoryData.GetItem(i);
-                if (item != null && item.itemData == itemData)
+                if (item != null && item.itemData != null && 
+                    (item.itemData == itemData || item.itemData.ItemID == itemData.ItemID))
                 {
                     count += item.quantity;
                 }
@@ -207,7 +209,8 @@ namespace TheHunt.Inventory
             for (int i = 0; i < MAX_SLOTS && remaining > 0; i++)
             {
                 ItemInstance item = inventoryData.GetItem(i);
-                if (item != null && item.itemData == itemData)
+                if (item != null && item.itemData != null && 
+                    (item.itemData == itemData || item.itemData.ItemID == itemData.ItemID))
                 {
                     int toRemove = Mathf.Min(remaining, item.quantity);
                     RemoveItem(i, toRemove);
