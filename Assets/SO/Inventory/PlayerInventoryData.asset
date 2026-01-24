@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: PlayerInventoryData
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.InventoryDataSO
   items:
-  - itemData: {fileID: 0}
-    quantity: 0
+  - itemData: {fileID: 11400000, guid: 72051d6b70b30ec458dafe2a2da9d8fe, type: 2}
+    quantity: 2
     instanceID: 
   - itemData: {fileID: 0}
     quantity: 0

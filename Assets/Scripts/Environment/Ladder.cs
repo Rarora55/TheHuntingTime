@@ -9,13 +9,13 @@ namespace TheHunt.Environment
         [SerializeField] private bool requireInteractionInput = false;
         [SerializeField] private KeyCode interactionKey = KeyCode.W;
         
-        [Header("Top Entry Detection")]
-        [SerializeField] private Transform topPoint;
-        [SerializeField] private float topEntryDistance = 1f;
+        [Header("Teleport Settings")]
+        [SerializeField] private Transform topExitPoint;
+        [SerializeField] private float fadeDuration = 0.5f;
 
         private Collider2D ladderCollider;
         private global::Player playerInRange;
-        private bool playerIsClimbing;
+        private bool hasUsed = false;
         private BoxCollider2D boxCollider;
 
         private void Awake()
@@ -33,24 +33,24 @@ namespace TheHunt.Environment
                 Debug.LogWarning($"[LADDER] {gameObject.name} should have tag 'FrontLadder'");
             }
             
-            if (topPoint == null && boxCollider != null)
+            if (topExitPoint == null && boxCollider != null)
             {
-                GameObject topObj = new GameObject("LadderTop");
+                GameObject topObj = new GameObject("LadderTopExit");
                 topObj.transform.SetParent(transform);
-                topPoint = topObj.transform;
+                topExitPoint = topObj.transform;
                 
-                Vector2 topPosition = (Vector2)transform.position + boxCollider.offset + Vector2.up * (boxCollider.size.y / 2f);
-                topPoint.position = topPosition;
+                Vector2 topPosition = (Vector2)transform.position + boxCollider.offset + Vector2.up * (boxCollider.size.y / 2f + 1f);
+                topExitPoint.position = topPosition;
             }
         }
 
         private void Update()
         {
-            if (playerInRange != null && !playerIsClimbing && requireInteractionInput)
+            if (playerInRange != null && !hasUsed && requireInteractionInput)
             {
                 if (UnityEngine.Input.GetKeyDown(interactionKey))
                 {
-                    StartClimbing();
+                    TriggerClimb();
                 }
             }
         }
@@ -68,21 +68,8 @@ namespace TheHunt.Environment
 
                     if (!requireInteractionInput)
                     {
-                        TryStartClimbing(player);
+                        TriggerClimb();
                     }
-                }
-            }
-        }
-
-        private void OnTriggerStay2D(Collider2D other)
-        {
-            if (other.CompareTag("Player") && !requireInteractionInput)
-            {
-                global::Player player = other.GetComponent<global::Player>();
-                
-                if (player != null && !playerIsClimbing)
-                {
-                    TryStartClimbing(player);
                 }
             }
         }
@@ -97,44 +84,47 @@ namespace TheHunt.Environment
                 {
                     player.ClearCurrentLadder(ladderCollider);
                     playerInRange = null;
-                    playerIsClimbing = false;
                 }
             }
         }
 
-        private void TryStartClimbing(global::Player player)
+        private void TriggerClimb()
         {
-            int yInput = player.InputHandler.NormInputY;
-            bool grabInput = player.InputHandler.GrabInput;
+            if (hasUsed || playerInRange == null || topExitPoint == null)
+                return;
 
-            if (grabInput && (yInput == 1 || yInput == -1))
-            {
-                StartClimbing();
-            }
+            hasUsed = true;
+
+            playerInRange.SetVelocityZero();
+            playerInRange.RB.gravityScale = 0f;
+
+            ScreenFadeManager.Instance.FadeToBlackAndTeleport(
+                topExitPoint.position,
+                playerInRange.gameObject,
+                fadeDuration
+            );
+
+            Debug.Log("<color=green>[LADDER] Teleporting player to top exit point</color>");
         }
 
-        private void StartClimbing()
+        public void Reset()
         {
-            if (playerInRange != null && playerInRange.LadderClimbState != null)
-            {
-                playerIsClimbing = true;
-                playerInRange.StateMachine.ChangeState(playerInRange.LadderClimbState);
-            }
+            hasUsed = false;
         }
         
         public bool IsPlayerAtTop(Vector3 playerPosition)
         {
-            if (topPoint == null || boxCollider == null)
+            if (topExitPoint == null || boxCollider == null)
                 return false;
             
-            float distanceToTop = Mathf.Abs(playerPosition.y - topPoint.position.y);
-            return distanceToTop <= topEntryDistance;
+            float distanceToTop = Mathf.Abs(playerPosition.y - topExitPoint.position.y);
+            return distanceToTop <= 1f;
         }
         
         public Vector3 GetTopPosition()
         {
-            if (topPoint != null)
-                return topPoint.position;
+            if (topExitPoint != null)
+                return topExitPoint.position;
             
             if (boxCollider != null)
             {
@@ -168,15 +158,21 @@ namespace TheHunt.Environment
                 Gizmos.DrawWireCube(boxCol.offset, boxCol.size);
             }
             
-            if (topPoint != null)
+            if (topExitPoint != null)
             {
                 Gizmos.color = Color.green;
-                Gizmos.DrawWireSphere(topPoint.position, topEntryDistance);
+                Gizmos.DrawWireSphere(topExitPoint.position, 0.4f);
+                Gizmos.DrawLine(transform.position, topExitPoint.position);
             }
 
 #if UNITY_EDITOR
             Vector3 labelPos = transform.position + Vector3.up * 0.5f;
-            UnityEditor.Handles.Label(labelPos, $"LADDER\n{(requireInteractionInput ? $"Press [{interactionKey}]" : "Auto")}");
+            UnityEditor.Handles.Label(labelPos, $"LADDER\n{(requireInteractionInput ? $"Press [{interactionKey}]" : "Auto")}\nFade Duration: {fadeDuration}s");
+            
+            if (topExitPoint != null)
+            {
+                UnityEditor.Handles.Label(topExitPoint.position + Vector3.up * 0.5f, "EXIT POINT");
+            }
 #endif
         }
     }

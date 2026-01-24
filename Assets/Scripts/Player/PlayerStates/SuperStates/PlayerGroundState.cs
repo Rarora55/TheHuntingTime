@@ -56,18 +56,22 @@ public class PlayerGroundState : PlayerState
         grabInput = player.InputHandler.GrabInput;
         AimInput = player.InputHandler.AimInput;
 
-        if (player.IsOnLadder() && grabInput && (yInput == 1 || yInput == -1))
-        {
-            stateMachine.ChangeState(player.LadderClimbState);
-        }
-        else if (AimInput && CanAim())
+        // DESHABILITADO - Sistema de escalada con input grab anulado
+        // if (player.IsOnLadder() && grabInput && (yInput == 1 || yInput == -1))
+        // {
+        //     stateMachine.ChangeState(player.LadderClimbState);
+        // }
+        
+        if (AimInput && CanAim())
         {
             stateMachine.ChangeState(player.AimState);
         }
         else if (JumpInput && isGrounded)
         {
             player.InputHandler.JumpEnded();
-            stateMachine.ChangeState(player.JumpState);
+            // stateMachine.ChangeState(player.JumpState);
+            // DESHABILITADO - Usar LedgeJumpState en su lugar para saltos asistidos a ledges
+            stateMachine.ChangeState(player.LedgeJumpState);
         }
         else if (isTouchingWall && grabInput && !isTouchingCeiling)
         {

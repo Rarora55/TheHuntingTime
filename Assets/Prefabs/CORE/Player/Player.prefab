@@ -88,7 +88,6 @@ GameObject:
   - component: {fileID: 1343817880564136641}
   - component: {fileID: 8734124595375472744}
   - component: {fileID: 7550133035206482901}
-  - component: {fileID: 1571446291458784258}
   - component: {fileID: 5652036909615714610}
   - component: {fileID: 3018417222918289650}
   - component: {fileID: 2383240838999611043}
@@ -676,21 +675,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a0b64d3841b1172438e9fc97fd52d14e, type: 2}
   showDebugLogs: 1
   allowMultipleCombinations: 0
---- !u!114 &1571446291458784258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4807809795982176028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 21f1573193372c0469f1fd77fe85eac4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.SimpleConfirmableInteraction
-  interactionController: {fileID: 2478639749003906692}
-  dialogService: {fileID: 0}
-  requireConfirmation: 1
 --- !u!114 &5652036909615714610
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,121 +4,133 @@ using TheHunt.Inventory;
 namespace TheHunt.Environment
 {
     [RequireComponent(typeof(Collider2D))]
-    public class ClimbableObject : MonoBehaviour, IClimbable
+    public class ClimbableWithTeleport : MonoBehaviour
     {
         [Header("Climb Settings")]
-        [SerializeField] private ClimbType climbType = ClimbType.Rope;
-        [SerializeField] private float climbSpeed = 3f;
-        [SerializeField] private bool allowWallSlide = false;
+        [SerializeField] private Transform exitPoint;
+        [SerializeField] private float fadeDuration = 0.5f;
+        [SerializeField] private bool autoClimb = true;
+        [SerializeField] private KeyCode climbKey = KeyCode.W;
 
-        [Header("Pickup Settings")]
-        [SerializeField] private bool canBePickedUp = false;
-        [SerializeField] private WeaponItemData itemData;
+        [Header("Tipo de Objeto")]
+        [SerializeField] private ClimbableType climbType = ClimbableType.Ladder;
 
-        [Header("Visual Feedback")]
-        [SerializeField] private Color gizmoColor = Color.green;
-        [SerializeField] private bool showGizmos = true;
-
-        private Collider2D climbCollider;
-        private global::Player currentPlayer;
+        private Collider2D triggerCollider;
+        private global::Player playerInRange;
+        private bool hasUsed = false;
 
         private void Awake()
         {
-            climbCollider = GetComponent<Collider2D>();
-            
-            if (climbCollider != null && !climbCollider.isTrigger)
+            triggerCollider = GetComponent<Collider2D>();
+            triggerCollider.isTrigger = true;
+
+            if (exitPoint == null)
             {
-                climbCollider.isTrigger = true;
+                GameObject exitGO = new GameObject("ExitPoint");
+                exitGO.transform.SetParent(transform);
+                exitPoint = exitGO.transform;
+                
+                BoxCollider2D boxCol = GetComponent<BoxCollider2D>();
+                if (boxCol != null)
+                {
+                    Vector2 topPosition = (Vector2)transform.position + boxCol.offset + Vector2.up * (boxCol.size.y / 2f + 1f);
+                    exitPoint.position = topPosition;
+                }
+                else
+                {
+                    exitPoint.localPosition = Vector3.up * 3f;
+                }
             }
         }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+        private void Update()
         {
-            if (collision.CompareTag("Player"))
+            if (playerInRange != null && !hasUsed && !autoClimb)
             {
-                global::Player player = collision.GetComponent<global::Player>();
+                if (UnityEngine.Input.GetKeyDown(climbKey))
+                {
+                    TriggerClimb();
+                }
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                global::Player player = other.GetComponent<global::Player>();
                 if (player != null)
                 {
-                    currentPlayer = player;
-                    player.SetCurrentClimbable(this);
+                    playerInRange = player;
+
+                    if (autoClimb)
+                    {
+                        TriggerClimb();
+                    }
                 }
             }
         }
 
-        private void OnTriggerExit2D(Collider2D collision)
+        private void OnTriggerExit2D(Collider2D other)
         {
-            if (collision.CompareTag("Player"))
+            if (other.CompareTag("Player"))
             {
-                global::Player player = collision.GetComponent<global::Player>();
-                if (player != null && player == currentPlayer)
-                {
-                    player.ClearCurrentClimbable(this);
-                    currentPlayer = null;
-                }
+                playerInRange = null;
             }
         }
 
-        public ClimbType GetClimbType() => climbType;
-        public float GetClimbSpeed() => climbSpeed;
-        public bool AllowsWallSlide() => allowWallSlide;
-        public bool CanBePickedUp() => canBePickedUp;
-        public Transform GetTransform() => transform;
-
-        public WeaponItemData GetItemData() => itemData;
-
-        public void PickUp(global::Player player)
+        private void TriggerClimb()
         {
-            if (!canBePickedUp || itemData == null)
-            {
+            if (hasUsed || playerInRange == null || exitPoint == null)
                 return;
-            }
-            
-            if (currentPlayer == player)
-            {
-                player.ClearCurrentClimbable(this);
-                currentPlayer = null;
-            }
 
-            gameObject.SetActive(false);
+            hasUsed = true;
+
+            playerInRange.SetVelocityZero();
+            playerInRange.RB.gravityScale = 0f;
+
+            ScreenFadeManager.Instance.FadeToBlackAndTeleport(
+                exitPoint.position,
+                playerInRange.gameObject,
+                fadeDuration
+            );
         }
 
-        private void OnDrawGizmos()
+        public void Reset()
         {
-            if (!showGizmos) return;
-
-            Collider2D col = GetComponent<Collider2D>();
-            if (col == null) return;
-
-            Gizmos.color = gizmoColor;
-            
-            if (col is BoxCollider2D boxCollider)
-            {
-                Vector3 center = transform.TransformPoint(boxCollider.offset);
-                Vector3 size = new Vector3(
-                    boxCollider.size.x * transform.lossyScale.x,
-                    boxCollider.size.y * transform.lossyScale.y,
-                    0.1f
-                );
-                Gizmos.DrawWireCube(center, size);
-            }
-            else if (col is CircleCollider2D circleCollider)
-            {
-                Vector3 center = transform.TransformPoint(circleCollider.offset);
-                float radius = circleCollider.radius * Mathf.Max(transform.lossyScale.x, transform.lossyScale.y);
-                Gizmos.DrawWireSphere(center, radius);
-            }
+            hasUsed = false;
         }
 
         private void OnDrawGizmosSelected()
         {
-            if (!showGizmos) return;
+            if (exitPoint != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(exitPoint.position, 0.3f);
+                Gizmos.DrawLine(transform.position, exitPoint.position);
 
-            Gizmos.color = Color.white;
-            Vector3 labelPos = transform.position + Vector3.up * 0.5f;
-            
+                Gizmos.color = Color.cyan;
+                Vector3 labelPos = exitPoint.position + Vector3.up * 0.5f;
+                
 #if UNITY_EDITOR
-            UnityEditor.Handles.Label(labelPos, $"{climbType}\nSpeed: {climbSpeed}\nPickup: {canBePickedUp}");
+                UnityEditor.Handles.Label(labelPos, "EXIT POINT");
 #endif
+            }
+
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null && col is BoxCollider2D boxCol)
+            {
+                Gizmos.color = new Color(1, 0.5f, 0, 0.3f);
+                Gizmos.matrix = transform.localToWorldMatrix;
+                Gizmos.DrawCube(boxCol.offset, boxCol.size);
+            }
         }
+    }
+
+    public enum ClimbableType
+    {
+        Ladder,
+        Rope,
+        Vine
     }
 }

@@ -3,68 +3,54 @@ using TheHunt.Inventory;
 
 namespace TheHunt.Environment
 {
-    public class RopeAnchorPoint : MonoBehaviour
+    public class RopeDeploymentSystem : MonoBehaviour
     {
-        [Header("Anchor Settings")]
+        [Header("Rope Anchor Settings")]
         [SerializeField] private Transform ropeSpawnPoint;
-        [SerializeField] private float ropeLength = 5f;
         [SerializeField] private GameObject ropePrefab;
-        
+        [SerializeField] private float ropeLength = 5f;
+        [SerializeField] private float fadeDuration = 0.5f;
+
         [Header("Visual Feedback")]
-        [SerializeField] private SpriteRenderer anchorVisual;
-        [SerializeField] private Color availableColor = Color.green;
-        [SerializeField] private Color usedColor = Color.gray;
+        [SerializeField] private SpriteRenderer anchorSprite;
+        [SerializeField] private Color deployedColor = Color.gray;
         
-        private bool isRopeDeployed;
         private GameObject deployedRope;
         private Transform ropeExitPoint;
-        
-        public bool IsRopeDeployed => isRopeDeployed;
-        public float RopeLength => ropeLength;
-        
-        void Start()
+        private bool isDeployed = false;
+        private Color originalColor;
+
+        private void Awake()
         {
+            if (anchorSprite != null)
+            {
+                originalColor = anchorSprite.color;
+            }
+
             if (ropeSpawnPoint == null)
             {
                 ropeSpawnPoint = transform;
             }
-            
-            UpdateVisual();
         }
-        
-        public bool CanDeployRope()
+
+        public bool TryDeployRope(global::Player player)
         {
-            return !isRopeDeployed;
-        }
-        
-        public bool DeployRope(global::Player player)
-        {
-            if (isRopeDeployed || ropePrefab == null)
+            if (isDeployed)
             {
-                Debug.Log($"<color=yellow>[ROPE ANCHOR] Cannot deploy - isRopeDeployed: {isRopeDeployed}, ropePrefab null: {ropePrefab == null}</color>");
+                Debug.Log("<color=yellow>[ROPE DEPLOYMENT] Rope already deployed</color>");
                 return false;
             }
-            
+
             if (!HasRopeInInventory(player))
             {
-                Debug.Log($"<color=yellow>[ROPE ANCHOR] Player doesn't have rope in inventory</color>");
+                Debug.Log("<color=yellow>[ROPE DEPLOYMENT] Player doesn't have rope in inventory</color>");
                 return false;
             }
-            
-            Debug.Log($"<color=green>[ROPE ANCHOR] Rope detected! Deploying...</color>");
-            
-            deployedRope = Instantiate(ropePrefab, ropeSpawnPoint.position, Quaternion.identity, transform);
-            
-            SetupClimbableWithFade();
-            
-            isRopeDeployed = true;
-            UpdateVisual();
-            
-            Debug.Log($"<color=green>[ROPE ANCHOR] Rope deployed successfully with length {ropeLength}</color>");
-            
+
+            DeployRope();
             return true;
         }
-        
+
         private bool HasRopeInInventory(global::Player player)
         {
             if (player == null) return false;
@@ -85,8 +71,31 @@ namespace TheHunt.Environment
 
             return hasPrimaryRope || hasSecondaryRope;
         }
-        
-        private void SetupClimbableWithFade()
+
+        private void DeployRope()
+        {
+            if (ropePrefab == null)
+            {
+                Debug.LogError("<color=red>[ROPE DEPLOYMENT] No rope prefab assigned!</color>");
+                return;
+            }
+
+            Vector3 spawnPosition = ropeSpawnPoint.position;
+            deployedRope = Instantiate(ropePrefab, spawnPosition, Quaternion.identity, transform);
+
+            SetupRopeClimbable();
+
+            isDeployed = true;
+
+            if (anchorSprite != null)
+            {
+                anchorSprite.color = deployedColor;
+            }
+
+            Debug.Log("<color=green>[ROPE DEPLOYMENT] Rope deployed successfully!</color>");
+        }
+
+        private void SetupRopeClimbable()
         {
             if (deployedRope == null) return;
 
@@ -108,41 +117,40 @@ namespace TheHunt.Environment
                 .GetField("exitPoint", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 ?.SetValue(climbable, ropeExitPoint);
         }
-        
-        public void RemoveRope()
+
+        public void RetractRope()
         {
             if (deployedRope != null)
             {
                 Destroy(deployedRope);
-                deployedRope = null;
             }
-            
-            isRopeDeployed = false;
-            UpdateVisual();
-            
-            Debug.Log($"<color=orange>[ROPE ANCHOR] Rope removed</color>");
-        }
-        
-        void UpdateVisual()
-        {
-            if (anchorVisual != null)
+
+            isDeployed = false;
+
+            if (anchorSprite != null)
             {
-                anchorVisual.color = isRopeDeployed ? usedColor : availableColor;
+                anchorSprite.color = originalColor;
             }
+
+            Debug.Log("<color=cyan>[ROPE DEPLOYMENT] Rope retracted</color>");
         }
-        
-        void OnDrawGizmos()
+
+        private void OnDrawGizmosSelected()
         {
             if (ropeSpawnPoint == null)
                 ropeSpawnPoint = transform;
-            
-            Gizmos.color = isRopeDeployed ? Color.gray : Color.green;
-            Gizmos.DrawWireSphere(ropeSpawnPoint.position, 0.3f);
-            
+
             Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(ropeSpawnPoint.position, 0.2f);
+
+            Gizmos.color = Color.cyan;
             Vector3 ropeEnd = ropeSpawnPoint.position + Vector3.down * ropeLength;
             Gizmos.DrawLine(ropeSpawnPoint.position, ropeEnd);
-            Gizmos.DrawWireSphere(ropeEnd, 0.2f);
+            Gizmos.DrawWireSphere(ropeEnd, 0.3f);
+
+#if UNITY_EDITOR
+            UnityEditor.Handles.Label(ropeEnd + Vector3.down * 0.5f, "ROPE EXIT");
+#endif
         }
     }
 }

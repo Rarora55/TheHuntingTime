@@ -1,5 +1,6 @@
 using UnityEngine;
 using TheHunt.Interaction;
+using TheHunt.Environment;
 
 [RequireComponent(typeof(RopeAnchorPoint))]
 public class RopeAnchorInteraction : InteractableObject
@@ -65,7 +66,7 @@ public class RopeAnchorInteraction : InteractableObject
         }
         else
         {
-            ShowMessage("Need rope equipped in secondary slot");
+            ShowMessage("Need rope in inventory");
         }
     }
     
