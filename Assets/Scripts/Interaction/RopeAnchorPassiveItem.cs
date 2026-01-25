@@ -91,6 +91,11 @@ namespace TheHunt.Interaction
         
         protected override bool CanExecuteAction(GameObject interactor)
         {
+            if (isDeployed)
+            {
+                Debug.Log("<color=yellow>[ROPE ANCHOR] ✗ Cannot interact: Rope already deployed at this anchor</color>");
+            }
+            
             return !isDeployed;
         }
         
@@ -163,7 +168,10 @@ namespace TheHunt.Interaction
                     ConsumeRopeFromInventory();
                     DeployRope();
                     
-                    ScreenFadeManager.Instance.FadeFromBlack(fadeDuration, null);
+                    ScreenFadeManager.Instance.FadeFromBlack(fadeDuration, () =>
+                    {
+                        ClearPending();
+                    });
                 });
             }
             else
@@ -171,9 +179,8 @@ namespace TheHunt.Interaction
                 Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeManager not found, deploying without fade</color>");
                 ConsumeRopeFromInventory();
                 DeployRope();
+                ClearPending();
             }
-            
-            ClearPending();
         }
         
         private void OnCancelled()
@@ -215,7 +222,8 @@ namespace TheHunt.Interaction
             
             SetInteractable(false);
             
-            Debug.Log($"<color=green>[ROPE ANCHOR] Rope deployed successfully! Length: {ropeLength}</color>");
+            Debug.Log($"<color=green>[ROPE ANCHOR] ✓ Rope deployed successfully! Length: {ropeLength}</color>");
+            Debug.Log($"<color=cyan>[ROPE ANCHOR] ✓ Anchor interaction DISABLED (rope already deployed)</color>");
         }
         
         private void ScaleRopeToFit(GameObject rope, Vector3 startPos, Vector3 endPos)
@@ -376,6 +384,12 @@ namespace TheHunt.Interaction
         
         public void RetractRope()
         {
+            if (!isDeployed)
+            {
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ Cannot retract: No rope deployed</color>");
+                return;
+            }
+            
             if (deployedRope != null)
             {
                 Destroy(deployedRope);
@@ -393,7 +407,8 @@ namespace TheHunt.Interaction
             
             SetInteractable(true);
             
-            Debug.Log("<color=orange>[ROPE ANCHOR] Rope retracted</color>");
+            Debug.Log("<color=orange>[ROPE ANCHOR] ✓ Rope retracted successfully</color>");
+            Debug.Log("<color=cyan>[ROPE ANCHOR] ✓ Anchor interaction RE-ENABLED (rope removed)</color>");
         }
     }
 }

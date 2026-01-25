@@ -1,0 +1,143 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4548482545929761809
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 420119773536554133, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_Radius
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 420119773536554133, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_IncludeLayers.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.162
+      objectReference: {fileID: 0}
+    - target: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.219
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822495116473397098, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: ropePrefab
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_Name
+      value: RopeAnchor Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_TagString
+      value: Interactable
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7679468662044754404, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8394582463263539576, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      propertyPath: interactionPrompt
+      value: Deploy Rope
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 764631923112245487}
+  m_SourcePrefab: {fileID: 100100000, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+--- !u!4 &4130479227371626112 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+  m_PrefabInstance: {fileID: 4548482545929761809}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &5445959063477648249 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8398256922646695784, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+  m_PrefabInstance: {fileID: 4548482545929761809}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7765692530735022685 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6114266447887251020, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
+  m_PrefabInstance: {fileID: 4548482545929761809}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &764631923112245487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7765692530735022685}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2234f238b94f81149818f0707aa685f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.RopeAnchorPassiveItem
+  interactionPrompt: Presiona E para desplegar cuerda
+  isInteractable: 1
+  ropeLength: 5
+  ropePrefab: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
+  spawnPoint: {fileID: 4130479227371626112}
+  fadeDuration: 0.5
+  topSpawnPoint: {fileID: 0}
+  bottomSpawnPoint: {fileID: 0}
+  anchorSprite: {fileID: 5445959063477648249}
+  deployedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  confirmationTitle: Desplegar Cuerda
+  confirmationMessage: "\xBFDeseas desplegar la cuerda?"
+  noRopeMessage: Necesito una cuerda
+  ropeItemData: {fileID: 11400000, guid: 72051d6b70b30ec458dafe2a2da9d8fe, type: 2}

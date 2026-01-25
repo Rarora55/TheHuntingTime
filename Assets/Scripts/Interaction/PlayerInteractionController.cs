@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TheHunt.Interaction
@@ -8,10 +9,16 @@ namespace TheHunt.Interaction
         [Header("Detection Settings")]
         [SerializeField] private float detectionRadius = 2f;
         [SerializeField] private LayerMask interactionLayer;
+        [SerializeField] private float detectionInterval = 0.1f;
+        
+        [Header("Debug")]
+        [SerializeField] private bool enableDebugLogs = false;
         
         private IInteractable currentInteractable;
         private Collider2D[] detectionResults = new Collider2D[10];
         private ContactFilter2D contactFilter;
+        private float lastDetectionTime;
+        private Dictionary<Collider2D, IInteractable> interactableCache = new Dictionary<Collider2D, IInteractable>();
         
         public IInteractable CurrentInteractable => currentInteractable;
         public bool CanInteract => currentInteractable != null && currentInteractable.CanInteract(gameObject);
@@ -32,14 +39,18 @@ namespace TheHunt.Interaction
         
         void Update()
         {
-            DetectNearbyInteractables();
+            if (Time.time - lastDetectionTime >= detectionInterval)
+            {
+                DetectNearbyInteractables();
+                lastDetectionTime = Time.time;
+            }
         }
         
         void DetectNearbyInteractables()
         {
-            int numFound = Physics2D.OverlapCircle( transform.position, detectionRadius, contactFilter,detectionResults);
+            int numFound = Physics2D.OverlapCircle(transform.position, detectionRadius, contactFilter, detectionResults);
             
-            if (numFound > 0)
+            if (enableDebugLogs && numFound > 0)
             {
                 Debug.Log($"<color=cyan>[PLAYER INTERACTION] Found {numFound} objects in detection radius</color>");
             }
@@ -49,23 +60,41 @@ namespace TheHunt.Interaction
             
             for (int i = 0; i < numFound; i++)
             {
-                Debug.Log($"<color=cyan>[PLAYER INTERACTION] Checking object: {detectionResults[i].gameObject.name}, layer: {LayerMask.LayerToName(detectionResults[i].gameObject.layer)}</color>");
+                Collider2D col = detectionResults[i];
                 
-                IInteractable interactable = detectionResults[i].GetComponent<IInteractable>();
+                if (enableDebugLogs)
+                {
+                    Debug.Log($"<color=cyan>[PLAYER INTERACTION] Checking object: {col.gameObject.name}</color>");
+                }
+                
+                if (!interactableCache.TryGetValue(col, out IInteractable interactable))
+                {
+                    interactable = col.GetComponent<IInteractable>();
+                    interactableCache[col] = interactable;
+                }
                 
                 if (interactable == null)
                 {
-                    Debug.Log($"<color=yellow>[PLAYER INTERACTION] {detectionResults[i].gameObject.name} has no IInteractable component</color>");
+                    if (enableDebugLogs)
+                    {
+                        Debug.Log($"<color=yellow>[PLAYER INTERACTION] {col.gameObject.name} has no IInteractable component</color>");
+                    }
                     continue;
                 }
                 
-                Debug.Log($"<color=green>[PLAYER INTERACTION] {detectionResults[i].gameObject.name} has IInteractable, IsInteractable: {interactable.IsInteractable}</color>");
-                
-                if (interactable != null && interactable.IsInteractable)
+                if (enableDebugLogs)
                 {
-                    float distance = Vector2.Distance(transform.position, detectionResults[i].transform.position);
+                    Debug.Log($"<color=green>[PLAYER INTERACTION] {col.gameObject.name} has IInteractable, IsInteractable: {interactable.IsInteractable}</color>");
+                }
+                
+                if (interactable.IsInteractable)
+                {
+                    float distance = Vector2.Distance(transform.position, col.transform.position);
                     
-                    Debug.Log($"<color=green>[PLAYER INTERACTION] {detectionResults[i].gameObject.name} is interactable, distance: {distance}</color>");
+                    if (enableDebugLogs)
+                    {
+                        Debug.Log($"<color=green>[PLAYER INTERACTION] {col.gameObject.name} is interactable, distance: {distance}</color>");
+                    }
                     
                     if (distance < closestDistance)
                     {
@@ -79,13 +108,19 @@ namespace TheHunt.Interaction
             {
                 if (currentInteractable != null)
                 {
-                    Debug.Log($"<color=yellow>[PLAYER INTERACTION] Clearing current interactable</color>");
+                    if (enableDebugLogs)
+                    {
+                        Debug.Log($"<color=yellow>[PLAYER INTERACTION] Clearing current interactable</color>");
+                    }
                     ClearInteractable();
                 }
                 
                 if (closestInteractable != null)
                 {
-                    Debug.Log($"<color=green>[PLAYER INTERACTION] Setting new interactable: {((MonoBehaviour)closestInteractable).gameObject.name}</color>");
+                    if (enableDebugLogs)
+                    {
+                        Debug.Log($"<color=green>[PLAYER INTERACTION] Setting new interactable: {((MonoBehaviour)closestInteractable).gameObject.name}</color>");
+                    }
                     SetInteractable(closestInteractable);
                 }
             }

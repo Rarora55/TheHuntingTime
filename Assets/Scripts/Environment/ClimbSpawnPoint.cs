@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using TheHunt.Interaction;
 
 namespace TheHunt.Environment
@@ -10,6 +11,7 @@ namespace TheHunt.Environment
         [SerializeField] private string spawnPointID;
         [SerializeField] private string targetSpawnPointID;
         [SerializeField] private float fadeDuration = 0.5f;
+        [SerializeField] private float cooldownAfterTeleport = 0.5f;
         
         [Header("Visual Feedback")]
         [SerializeField] private SpriteRenderer visual;
@@ -18,6 +20,8 @@ namespace TheHunt.Environment
         
         private Collider2D triggerCollider;
         private global::Player playerInRange;
+        private bool isTeleporting = false;
+        private static bool anyPointTeleporting = false;
         
         public string SpawnPointID => spawnPointID;
         
@@ -68,6 +72,12 @@ namespace TheHunt.Environment
         
         protected override void OnInteract(GameObject interactor)
         {
+            if (isTeleporting || anyPointTeleporting)
+            {
+                Debug.Log($"<color=yellow>[CLIMB SPAWN] Teleport in progress, ignoring interaction</color>");
+                return;
+            }
+            
             Debug.Log($"<color=magenta>[CLIMB SPAWN] OnInteract called on {gameObject.name} by {interactor.name}</color>");
             
             global::Player player = interactor.GetComponent<global::Player>();
@@ -90,21 +100,41 @@ namespace TheHunt.Environment
                 return;
             }
             
-            TriggerClimb(player, targetSpawn.transform.position);
+            StartCoroutine(TriggerClimbCoroutine(player, targetSpawn));
         }
         
-        private void TriggerClimb(global::Player player, Vector3 targetPosition)
+        private IEnumerator TriggerClimbCoroutine(global::Player player, ClimbSpawnPoint targetSpawn)
         {
-            Debug.Log($"<color=green>[CLIMB SPAWN] Teleporting from {spawnPointID} to {targetSpawnPointID}</color>");
+            isTeleporting = true;
+            anyPointTeleporting = true;
+            
+            isInteractable = false;
+            targetSpawn.isInteractable = false;
+            
+            Debug.Log($"<color=green>[CLIMB SPAWN] Starting teleport from {spawnPointID} to {targetSpawnPointID}</color>");
             
             player.SetVelocityZero();
+            float originalGravity = player.RB.gravityScale;
             player.RB.gravityScale = 0f;
             
             ScreenFadeManager.Instance.FadeToBlackAndTeleport(
-                targetPosition,
+                targetSpawn.transform.position,
                 player.gameObject,
                 fadeDuration
             );
+            
+            float totalDuration = (fadeDuration * 2) + 0.1f + cooldownAfterTeleport;
+            yield return new WaitForSeconds(totalDuration);
+            
+            player.RB.gravityScale = originalGravity;
+            
+            isInteractable = true;
+            targetSpawn.isInteractable = true;
+            
+            isTeleporting = false;
+            anyPointTeleporting = false;
+            
+            Debug.Log($"<color=green>[CLIMB SPAWN] Teleport complete, cooldown finished</color>");
         }
         
         private ClimbSpawnPoint FindSpawnPointByID(string id)

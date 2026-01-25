@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerData
   movementVelocity: 6
   runVelocity: 12
-  JumpVelocity: 10
+  JumpVelocity: 12
   jumpGravityScale: 3.5
   fallGravityScale: 5
   maxFallSpeed: 25

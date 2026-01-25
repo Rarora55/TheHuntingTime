@@ -76,10 +76,6 @@ namespace TheHunt.Respawn
             }
 
             Vector3 respawnPosition = transform.position;
-            player.transform.position = respawnPosition;
-            
-            player.SetVelocityX(0);
-            player.SetVelocityY(0);
             
             if (onRespawnActivated != null)
             {
@@ -88,7 +84,7 @@ namespace TheHunt.Respawn
             
             hasBeenUsed = true;
             
-            Debug.Log($"<color=green>[RESPAWN POINT] ✓ Activated {respawnID} at {respawnPosition}</color>");
+            Debug.Log($"<color=green>[RESPAWN POINT] ✓ Checkpoint saved: {respawnID} at {respawnPosition}</color>");
         }
 
         public void ManualActivate()

@@ -18,7 +18,7 @@ MonoBehaviour:
   itemIcon: {fileID: 1126344992095758660, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   itemDetailImage: {fileID: 1126344992095758660, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   pickupPrefab: {fileID: 7590996160986790475, guid: 964da1e8d9dd8e44cb7d443844c5d4d2, type: 3}
-  itemType: 3
+  itemType: 0
   stackable: 1
   maxStackSize: 3
   canBeExamined: 1
