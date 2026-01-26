@@ -44,12 +44,15 @@ public class PlayerHealthIntegration : MonoBehaviour
     {
         Debug.Log("<color=red>[PLAYER DEATH] Player has died!</color>");
         
-        player.anim.SetBool("isDead", true);
+        Debug.Log($"<color=magenta>[PLAYER DEATH] Setting Animator 'death' parameter to TRUE. Current value: {player.anim.GetBool("death")}</color>");
+        player.anim.SetBool("death", true);
+        Debug.Log($"<color=magenta>[PLAYER DEATH] Animator 'death' parameter set. New value: {player.anim.GetBool("death")}</color>");
     }
     
     void HandleDamaged(DamageData damageData)
     {
-        player.anim.SetTrigger("damaged");
+        // TODO: Verify correct animator parameter name for damage animation
+        // player.anim.SetTrigger("damaged");
         
         if (damageData.damageDirection != Vector2.zero)
         {

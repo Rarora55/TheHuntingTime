@@ -199,7 +199,7 @@ PrefabInstance:
       objectReference: {fileID: 3667727314270157625, guid: 3e526af1fed24744f91df3d4b21bd91e, type: 3}
     - target: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
       propertyPath: m_Name
-      value: Player Variant
+      value: Player 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4854062045287973134, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
       propertyPath: m_SortingOrder
@@ -301,6 +301,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3795096411300358094}
+    - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6726990887369768298}
+    - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4586361101771975914}
   m_SourcePrefab: {fileID: 100100000, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
 --- !u!114 &314011871965506278 stripped
 MonoBehaviour:
@@ -329,6 +335,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3936088870857016907, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
   m_PrefabInstance: {fileID: 3294394511504265748}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2025134079937544666 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3576617788300743630, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+  m_PrefabInstance: {fileID: 3294394511504265748}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998621446796246280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f59b836adb904409d582f58a78b63b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthController
 --- !u!114 &4142577224453094771 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1496723754436472679, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
@@ -367,6 +384,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7016956183950892249, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
   m_PrefabInstance: {fileID: 3294394511504265748}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7972196549924545972 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4835428786129188768, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+  m_PrefabInstance: {fileID: 3294394511504265748}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998621446796246280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14701cad8e4d4bf4391edf829f1b5bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
 --- !u!1 &7998621446796246280 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
@@ -498,3 +526,36 @@ MonoBehaviour:
   respawnDelay: 2
   resetHealthOnRespawn: 1
   showDebugLogs: 1
+--- !u!114 &6726990887369768298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998621446796246280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee684536cf0c17a4885629ef42ddf468, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDeathHandler
+  deathData: {fileID: 11400000, guid: 133b13cefdf867d4b99ad46b29467bc2, type: 2}
+  onPlayerDeathEvent: {fileID: 11400000, guid: a267df08ecbfe774ebeb6c4dcecb8685, type: 2}
+  showDeathScreenEvent: {fileID: 11400000, guid: 727341a60f8981d44894a96d1df35323, type: 2}
+  player: {fileID: 7972196549924545972}
+  healthController: {fileID: 2025134079937544666}
+--- !u!114 &4586361101771975914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998621446796246280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cae6e207cc6db34ca9c0aa3a9c31edc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawnHandler
+  deathData: {fileID: 11400000, guid: 133b13cefdf867d4b99ad46b29467bc2, type: 2}
+  onPlayerRespawnEvent: {fileID: 11400000, guid: d71254b6951d2854794e84f9caa725a2, type: 2}
+  player: {fileID: 7972196549924545972}
+  healthController: {fileID: 2025134079937544666}

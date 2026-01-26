@@ -62,7 +62,14 @@ namespace TheHunt.Interaction
             
             DisableSpawnPoints();
             
-            interactionPrompt = "Press E to use anchor";
+            if (isDeployed)
+            {
+                interactionPrompt = "Press E to retrieve rope";
+            }
+            else
+            {
+                interactionPrompt = "Press E to use anchor";
+            }
         }
         
         private void LoadRopePrefabIfNeeded()
@@ -91,22 +98,11 @@ namespace TheHunt.Interaction
         
         protected override bool CanExecuteAction(GameObject interactor)
         {
-            if (isDeployed)
-            {
-                Debug.Log("<color=yellow>[ROPE ANCHOR] ✗ Cannot interact: Rope already deployed at this anchor</color>");
-            }
-            
-            return !isDeployed;
+            return true;
         }
         
         protected override void ExecutePassiveAction(GameObject interactor)
         {
-            if (isDeployed)
-            {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] Rope already deployed</color>");
-                return;
-            }
-            
             global::Player player = interactor.GetComponent<global::Player>();
             if (player == null)
             {
@@ -116,6 +112,18 @@ namespace TheHunt.Interaction
             
             pendingInteractor = interactor;
             
+            if (isDeployed)
+            {
+                ShowRetractConfirmation();
+            }
+            else
+            {
+                ShowDeployConfirmation(player);
+            }
+        }
+        
+        private void ShowDeployConfirmation(global::Player player)
+        {
             bool hasRope = HasRopeInInventory(player);
             
             if (hasRope)
@@ -154,6 +162,51 @@ namespace TheHunt.Interaction
                 );
                 
                 Debug.Log("<color=yellow>[ROPE ANCHOR] Showing 'no rope' message</color>");
+            }
+        }
+        
+        private void ShowRetractConfirmation()
+        {
+            if (dialogService == null)
+            {
+                Debug.LogError("<color=red>[ROPE ANCHOR] DialogService is null! Cannot show confirmation.</color>");
+                RetractRopeInternal();
+                return;
+            }
+            
+            dialogService.ShowConfirmation(
+                "Retract Rope",
+                "Do you want to retrieve the rope?",
+                OnConfirmedRetract,
+                OnCancelled
+            );
+            
+            Debug.Log("<color=cyan>[ROPE ANCHOR] Showing retract confirmation dialog</color>");
+        }
+        
+        private void OnConfirmedRetract()
+        {
+            Debug.Log("<color=green>[ROPE ANCHOR] Retraction confirmed, starting fade...</color>");
+            
+            if (ScreenFadeManager.Instance != null)
+            {
+                ScreenFadeManager.Instance.FadeToBlack(fadeDuration, () =>
+                {
+                    RetractRopeInternal();
+                    ReturnRopeToInventory();
+                    
+                    ScreenFadeManager.Instance.FadeFromBlack(fadeDuration, () =>
+                    {
+                        ClearPending();
+                    });
+                });
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeManager not found, retracting without fade</color>");
+                RetractRopeInternal();
+                ReturnRopeToInventory();
+                ClearPending();
             }
         }
         
@@ -220,10 +273,10 @@ namespace TheHunt.Interaction
             
             EnableSpawnPoints();
             
-            SetInteractable(false);
+            interactionPrompt = "Press E to retrieve rope";
             
             Debug.Log($"<color=green>[ROPE ANCHOR] ✓ Rope deployed successfully! Length: {ropeLength}</color>");
-            Debug.Log($"<color=cyan>[ROPE ANCHOR] ✓ Anchor interaction DISABLED (rope already deployed)</color>");
+            Debug.Log($"<color=cyan>[ROPE ANCHOR] ✓ Prompt changed to 'retrieve rope'</color>");
         }
         
         private void ScaleRopeToFit(GameObject rope, Vector3 startPos, Vector3 endPos)
@@ -382,7 +435,7 @@ namespace TheHunt.Interaction
             Debug.Log("<color=green>[ROPE ANCHOR] === EnableSpawnPoints() completed ===</color>");
         }
         
-        public void RetractRope()
+        private void RetractRopeInternal()
         {
             if (!isDeployed)
             {
@@ -405,10 +458,56 @@ namespace TheHunt.Interaction
             
             DisableSpawnPoints();
             
-            SetInteractable(true);
+            interactionPrompt = "Press E to use anchor";
             
             Debug.Log("<color=orange>[ROPE ANCHOR] ✓ Rope retracted successfully</color>");
-            Debug.Log("<color=cyan>[ROPE ANCHOR] ✓ Anchor interaction RE-ENABLED (rope removed)</color>");
+            Debug.Log("<color=cyan>[ROPE ANCHOR] ✓ Spawn points DISABLED</color>");
+            Debug.Log("<color=cyan>[ROPE ANCHOR] ✓ Prompt changed to 'use anchor'</color>");
+        }
+        
+        private void ReturnRopeToInventory()
+        {
+            if (pendingInteractor == null)
+            {
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] Cannot return rope: no pending interactor</color>");
+                return;
+            }
+            
+            global::Player player = pendingInteractor.GetComponent<global::Player>();
+            if (player == null)
+            {
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] Cannot return rope: interactor is not a player</color>");
+                return;
+            }
+            
+            InventorySystem inventory = player.GetComponent<InventorySystem>();
+            if (inventory == null)
+            {
+                Debug.LogError("<color=red>[ROPE ANCHOR] InventorySystem not found on player!</color>");
+                return;
+            }
+            
+            if (ropeItemData == null)
+            {
+                Debug.LogError("<color=red>[ROPE ANCHOR] Rope ItemData not assigned!</color>");
+                return;
+            }
+            
+            bool added = inventory.TryAddItem(ropeItemData);
+            
+            if (added)
+            {
+                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ Successfully returned {ropeItemData.ItemName} to inventory</color>");
+            }
+            else
+            {
+                Debug.LogWarning($"<color=red>[ROPE ANCHOR] ✗ FAILED to return {ropeItemData.ItemName} to inventory (inventory full?)</color>");
+            }
+        }
+        
+        public void RetractRope()
+        {
+            RetractRopeInternal();
         }
     }
 }

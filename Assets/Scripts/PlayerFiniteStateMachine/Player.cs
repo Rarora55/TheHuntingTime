@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     public PlayerAimState AimState { get; private set; }
     public PlayerFireState FireState { get; private set; }
     public PlayerReloadState ReloadState { get; private set; }
-   
+    public PlayerDeathState DeathState { get; private set; }
 
 
     [SerializeField] private PlayerData PlayerData;
@@ -108,6 +108,9 @@ public class Player : MonoBehaviour
         AimState = new PlayerAimState(this, StateMachine, PlayerData, "aim");
         FireState = new PlayerFireState(this, StateMachine, PlayerData, "fire");
         ReloadState = new PlayerReloadState(this, StateMachine, PlayerData, "reload");
+        DeathState = new PlayerDeathState(this, StateMachine, PlayerData, "death");
+
+
     }
 
     private void Start()
@@ -123,6 +126,12 @@ public class Player : MonoBehaviour
             GroundCheck, WallCheck, LedgeCheck, ceilingCheck,
             moveCollider, PlayerData, Orientation, Events);
         Animation = new PlayerAnimationController(anim, StateMachine, Events);
+        
+        PlayerDeathHandler deathHandler = GetComponent<PlayerDeathHandler>();
+        if (deathHandler != null && deathHandler.GetDeathData() != null)
+        {
+            DeathState.SetDeathData(deathHandler.GetDeathData());
+        }
         
         StateMachine.Initialize(IdleState);
     }
