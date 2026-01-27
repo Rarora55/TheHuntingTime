@@ -42,6 +42,31 @@ public class AnimatorSpeedChecker : MonoBehaviour
                 Debug.LogError("<color=red>[AIM ANIMATION] ⚠️ AIM CLIP LENGTH IS ZERO!</color>");
             }
         }
+        
+        if (stateInfo.IsName("death"))
+        {
+            Debug.Log($"<color=magenta>[DEATH ANIMATION] NormalizedTime: {stateInfo.normalizedTime:F3} | Speed: {stateInfo.speed} | Length: {stateInfo.length} | SpeedMult: {stateInfo.speedMultiplier}</color>");
+            
+            if (stateInfo.speed == 0)
+            {
+                Debug.LogError("<color=red>[DEATH ANIMATION] ⚠️ DEATH STATE SPEED IS ZERO! Animation is FROZEN!</color>");
+            }
+            
+            if (stateInfo.speedMultiplier == 0)
+            {
+                Debug.LogError("<color=red>[DEATH ANIMATION] ⚠️ DEATH STATE SPEED MULTIPLIER IS ZERO! Animation is FROZEN!</color>");
+            }
+            
+            if (stateInfo.length == 0)
+            {
+                Debug.LogError("<color=red>[DEATH ANIMATION] ⚠️ DEATH CLIP LENGTH IS ZERO!</color>");
+            }
+            
+            if (stateInfo.normalizedTime == 0)
+            {
+                Debug.LogWarning("<color=orange>[DEATH ANIMATION] ⚠️ NormalizedTime stuck at 0! Animation NOT advancing!</color>");
+            }
+        }
     }
 
     [ContextMenu("Check Animator Speed Now")]

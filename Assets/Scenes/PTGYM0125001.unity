@@ -127,6 +127,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1762361465102065763, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
+      propertyPath: m_UpdateMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1956745472562975839, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 83.15
@@ -186,6 +190,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7998621446796246280, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 567044447}
+    - targetCorrespondingSourceObject: {fileID: 7998621446796246280, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 567044475}
+    - targetCorrespondingSourceObject: {fileID: 7998621446796246280, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 567044476}
   m_SourcePrefab: {fileID: 100100000, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
 --- !u!114 &27212009 stripped
 MonoBehaviour:
@@ -1180,6 +1190,31 @@ MonoBehaviour:
   deathData: {fileID: 11400000, guid: 133b13cefdf867d4b99ad46b29467bc2, type: 2}
   animator: {fileID: 567044443}
   showDebugInfo: 1
+--- !u!114 &567044475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567044418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 657c75c833b8cfb4399caddbffd84812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathAnimatorDebugger
+--- !u!114 &567044476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567044418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 881734a22c408b24bab1175869598587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationClipValidator
+  clipToValidate: {fileID: 7400000, guid: f7c7dc66b437cbb488d55c3066ab9080, type: 2}
 --- !u!1 &618339461
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f39ccf40f01f4049a2747b7e4384f97, type: 3}
   m_Name: DeathData
   m_EditorClassIdentifier: Assembly-CSharp::DeathData
-  normalDeathDuration: 2
-  fallDeathDuration: 1
+  normalDeathDuration: 2.5
+  fallDeathDuration: 2.5
   fallDeathThreshold: 20
   normalDeathTitle: HAS MUERTO
   fallDeathTitle: "CA\xCDDA MORTAL"
@@ -21,5 +21,5 @@ MonoBehaviour:
   fallDeathMessage: Cuidado con las alturas
   currentDeathType: 0
   lastSafePosition: {x: 0, y: 0, z: 0}
-  deathPosition: {x: 0, y: 0, z: 0}
+  deathPosition: {x: 83.15, y: 30.726433, z: 0}
   isDead: 0

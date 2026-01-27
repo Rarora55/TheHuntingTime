@@ -5,8 +5,11 @@ using TheHunt.Events;
 public class DeathData : ScriptableObject
 {
     [Header("Death Settings")]
-    [SerializeField] private float normalDeathDuration = 2f;
-    [SerializeField] private float fallDeathDuration = 1f;
+    [Tooltip("Tiempo de espera antes de mostrar la pantalla de muerte (debe ser >= duración de la animación de 2s)")]
+    [SerializeField] private float normalDeathDuration = 2.5f;
+    [Tooltip("Tiempo de espera para muerte por caída")]
+    [SerializeField] private float fallDeathDuration = 2.5f;
+    [Tooltip("Altura mínima de caída para causar muerte instantánea")]
     [SerializeField] private float fallDeathThreshold = 20f;
     
     [Header("Death Messages")]

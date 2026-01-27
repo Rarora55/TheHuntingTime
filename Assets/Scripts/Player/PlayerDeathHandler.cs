@@ -56,24 +56,24 @@ public class PlayerDeathHandler : MonoBehaviour
     {
         if (deathData != null && deathData.IsDead)
         {
-            Debug.LogWarning("<color=orange>[DEATH HANDLER] Already dead, ignoring death event</color>");
+            Debug.LogWarning("<color=orange>[DEATH HANDLER] El jugador ya está muerto, ignorando evento de muerte</color>");
             return;
         }
         
-        Debug.Log("<color=red>[DEATH HANDLER] Player is dying...</color>");
+        Debug.Log("<color=red>[DEATH HANDLER] ¡El jugador está muriendo...!</color>");
         
         Vector3 deathPosition = player != null ? player.transform.position : Vector3.zero;
         
         if (deathData != null)
         {
             deathData.SetDeathState(currentDeathType, deathPosition);
-            Debug.Log($"<color=red>[DEATH HANDLER] DeathData.IsDead set to TRUE</color>");
+            Debug.Log($"<color=red>[DEATH HANDLER] DeathData.IsDead establecido a TRUE - Tipo: {currentDeathType}</color>");
         }
         
         if (player != null && player.InputHandler != null)
         {
             player.InputHandler.enabled = false;
-            Debug.Log("<color=red>[DEATH HANDLER] Input disabled</color>");
+            Debug.Log("<color=red>[DEATH HANDLER] Input desactivado</color>");
         }
         
         if (onPlayerDeathEvent != null)
@@ -85,15 +85,25 @@ public class PlayerDeathHandler : MonoBehaviour
         {
             player.DeathState.SetDeathByFall(currentDeathType == DeathType.Fall);
             player.StateMachine.ChangeState(player.DeathState);
-            Debug.Log("<color=red>[DEATH HANDLER] Changed to DeathState</color>");
+            Debug.Log("<color=red>[DEATH HANDLER] Cambio a DeathState completado</color>");
         }
     }
 
     public void OnDeathAnimationComplete()
     {
+        Debug.Log("<color=magenta>[DEATH HANDLER] Animación de muerte completada, mostrando pantalla de muerte</color>");
+        
         if (showDeathScreenEvent != null && deathData != null)
         {
             showDeathScreenEvent.Raise(deathData.CurrentDeathType);
+            Debug.Log($"<color=green>[DEATH HANDLER] Evento ShowDeathScreen disparado - Tipo: {deathData.CurrentDeathType}</color>");
+        }
+        else
+        {
+            if (showDeathScreenEvent == null)
+                Debug.LogError("<color=red>[DEATH HANDLER] ShowDeathScreenEvent no está asignado!</color>");
+            if (deathData == null)
+                Debug.LogError("<color=red>[DEATH HANDLER] DeathData no está asignado!</color>");
         }
     }
 

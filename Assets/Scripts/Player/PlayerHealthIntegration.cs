@@ -24,7 +24,6 @@ public class PlayerHealthIntegration : MonoBehaviour
     {
         if (healthController != null)
         {
-            healthController.OnDeath += HandleDeath;
             healthController.OnDamaged += HandleDamaged;
             healthController.OnHealed += HandleHealed;
         }
@@ -34,19 +33,9 @@ public class PlayerHealthIntegration : MonoBehaviour
     {
         if (healthController != null)
         {
-            healthController.OnDeath -= HandleDeath;
             healthController.OnDamaged -= HandleDamaged;
             healthController.OnHealed -= HandleHealed;
         }
-    }
-    
-    void HandleDeath()
-    {
-        Debug.Log("<color=red>[PLAYER DEATH] Player has died!</color>");
-        
-        Debug.Log($"<color=magenta>[PLAYER DEATH] Setting Animator 'death' parameter to TRUE. Current value: {player.anim.GetBool("death")}</color>");
-        player.anim.SetBool("death", true);
-        Debug.Log($"<color=magenta>[PLAYER DEATH] Animator 'death' parameter set. New value: {player.anim.GetBool("death")}</color>");
     }
     
     void HandleDamaged(DamageData damageData)

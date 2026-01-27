@@ -87,9 +87,7 @@ public class DeathUIController : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(FadeIn());
         
-        Time.timeScale = 0f;
-        
-        Debug.Log($"<color=magenta>[DEATH UI] Death screen shown - Type: {deathType}, Time paused</color>");
+        Debug.Log($"<color=magenta>[DEATH UI] Death screen shown - Type: {deathType}</color>");
     }
 
     void HideDeathScreen()
@@ -104,9 +102,7 @@ public class DeathUIController : MonoBehaviour
             canvasGroup.alpha = 0f;
         }
         
-        Time.timeScale = 1f;
-        
-        Debug.Log("<color=green>[DEATH UI] Death screen hidden, Time resumed</color>");
+        Debug.Log("<color=green>[DEATH UI] Death screen hidden</color>");
     }
 
     System.Collections.IEnumerator FadeIn()
@@ -119,7 +115,7 @@ public class DeathUIController : MonoBehaviour
         
         while (elapsed < fadeInDuration)
         {
-            elapsed += Time.unscaledDeltaTime;
+            elapsed += Time.deltaTime;
             canvasGroup.alpha = Mathf.Lerp(0f, 1f, elapsed / fadeInDuration);
             yield return null;
         }

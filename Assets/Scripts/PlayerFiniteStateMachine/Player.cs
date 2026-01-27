@@ -116,6 +116,13 @@ public class Player : MonoBehaviour
     private void Start()
     {
         anim = GetComponent<Animator>();
+        
+        if (anim != null)
+        {
+            anim.updateMode = AnimatorUpdateMode.Normal;
+            Debug.Log("<color=cyan>[PLAYER] Animator updateMode set to Normal</color>");
+        }
+        
         InputHandler = GetComponent<PlayerInputHandler>();
         RB = GetComponent<Rigidbody2D>();
         moveCollider = GetComponent<BoxCollider2D>();

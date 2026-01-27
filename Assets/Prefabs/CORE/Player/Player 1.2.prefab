@@ -307,6 +307,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4586361101771975914}
+    - targetCorrespondingSourceObject: {fileID: 4807809795982176028, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 665275404032507470}
   m_SourcePrefab: {fileID: 100100000, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
 --- !u!114 &314011871965506278 stripped
 MonoBehaviour:
@@ -559,3 +562,15 @@ MonoBehaviour:
   onPlayerRespawnEvent: {fileID: 11400000, guid: d71254b6951d2854794e84f9caa725a2, type: 2}
   player: {fileID: 7972196549924545972}
   healthController: {fileID: 2025134079937544666}
+--- !u!114 &665275404032507470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998621446796246280}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bc3888e8898ac64d9e5741015df931a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerUpdateMonitor
