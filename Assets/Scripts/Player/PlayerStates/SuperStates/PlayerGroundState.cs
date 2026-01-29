@@ -35,6 +35,8 @@ public class PlayerGroundState : PlayerState
     {
         base.Enter();
         
+        player.RB.gravityScale = 1f;
+        
         if (weaponController == null)
         {
             weaponController = player.WeaponController;

@@ -439,6 +439,7 @@ MonoBehaviour:
   onRespawnRequest: {fileID: 11400000, guid: 3a2ab8003ccc45749a0ca0503377d291, type: 2}
   runtimeData: {fileID: 11400000, guid: d4b316621bb29984793e06cba6624c4d, type: 2}
   logRespawnChanges: 1
+  defaultGravityScale: 3
 --- !u!4 &210321500
 Transform:
   m_ObjectHideFlags: 0
@@ -1805,7 +1806,7 @@ Transform:
   m_GameObject: {fileID: 768831019}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 59.97, y: -11.6, z: 0}
+  m_LocalPosition: {x: 60.55, y: -11.57, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

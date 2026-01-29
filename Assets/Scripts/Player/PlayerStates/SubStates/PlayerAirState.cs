@@ -34,6 +34,10 @@ public class PlayerAirState : PlayerState
         {
             player.RB.gravityScale = playerData.fallGravityScale;
         }
+        else
+        {
+            player.RB.gravityScale = playerData.jumpGravityScale;
+        }
     }
 
     public override void Exit()

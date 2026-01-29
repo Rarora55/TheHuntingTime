@@ -14,6 +14,7 @@ namespace TheHunt.Respawn
 
         [Header("Settings")]
         [SerializeField] private bool logRespawnChanges = true;
+        [SerializeField] private float defaultGravityScale = 3f;
 
         private void OnEnable()
         {
@@ -85,13 +86,21 @@ namespace TheHunt.Respawn
                 return;
             }
 
-            player.transform.position = runtimeData.CurrentRespawnPosition;
+            // Player stays at death position - NO TELEPORT
+            // player.transform.position = runtimeData.CurrentRespawnPosition;
+            
+            // Reset physics
+            if (player.RB != null)
+            {
+                player.RB.gravityScale = defaultGravityScale;
+            }
+            
             player.SetVelocityX(0);
             player.SetVelocityY(0);
 
             if (logRespawnChanges)
             {
-                Debug.Log($"<color=green>[RESPAWN MANAGER] ✓ Player respawned at {runtimeData.CurrentRespawnID}</color>");
+                Debug.Log($"<color=green>[RESPAWN MANAGER] ✓ Player respawned in place (no teleport)</color>");
             }
         }
 
