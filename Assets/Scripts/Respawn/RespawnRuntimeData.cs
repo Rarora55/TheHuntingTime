@@ -26,8 +26,6 @@ namespace TheHunt.Respawn
             {
                 registeredRespawnIDs.Add(respawnID);
             }
-
-            Debug.Log($"<color=green>[RESPAWN DATA] Checkpoint set: {respawnID} at {position}</color>");
         }
 
         public void Reset()
@@ -35,7 +33,6 @@ namespace TheHunt.Respawn
             currentRespawnPosition = Vector3.zero;
             currentRespawnID = "";
             registeredRespawnIDs.Clear();
-            Debug.Log("<color=yellow>[RESPAWN DATA] Runtime data reset</color>");
         }
 
         public bool IsRespawnRegistered(string respawnID)
@@ -50,7 +47,12 @@ namespace TheHunt.Respawn
 
         private void OnDisable()
         {
-            Reset();
+            #if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                Reset();
+            }
+            #endif
         }
     }
 }

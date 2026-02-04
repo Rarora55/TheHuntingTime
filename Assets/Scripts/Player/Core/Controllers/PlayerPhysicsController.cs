@@ -4,14 +4,16 @@ public class PlayerPhysicsController : IPlayerPhysics
 {
     private readonly Rigidbody2D rb;
     private readonly PlayerEvents events;
+    private readonly Player player;
     private Vector2 workSpace;
     
     public Vector2 CurrentVelocity { get; private set; }
     
-    public PlayerPhysicsController(Rigidbody2D rigidbody, PlayerEvents playerEvents)
+    public PlayerPhysicsController(Rigidbody2D rigidbody, PlayerEvents playerEvents, Player playerComponent)
     {
         rb = rigidbody;
         events = playerEvents;
+        player = playerComponent;
     }
     
     public void UpdateVelocity()
@@ -51,6 +53,12 @@ public class PlayerPhysicsController : IPlayerPhysics
     
     private void ApplyVelocity()
     {
+        if (player?.KnockbackController != null && player.KnockbackController.IsInKnockback)
+        {
+            CurrentVelocity = rb.linearVelocity;
+            return;
+        }
+        
         rb.linearVelocity = workSpace;
         CurrentVelocity = workSpace;
         events?.InvokeVelocityChanged(CurrentVelocity);

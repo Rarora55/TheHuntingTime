@@ -25,18 +25,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Grab",
+                    "name": "Run",
                     "type": "Button",
-                    "id": "740ad9fc-1167-4465-aadc-00b5e3010066",
+                    "id": "44390ca4-d8de-40df-bca4-5dbf9001313d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Run",
+                    "name": "Grab",
                     "type": "Button",
-                    "id": "44390ca4-d8de-40df-bca4-5dbf9001313d",
+                    "id": "0690219f-95b8-4904-aa06-b12ee5d847c7",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -118,6 +118,15 @@
                     "name": "ToggleFlashLight",
                     "type": "Button",
                     "id": "67f6e9b1-f431-4bd7-a1e1-c5cde3a8d791",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PushPull",
+                    "type": "Button",
+                    "id": "85c43279-ccfb-451d-b00c-8ade14086f34",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -259,6 +268,17 @@
                 },
                 {
                     "name": "",
+                    "id": "24f09656-e4a1-4a73-8be3-dc7d89637995",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4b0516e4-261c-4f53-8d8d-682ac558105a",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -276,28 +296,6 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "81af54c7-8771-46da-83bd-ecac971dcad7",
-                    "path": "<Keyboard>/ctrl",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Grab",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ff358db2-bc51-4209-ba44-9e97fe923385",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Grab",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -540,6 +538,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleFlashLight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b84fb012-9ed3-48ed-9619-477da9e50e16",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PushPull",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3a539d45-4fff-408b-b30f-b4403633cd72",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PushPull",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "402947e8-c72a-4332-a290-143155d5309b",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Grab",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

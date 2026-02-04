@@ -83,5 +83,10 @@ public class PlayerFireState : WeaponAbilityState
         
         weaponController.Shoot();
         hasFired = true;
+        
+        if (player.KnockbackController != null)
+        {
+            player.KnockbackController.ApplyShootKnockback();
+        }
     }
 }

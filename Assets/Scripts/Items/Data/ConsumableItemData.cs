@@ -69,11 +69,8 @@ public class ConsumableItemData : ScriptableObject, IItem, IUsableItem
     {
         if (!CanUse(user))
         {
-            Debug.Log($"<color=yellow>[ITEM] Cannot use {itemName} on {user.name}</color>");
             return;
         }
-        
-        Debug.Log($"<color=green>[ITEM] Using {itemName} on {user.name}</color>");
         
         ApplyEffect(user);
         PlayFeedback(user);
@@ -92,7 +89,6 @@ public class ConsumableItemData : ScriptableObject, IItem, IUsableItem
                 break;
                 
             case ConsumableEffect.RestoreStamina:
-                Debug.Log($"[ITEM] Stamina restore not implemented yet");
                 break;
         }
     }
@@ -103,7 +99,6 @@ public class ConsumableItemData : ScriptableObject, IItem, IUsableItem
         if (healable != null)
         {
             healable.Heal(effectValue);
-            Debug.Log($"<color=green>[ITEM] {itemName} restored {effectValue} HP instantly</color>");
         }
     }
     
@@ -116,7 +111,6 @@ public class ConsumableItemData : ScriptableObject, IItem, IUsableItem
         }
         
         handler.StartHealthOverTime(effectValue, duration, tickRate);
-        Debug.Log($"<color=green>[ITEM] {itemName} will restore {effectValue} HP over {duration}s</color>");
     }
     
     void PlayFeedback(GameObject target)

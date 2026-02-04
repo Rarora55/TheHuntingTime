@@ -69,7 +69,9 @@ public class PlayerAirState : PlayerState
         }
         else if (isTouchingWall && !isTouchingLedge && GrabInput)
         {
+            Debug.Log($"<color=cyan>[LEDGE CHECK] Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Grab:{GrabInput}</color>");
             bool isValidLedge = player.Collision.IsValidLedge(0.2f);
+            Debug.Log($"<color=yellow>[LEDGE VALID] IsValidLedge: {isValidLedge}</color>");
             
             if (isValidLedge)
             {
@@ -82,6 +84,7 @@ public class PlayerAirState : PlayerState
         }
         else if (isTouchingWall && GrabInput)
         {
+            Debug.Log($"<color=green>[LEDGE] Going to WallGrapState (no valid ledge)</color>");
             stateMachine.ChangeState(player.WallGrapState);
         }
         else if (isTouchingWall && xInput != 0 && xInput == player.FacingRight && !GrabInput)

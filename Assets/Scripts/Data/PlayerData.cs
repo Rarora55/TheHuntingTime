@@ -41,5 +41,31 @@ public class PlayerData: ScriptableObject
     [Header("Ladder Climb")]
     public float ladderClimbSpeed = 4f;
     public float ladderSlideSpeed = 2f;
+
+    [Header("Knockback System")]
+    public float shootKnockbackForce = 3f;
+    public float shootKnockbackDelay = 0.1f;
+    public float wallCollisionKnockbackForce = 5f;
+    public float knockbackDuration = 0.2f;
+    public float minRunSpeedForWallKnockback = 10f;
+
+    [Header("Push & Pull System")]
+    [Tooltip("Multiplicador de velocidad base al empujar/tirar (0.75 = 75% de velocidad)")]
+    public float basePushPullSpeedMultiplier = 0.75f;
+    
+    [Tooltip("Peso mínimo sin penalización extra")]
+    public float minimumWeight = 1.0f;
+    
+    [Tooltip("Penalización de velocidad por cada unidad de peso extra")]
+    public float weightPenaltyPerUnit = 0.3f;
+    
+    [Tooltip("Radio de detección de objetos empujables")]
+    public float pushPullDetectionRadius = 1.5f;
+    
+    [Tooltip("Fuerza aplicada al empujar/tirar objetos")]
+    public float pushPullForce = 8f;
+    
+    [Tooltip("Layer de objetos empujables")]
+    public LayerMask pushableObjectLayer;
     
 }

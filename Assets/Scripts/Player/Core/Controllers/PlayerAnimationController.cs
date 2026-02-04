@@ -17,14 +17,23 @@ public class PlayerAnimationController : IPlayerAnimation
     {
         if (animator == null) return;
         
-        if (parameterName == "fire" || parameterName == "reload" || parameterName == "aim")
+        if (parameterName == "fire" || parameterName == "reload" || parameterName == "aim" || 
+            parameterName == "push" || parameterName == "pull")
         {
-            var currentValue = animator.GetBool(parameterName);
-            if (currentValue != value)
+            try
             {
-                Debug.Log($"<color=orange>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
-                Debug.Log($"<color=orange>[ANIMATOR BOOL CHANGE] {parameterName}: {currentValue} → {value}</color>");
-                Debug.Log($"<color=orange>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
+                var currentValue = animator.GetBool(parameterName);
+                if (currentValue != value)
+                {
+                    Debug.Log($"<color=orange>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
+                    Debug.Log($"<color=orange>[ANIMATOR BOOL CHANGE] {parameterName}: {currentValue} → {value}</color>");
+                    Debug.Log($"<color=orange>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</color>");
+                }
+            }
+            catch (System.Exception)
+            {
+                Debug.LogError($"<color=red>⚠️ ANIMATOR PARAMETER '{parameterName}' DOES NOT EXIST!</color>");
+                Debug.LogError($"<color=yellow>→ Open 'Player.controller' and add a Bool parameter named '{parameterName}'</color>");
             }
         }
         

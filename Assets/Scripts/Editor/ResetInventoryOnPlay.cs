@@ -50,25 +50,30 @@ namespace TheHuntEditor
             
             if (guids.Length == 0)
             {
-                Debug.LogWarning("<color=yellow>[RESET] No InventoryDataSO found in project</color>");
                 return;
             }
             
             int resetCount = 0;
+            bool anyDirty = false;
+            
             foreach (string guid in guids)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 InventoryDataSO data = AssetDatabase.LoadAssetAtPath<InventoryDataSO>(path);
                 
-                if (data != null)
+                if (data != null && data.HasAnyItems())
                 {
                     data.ResetInventory();
                     EditorUtility.SetDirty(data);
                     resetCount++;
+                    anyDirty = true;
                 }
             }
             
-            AssetDatabase.SaveAssets();
+            if (anyDirty)
+            {
+                AssetDatabase.SaveAssets();
+            }
         }
     }
 }

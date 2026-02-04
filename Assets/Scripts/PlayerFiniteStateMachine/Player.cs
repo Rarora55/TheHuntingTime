@@ -25,6 +25,9 @@ public class Player : MonoBehaviour
     public PlayerFireState FireState { get; private set; }
     public PlayerReloadState ReloadState { get; private set; }
     public PlayerDeathState DeathState { get; private set; }
+    
+    public PlayerPushState PushState { get; private set; }
+    public PlayerPullState PullState { get; private set; }
 
 
     [SerializeField] private PlayerData PlayerData;
@@ -44,6 +47,8 @@ public class Player : MonoBehaviour
     public Rigidbody2D RB { get; private set; }
     public BoxCollider2D moveCollider { get; private set; }
     public PlayerWeaponController WeaponController { get; private set; }
+    public PlayerKnockbackController KnockbackController { get; private set; }
+    public PlayerPushPullController PushPullController { get; private set; }
     #endregion
 
     #region Environment Interaction Tracking
@@ -63,6 +68,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform WallCheck;
     [SerializeField] private Transform LedgeCheck;
     [SerializeField] private Transform ceilingCheck;
+    [SerializeField] private Transform PullPos;
     #endregion
 
     #region Checks Var
@@ -109,6 +115,9 @@ public class Player : MonoBehaviour
         FireState = new PlayerFireState(this, StateMachine, PlayerData, "fire");
         ReloadState = new PlayerReloadState(this, StateMachine, PlayerData, "reload");
         DeathState = new PlayerDeathState(this, StateMachine, PlayerData, "death");
+        
+        PushState = new PlayerPushState(this, StateMachine, PlayerData, "push");
+        PullState = new PlayerPullState(this, StateMachine, PlayerData, "pull");
 
 
     }
@@ -127,6 +136,14 @@ public class Player : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         moveCollider = GetComponent<BoxCollider2D>();
         WeaponController = GetComponent<PlayerWeaponController>();
+        KnockbackController = GetComponent<PlayerKnockbackController>();
+        PushPullController = GetComponent<PlayerPushPullController>();
+        
+        if (PushPullController != null)
+        {
+            PushPullController.Initialize(PlayerData);
+        }
+        
         FacingRight = 1;
         
         Collision = new PlayerCollisionController(
@@ -168,7 +185,7 @@ public class Player : MonoBehaviour
         Events = new PlayerEvents();
         
         Orientation = new PlayerOrientationController(transform, Events, initialDirection: 1);
-        Physics = new PlayerPhysicsController(GetComponent<Rigidbody2D>(), Events);
+        Physics = new PlayerPhysicsController(GetComponent<Rigidbody2D>(), Events, this);
     }
     #endregion
 
@@ -389,6 +406,8 @@ public class Player : MonoBehaviour
 
     public bool IsOnLadder() => currentLadder != null;
     public Collider2D GetCurrentLadder() => currentLadder;
+    
+    public Transform GetPullPos() => PullPos;
 
     public void SetCurrentLadder(Collider2D ladder)
     {

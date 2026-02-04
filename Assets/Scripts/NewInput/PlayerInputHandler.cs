@@ -17,6 +17,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool FireInput { get; private set; }
     public bool ReloadInput { get; private set; }
     public bool AimInput { get; private set; }
+    public bool PushPullInput { get; private set; }
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
@@ -133,10 +134,16 @@ public class PlayerInputHandler : MonoBehaviour
             return;
             
         if (context.started)
+        {
             GrabInput = true;
+            Debug.Log("<color=green>[INPUT] Grab Input STARTED - GrabInput = TRUE</color>");
+        }
 
         if(context.canceled)
+        {
             GrabInput = false;
+            Debug.Log("<color=red>[INPUT] Grab Input CANCELED - GrabInput = FALSE</color>");
+        }
 
     }
 
@@ -341,6 +348,31 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.performed && secondaryEquipmentController != null)
         {
             secondaryEquipmentController.ToggleFlashlight();
+        }
+    }
+    
+    public void OnPushPullInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+        {
+            PushPullInput = false;
+            return;
+        }
+            
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            PushPullInput = false;
+            return;
+        }
+        
+        if (context.started)
+        {
+            PushPullInput = true;
+        }
+        
+        if (context.canceled)
+        {
+            PushPullInput = false;
         }
     }
 

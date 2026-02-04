@@ -94,6 +94,32 @@ namespace TheHunt.Inventory
             Debug.Log("<color=yellow>[INVENTORY DATA] Inventory reset to default state</color>");
         }
         
+        public bool HasAnyItems()
+        {
+            if (items != null)
+            {
+                for (int i = 0; i < items.Length; i++)
+                {
+                    if (items[i] != null && items[i].itemData != null)
+                        return true;
+                }
+            }
+            
+            if (ammoInventory != null)
+            {
+                foreach (var ammo in ammoInventory)
+                {
+                    if (ammo.amount > 0)
+                        return true;
+                }
+            }
+            
+            if (primaryWeapon != null || secondaryWeapon != null)
+                return true;
+            
+            return false;
+        }
+        
         #if UNITY_EDITOR
         private void OnValidate()
         {

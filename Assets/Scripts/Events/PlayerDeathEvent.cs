@@ -10,7 +10,6 @@ namespace TheHunt.Events
 
         public void Raise(DeathType deathType, Vector3 deathPosition)
         {
-            Debug.Log($"<color=red>[DEATH EVENT] Raised - Type: {deathType}</color>");
             listeners?.Invoke(deathType, deathPosition);
         }
 
@@ -26,7 +25,14 @@ namespace TheHunt.Events
 
         private void OnDisable()
         {
+            #if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                listeners = null;
+            }
+            #else
             listeners = null;
+            #endif
         }
     }
 

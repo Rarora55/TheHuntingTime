@@ -10,7 +10,6 @@ namespace TheHunt.Events
 
         public void Raise()
         {
-            Debug.Log("<color=green>[RESPAWN EVENT] Raised</color>");
             listeners?.Invoke();
         }
 
@@ -26,7 +25,14 @@ namespace TheHunt.Events
 
         private void OnDisable()
         {
+            #if UNITY_EDITOR
+            if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                listeners = null;
+            }
+            #else
             listeners = null;
+            #endif
         }
     }
 }

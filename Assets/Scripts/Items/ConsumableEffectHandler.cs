@@ -26,9 +26,6 @@ public class ConsumableEffectHandler : MonoBehaviour
         float elapsed = 0f;
         float healPerTick = totalAmount / (duration / tickRate);
         
-        Debug.Log($"<color=green>[HOT] Starting heal over time: {totalAmount} HP over {duration}s " +
-                  $"({healPerTick:F1} HP every {tickRate}s)</color>");
-        
         while (elapsed < duration && healable != null && healable.CanHeal)
         {
             healable.Heal(healPerTick);
@@ -36,7 +33,6 @@ public class ConsumableEffectHandler : MonoBehaviour
             yield return new WaitForSeconds(tickRate);
         }
         
-        Debug.Log($"<color=green>[HOT] Healing complete!</color>");
         healthOverTimeCoroutine = null;
     }
     

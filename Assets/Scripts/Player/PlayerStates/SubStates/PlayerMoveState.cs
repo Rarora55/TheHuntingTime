@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TheHunt.Environment;
 
 public class PlayerMoveState : PlayerGroundState
 {
@@ -11,6 +12,11 @@ public class PlayerMoveState : PlayerGroundState
     
     private PlayerStaminaIntegration staminaIntegration;
     private StaminaData staminaData;
+    
+    private bool wasTouchingWall;
+    private bool wasRunning;
+    
+    private PlayerPushPullController pushPullController;
     
     public PlayerMoveState(Player player, PlayerStateMachine stateMachine, PlayerData playerData, string animBoolName) : base(player, stateMachine, playerData, animBoolName)
     {
@@ -29,6 +35,9 @@ public class PlayerMoveState : PlayerGroundState
         isTurning = false;
         player.anim.SetBool("turnIt", false);
         
+        wasTouchingWall = false;
+        wasRunning = false;
+        
         staminaIntegration = player.GetComponent<PlayerStaminaIntegration>();
         StaminaController controller = player.GetComponent<StaminaController>();
         
@@ -40,6 +49,11 @@ public class PlayerMoveState : PlayerGroundState
             {
                 staminaData = field.GetValue(controller) as StaminaData;
             }
+        }
+        
+        if (pushPullController == null)
+        {
+            pushPullController = player.GetComponent<PlayerPushPullController>();
         }
     }
 
@@ -62,6 +76,7 @@ public class PlayerMoveState : PlayerGroundState
         yInput = player.InputHandler.NormInputY;
         grabInput = player.InputHandler.GrabInput;
         runInput = player.InputHandler.RunInput;
+        bool pushPullInput = player.InputHandler.PushPullInput;
         
         if (player.JustFinishedLedgeClimb)
         {
@@ -74,6 +89,44 @@ public class PlayerMoveState : PlayerGroundState
         }
         
         base.LogicUpdate();
+
+        if (pushPullInput && pushPullController != null)
+        {
+            IPushable nearbyPushable = pushPullController.DetectNearbyPushable();
+            
+            if (nearbyPushable != null)
+            {
+                bool isMovingTowardsObject = xInput == player.FacingRight;
+                bool isMovingAwayFromObject = xInput == -player.FacingRight;
+                
+                if (isMovingTowardsObject && nearbyPushable.CanBePushed)
+                {
+                    stateMachine.ChangeState(player.PushState);
+                    return;
+                }
+                else if (isMovingAwayFromObject && nearbyPushable.CanBePulled)
+                {
+                    stateMachine.ChangeState(player.PullState);
+                    return;
+                }
+            }
+        }
+
+        bool isTouchingWall = player.CheckIfTouchingWall();
+        
+        bool canRun = staminaIntegration == null || staminaIntegration.CanRun();
+        bool shouldRun = runInput && canRun && xInput != 0;
+        
+        if (isTouchingWall && !wasTouchingWall && wasRunning)
+        {
+            if (player.KnockbackController != null)
+            {
+                player.KnockbackController.ApplyWallCollisionKnockback();
+            }
+        }
+        
+        wasTouchingWall = isTouchingWall;
+        wasRunning = shouldRun;
 
         /*
        if (isTurning)
@@ -104,9 +157,6 @@ public class PlayerMoveState : PlayerGroundState
         }
         else
         {
-            bool canRun = staminaIntegration == null || staminaIntegration.CanRun();
-            bool shouldRun = runInput && canRun;
-            
             if (shouldRun && staminaIntegration != null && staminaData != null)
             {
                 staminaIntegration.StartRunning(staminaData);
@@ -120,10 +170,6 @@ public class PlayerMoveState : PlayerGroundState
             player.SetVelocityX(currentVelocity * xInput);
             player.anim.SetBool("isRunning", shouldRun);
         }
-
-
-
-       
     }
     
     bool CheckGrabLedgeFromAbove()
