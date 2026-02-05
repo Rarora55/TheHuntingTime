@@ -7,10 +7,13 @@ public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooti
     [Header("References")]
     [SerializeField] private WeaponInventoryManager weaponManager;
     [SerializeField] private InventorySystem inventorySystem;
+    [SerializeField] private BulletPool bulletPool;
+    [SerializeField] private PlayerAimController aimController;
     
     [Header("Shooting Settings")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 0.5f;
+    [SerializeField] private bool useFacingDirectionIfNoAim = true;
     #endregion
     
     #region State
@@ -42,6 +45,9 @@ public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooti
             
         if (inventorySystem == null)
             inventorySystem = GetComponent<InventorySystem>();
+        
+        if (aimController == null)
+            aimController = GetComponent<PlayerAimController>();
     }
     
     void OnEnable()
@@ -162,6 +168,69 @@ public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooti
     {
         if (ActiveWeapon == null)
             return;
+        
+        if (bulletPool == null)
+        {
+            Debug.LogWarning("[WEAPON CONTROLLER] BulletPool not assigned!");
+            return;
+        }
+        
+        if (ActiveWeapon.BulletData == null)
+        {
+            Debug.LogWarning($"[WEAPON CONTROLLER] {ActiveWeapon.ItemName} has no BulletData assigned!");
+            return;
+        }
+        
+        if (firePoint == null)
+        {
+            Debug.LogWarning("[WEAPON CONTROLLER] FirePoint not assigned!");
+            return;
+        }
+        
+        Vector2 fireDirection = GetFireDirection();
+        
+        Bullet bullet = bulletPool.GetBullet(
+            ActiveWeapon.BulletData,
+            firePoint.position,
+            fireDirection,
+            gameObject
+        );
+        
+        if (bullet != null)
+        {
+            Debug.Log($"<color=green>[WEAPON CONTROLLER] Fired {ActiveWeapon.ItemName} - {ActiveWeapon.BulletData.bulletName}</color>");
+        }
+        else
+        {
+            Debug.LogWarning("[WEAPON CONTROLLER] Failed to get bullet from pool!");
+        }
+    }
+    
+    Vector2 GetFireDirection()
+    {
+        if (aimController != null)
+        {
+            Vector2 aimDir = aimController.AimDirection;
+            if (aimDir.sqrMagnitude > 0.01f)
+                return aimDir;
+        }
+        
+        if (useFacingDirectionIfNoAim)
+        {
+            Player player = GetComponent<Player>();
+            if (player != null && player.Orientation != null)
+            {
+                int facingDir = player.Orientation.FacingDirection;
+                return Vector2.right * facingDir;
+            }
+        }
+        
+        return firePoint.right;
+    }
+    
+    public void SetBulletPool(BulletPool pool)
+    {
+        bulletPool = pool;
     }
     #endregion
     

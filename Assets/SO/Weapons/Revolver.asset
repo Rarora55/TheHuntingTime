@@ -20,6 +20,7 @@ MonoBehaviour:
   pickupPrefab: {fileID: 0}
   itemType: 1
   stackable: 0
+  maxStackSize: 6
   canBeExamined: 1
   examinationText: 
   examinationImage: {fileID: 0}
@@ -29,9 +30,11 @@ MonoBehaviour:
   attackRange: 10
   attackSpeed: 1
   weaponType: 0
+  toolType: 0
   requiredAmmo: 1
   magazineSize: 6
   ammoPerShot: 1
+  bulletData: {fileID: 11400000, guid: f29e9345ff92afb44bc2fb317e016d13, type: 2}
   equipPrefab: {fileID: 0}
   equipIcon: {fileID: -6308850436933624161, guid: 9d1a13d87249d6c42bc930470d0a60a8, type: 3}
   equipAnimation: {fileID: 0}

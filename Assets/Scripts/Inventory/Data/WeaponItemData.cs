@@ -18,6 +18,9 @@ namespace TheHunt.Inventory
         [SerializeField] private AmmoType requiredAmmo = AmmoType.None;
         [SerializeField] private int magazineSize = 12;
         [SerializeField] private int ammoPerShot = 1;
+        
+        [Header("Bullet Configuration")]
+        [SerializeField] private BulletData bulletData;
 
         [Header("Equipment")]
         [SerializeField] private GameObject equipPrefab;
@@ -32,6 +35,7 @@ namespace TheHunt.Inventory
         public AmmoType RequiredAmmo => requiredAmmo;
         public int MagazineSize => magazineSize;
         public int AmmoPerShot => ammoPerShot;
+        public BulletData BulletData => bulletData;
         public GameObject EquipPrefab => equipPrefab;
         public Sprite EquipIcon => equipIcon;
         public AnimationClip EquipAnimation => equipAnimation;

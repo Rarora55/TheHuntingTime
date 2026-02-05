@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: PlayerInventoryData
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.InventoryDataSO
   items:
-  - itemData: {fileID: 0}
-    quantity: 0
-    instanceID: 
+  - itemData: {fileID: 11400000, guid: e0bf695849195c64fb61e4133fec557b, type: 2}
+    quantity: 1
+    instanceID: 565116af-cf2f-4468-8b67-0b5b5ea30930
   - itemData: {fileID: 0}
     quantity: 0
     instanceID: 
@@ -34,12 +34,12 @@ MonoBehaviour:
   selectedIndex: 0
   ammoInventory:
   - type: 1
-    amount: 0
+    amount: 50
   - type: 2
-    amount: 0
+    amount: 20
   - type: 3
-    amount: 0
+    amount: 30
   - type: 4
-    amount: 0
-  primaryWeapon: {fileID: 0}
+    amount: 10
+  primaryWeapon: {fileID: 11400000, guid: e0bf695849195c64fb61e4133fec557b, type: 2}
   secondaryWeapon: {fileID: 0}
