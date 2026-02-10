@@ -5,7 +5,7 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private BulletData bulletData;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField] private TrailRenderer trailRenderer;
+    [SerializeField] private TrailRenderer trailRenderer; // Optional
     
     private Rigidbody2D rb;
     private float spawnTime;

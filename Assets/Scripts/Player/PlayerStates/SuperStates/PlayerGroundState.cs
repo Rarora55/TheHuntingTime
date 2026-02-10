@@ -12,6 +12,7 @@ public class PlayerGroundState : PlayerState
 
     private bool JumpInput;
     private bool isTouchingWall;
+    private bool isTouchingLedge;
     protected bool grabInput;
     private bool AimInput;
     
@@ -29,6 +30,7 @@ public class PlayerGroundState : PlayerState
         bool wasGrounded = isGrounded;
         isGrounded = player.CheckIsGrounded();
         isTouchingWall = player.CheckIfTouchingWall();
+        isTouchingLedge = player.CheckTouchingLedge();
         isTouchingCeiling = player.CheckForCeiling();
     }
     public override void Enter()
@@ -75,7 +77,26 @@ public class PlayerGroundState : PlayerState
         }
         else if (isTouchingWall && grabInput && !isTouchingCeiling)
         {
-            stateMachine.ChangeState(player.WallGrapState);
+            bool hasClimbable = player.CanClimbHere();
+            bool isValidLedge = player.Collision.IsValidLedge(0.2f);
+            
+            if (isValidLedge)
+            {
+                if (hasClimbable)
+                {
+                    Debug.Log("<color=green>[GROUND] Climbable + Ledge válido - Cambiando a WallGrapState</color>");
+                    stateMachine.ChangeState(player.WallGrapState);
+                }
+                else
+                {
+                    Debug.Log("<color=cyan>[GROUND] Ledge válido (Ground layer) - Cambiando a WallLedgeState</color>");
+                    stateMachine.ChangeState(player.WallLedgeState);
+                }
+            }
+            else
+            {
+                Debug.Log($"<color=yellow>[GROUND] Grab bloqueado - No hay ledge válido</color>");
+            }
         }
         else if (!isGrounded)
         {

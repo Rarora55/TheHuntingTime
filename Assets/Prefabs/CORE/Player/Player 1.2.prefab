@@ -279,6 +279,14 @@ PrefabInstance:
       propertyPath: animator
       value: 
       objectReference: {fileID: 1762361465102065763}
+    - target: {fileID: 7016956183950892249, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.897
+      objectReference: {fileID: 0}
+    - target: {fileID: 7016956183950892249, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.38
+      objectReference: {fileID: 0}
     - target: {fileID: 7239312537353587453, guid: da1cdeb4d0f43e242bb593035a0a9678, type: 3}
       propertyPath: m_Actions
       value: 

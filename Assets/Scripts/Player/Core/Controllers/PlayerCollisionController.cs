@@ -227,6 +227,17 @@ public class PlayerCollisionController : IPlayerCollision
     
     public Vector2 DetermineCornerPosition()
     {
+        LedgeMarker marker = TryGetLedgeMarker();
+        if (marker != null && marker.HasValidCorners())
+        {
+            Vector2 markerCorner = marker.GetCornerPosition(orientation.FacingDirection);
+            Debug.DrawLine(markerCorner, markerCorner + Vector2.up * 0.5f, Color.yellow, 3f);
+            Debug.Log($"<color=cyan>[DetermineCornerPosition] ✅ Usando MARCADOR en {marker.name} | Corner: {markerCorner} | FacingDir: {orientation.FacingDirection}</color>");
+            return markerCorner;
+        }
+        
+        Debug.Log($"<color=orange>[DetermineCornerPosition] ⚠️ No hay marcador, usando RAYCAST | FacingDir: {orientation.FacingDirection}</color>");
+        
         RaycastHit2D xHit = Physics2D.Raycast(
             wallCheck.position, 
             Vector2.right * orientation.FacingDirection, 
@@ -250,12 +261,22 @@ public class PlayerCollisionController : IPlayerCollision
         Debug.DrawRay(wallCheck.position, Vector2.right * orientation.FacingDirection * xDist, Color.red, 3f);
         Debug.DrawRay(yRayStart, Vector2.down * yDist, Color.blue, 3f);
         Debug.DrawLine(calculatedCorner, calculatedCorner + Vector2.up * 0.5f, Color.green, 3f);
+        Debug.Log($"<color=orange>[DetermineCornerPosition] Calculado por raycast: {calculatedCorner}</color>");
         
         return calculatedCorner;
     }
     
     public Vector2 DetermineCornerPositionFromAbove()
     {
+        LedgeMarker marker = TryGetLedgeMarker();
+        if (marker != null && marker.HasValidCorners())
+        {
+            Vector2 markerCorner = marker.GetCornerPosition(orientation.FacingDirection);
+            Debug.DrawLine(markerCorner, markerCorner + Vector2.up * 0.5f, Color.yellow, 3f);
+            Debug.Log($"<color=green>[LEDGE MARKER] Usando corner desde arriba: {markerCorner}</color>");
+            return markerCorner;
+        }
+        
         Vector2 forwardCheckPos = groundCheck.position;
         forwardCheckPos.x += orientation.FacingDirection * 0.5f;
         
@@ -367,6 +388,15 @@ public class PlayerCollisionController : IPlayerCollision
     
     public Vector2 DetermineEdgePosition()
     {
+        LedgeMarker marker = TryGetLedgeMarker();
+        if (marker != null && marker.HasValidCorners())
+        {
+            Vector2 markerCorner = marker.GetCornerPosition(orientation.FacingDirection);
+            Debug.DrawLine(markerCorner, markerCorner + Vector2.up * 0.5f, Color.yellow, 3f);
+            Debug.Log($"<color=magenta>[LEDGE MARKER] Usando edge marcado: {markerCorner}</color>");
+            return markerCorner;
+        }
+        
         RaycastHit2D ledgeHit = Physics2D.Raycast(
             ledgeCheck.position, 
             Vector2.right * orientation.FacingDirection, 
@@ -409,5 +439,33 @@ public class PlayerCollisionController : IPlayerCollision
         
         collider.size = size;
         collider.offset = newOffset;
+    }
+    
+    private LedgeMarker TryGetLedgeMarker()
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(
+            wallCheck.position, 
+            Vector2.right * orientation.FacingDirection, 
+            playerData.WallCheckDistance, 
+            playerData.WhatIsGround);
+        
+        if (hits.Length == 0)
+        {
+            return null;
+        }
+        
+        foreach (RaycastHit2D hit in hits)
+        {
+            if (hit.collider == null) continue;
+            
+            LedgeMarker marker = hit.collider.GetComponent<LedgeMarker>();
+            if (marker != null && marker.HasValidCorners())
+            {
+                Debug.Log($"<color=yellow>[LEDGE MARKER] Detectado: {hit.collider.name} a distancia {hit.distance:F2}</color>");
+                return marker;
+            }
+        }
+        
+        return null;
     }
 }

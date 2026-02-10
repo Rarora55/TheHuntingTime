@@ -49,6 +49,11 @@ public class PlayerData: ScriptableObject
     public float knockbackDuration = 0.2f;
     public float minRunSpeedForWallKnockback = 10f;
 
+    [Header("Shooting Timing")]
+    [Tooltip("Delay in seconds before the bullet spawns after entering Fire state (for animation sync)")]
+    [Range(0f, 0.5f)]
+    public float shotDelay = 0.15f;
+
     [Header("Push & Pull System")]
     [Tooltip("Multiplicador de velocidad base al empujar/tirar (0.75 = 75% de velocidad)")]
     public float basePushPullSpeedMultiplier = 0.75f;

@@ -16,7 +16,7 @@ MonoBehaviour:
   damage: 10
   damageType: 0
   knockbackForce: 2
-  speed: 20
+  speed: 35
   lifetime: 3
   bulletSprite: {fileID: 0}
   bulletScale: {x: 1, y: 1, z: 1}

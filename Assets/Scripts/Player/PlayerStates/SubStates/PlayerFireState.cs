@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerFireState : WeaponAbilityState
 {
     private bool hasFired;
+    private bool shotPerformed;
     private float fireTime;
     private float animationDuration;
     
@@ -20,6 +21,7 @@ public class PlayerFireState : WeaponAbilityState
     protected override void OnWeaponStateEnter()
     {
         hasFired = false;
+        shotPerformed = false;
         fireTime = Time.time;
         
         if (!weaponController.CanShoot())
@@ -35,7 +37,6 @@ public class PlayerFireState : WeaponAbilityState
         if (animationDuration <= 0)
             animationDuration = 0.3f;
         
-        PerformShot();
         player.InputHandler.FireEnded();
     }
 
@@ -43,16 +44,22 @@ public class PlayerFireState : WeaponAbilityState
     {
         base.LogicUpdate();
         
+        float timeSinceFire = Time.time - fireTime;
+        
+        if (!shotPerformed && timeSinceFire >= playerData.shotDelay)
+        {
+            PerformShot();
+            shotPerformed = true;
+        }
+        
         if (!hasFired)
         {
-            if (Time.time - fireTime > 0.5f)
+            if (timeSinceFire > 0.5f)
             {
                 isAbilityDone = true;
             }
             return;
         }
-        
-        float timeSinceFire = Time.time - fireTime;
         
         if (timeSinceFire >= animationDuration * 0.7f)
         {

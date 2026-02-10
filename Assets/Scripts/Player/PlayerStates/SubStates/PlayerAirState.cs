@@ -69,23 +69,34 @@ public class PlayerAirState : PlayerState
         }
         else if (isTouchingWall && !isTouchingLedge && GrabInput)
         {
-            Debug.Log($"<color=cyan>[LEDGE CHECK] Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Grab:{GrabInput}</color>");
+            bool hasClimbable = player.CanClimbHere();
             bool isValidLedge = player.Collision.IsValidLedge(0.2f);
-            Debug.Log($"<color=yellow>[LEDGE VALID] IsValidLedge: {isValidLedge}</color>");
+            
+            Debug.Log($"<color=cyan>[AIR] Wall:{isTouchingWall} | Ledge:{isTouchingLedge} | Grab:{GrabInput} | Climbable:{hasClimbable} | ValidLedge:{isValidLedge}</color>");
             
             if (isValidLedge)
             {
+                Debug.Log("<color=green>[AIR] Ledge válido detectado (Ground layer) - Cambiando a WallLedgeState</color>");
                 stateMachine.ChangeState(player.WallLedgeState);
             }
             else
             {
-                stateMachine.ChangeState(player.WallGrapState);
+                Debug.Log($"<color=yellow>[AIR] Grab bloqueado - No hay ledge válido</color>");
             }
         }
         else if (isTouchingWall && GrabInput)
         {
-            Debug.Log($"<color=green>[LEDGE] Going to WallGrapState (no valid ledge)</color>");
-            stateMachine.ChangeState(player.WallGrapState);
+            bool hasClimbable = player.CanClimbHere();
+            
+            if (hasClimbable)
+            {
+                Debug.Log($"<color=green>[AIR] Climbable detectado - Cambiando a WallGrapState</color>");
+                stateMachine.ChangeState(player.WallGrapState);
+            }
+            else
+            {
+                Debug.Log($"<color=yellow>[AIR] No hay climbable ni ledge - Grab bloqueado</color>");
+            }
         }
         else if (isTouchingWall && xInput != 0 && xInput == player.FacingRight && !GrabInput)
         {

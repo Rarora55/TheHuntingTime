@@ -33,11 +33,12 @@ MonoBehaviour:
   standColliderHeight: 1.6
   ladderClimbSpeed: 4
   ladderSlideSpeed: 2
-  shootKnockbackForce: 3
-  shootKnockbackDelay: 0.4
+  shootKnockbackForce: 2
+  shootKnockbackDelay: 0.1
   wallCollisionKnockbackForce: 2
   knockbackDuration: 0.4
   minRunSpeedForWallKnockback: 10
+  shotDelay: 0.15
   basePushPullSpeedMultiplier: 0.75
   minimumWeight: 1
   weightPenaltyPerUnit: 0.3
