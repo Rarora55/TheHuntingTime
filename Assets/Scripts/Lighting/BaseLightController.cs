@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using TheHunt.Events;
 
 namespace TheHunt.Lighting
 {
@@ -13,6 +14,10 @@ namespace TheHunt.Lighting
 
     public class BaseLightController : MonoBehaviour
     {
+        [Header("Events")]
+        [SerializeField] private LightControlEvent onLightRegistered;
+        [SerializeField] private LightControlEvent onLightUnregistered;
+
         [Header("References")]
         [SerializeField] protected Light2D light2D;
 
@@ -49,17 +54,17 @@ namespace TheHunt.Lighting
             timeOffset = Random.Range(0f, 100f);
             ConfigureLight();
 
-            if (LightManager.Instance != null)
+            if (onLightRegistered != null)
             {
-                LightManager.Instance.RegisterLight(this);
+                onLightRegistered.Raise(this);
             }
         }
 
         protected virtual void OnDestroy()
         {
-            if (LightManager.Instance != null)
+            if (onLightUnregistered != null)
             {
-                LightManager.Instance.UnregisterLight(this);
+                onLightUnregistered.Raise(this);
             }
         }
 

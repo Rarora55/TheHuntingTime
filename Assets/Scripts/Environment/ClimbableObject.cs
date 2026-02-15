@@ -1,11 +1,15 @@
 using UnityEngine;
 using TheHunt.Inventory;
+using TheHunt.Events;
 
 namespace TheHunt.Environment
 {
     [RequireComponent(typeof(Collider2D))]
     public class ClimbableWithTeleport : MonoBehaviour
     {
+        [Header("Events")]
+        [SerializeField] private ScreenFadeEvent screenFadeEvent;
+
         [Header("Climb Settings")]
         [SerializeField] private Transform exitPoint;
         [SerializeField] private float fadeDuration = 0.5f;
@@ -89,11 +93,20 @@ namespace TheHunt.Environment
             playerInRange.SetVelocityZero();
             playerInRange.RB.gravityScale = 0f;
 
-            ScreenFadeManager.Instance.FadeToBlackAndTeleport(
-                exitPoint.position,
-                playerInRange.gameObject,
-                fadeDuration
-            );
+            if (screenFadeEvent != null)
+            {
+                screenFadeEvent.RaiseFadeToBlackAndTeleport(
+                    fadeDuration,
+                    exitPoint.position,
+                    playerInRange.transform,
+                    null
+                );
+            }
+            else
+            {
+                Debug.LogWarning("[CLIMBABLE] ScreenFadeEvent not assigned!");
+                playerInRange.transform.position = exitPoint.position;
+            }
         }
 
         public void Reset()

@@ -570,68 +570,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22a3a2a83cdba9f409ca1b7e9e928a78, type: 3}
---- !u!1 &107367866
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 107367867}
-  m_Layer: 0
-  m_Name: DuskLightACentral
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &107367867
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107367866}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.25, y: -14.03, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &145324727
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 145324728}
-  m_Layer: 0
-  m_Name: DuskLightA
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &145324728
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 145324727}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 34.98, y: 6.84, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &148316771
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -733,7 +671,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001SRT1
   targetSpawnPointID: PTGYM0125001SRB1
   fadeDuration: 1
@@ -821,52 +759,6 @@ MonoBehaviour:
   gizmoRadius: 0.5
   showLabel: 1
   oneTimeUse: 0
---- !u!1 &174167673
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 174167675}
-  - component: {fileID: 174167674}
-  m_Layer: 0
-  m_Name: ScreenFadeManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &174167674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 174167673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b8e6f797780b944fa276064f30a1958, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScreenFadeManager
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
-  createCanvasOnAwake: 1
---- !u!4 &174167675
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 174167673}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &197621032 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 454050197742856849, guid: 640937e61d0a27547a248d4f0e8a1098, type: 3}
@@ -1155,7 +1047,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001SB1
   targetSpawnPointID: PTGYM0125001ST1
   fadeDuration: 1
@@ -1914,7 +1806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9f9bee9c4a78d04a956f5e579c061c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.Ladder
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   requireInteractionInput: 0
   interactionKey: 101
   topExitPoint: {fileID: 768831022}
@@ -2494,7 +2386,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001ST1
   targetSpawnPointID: PTGYM0125001SB1
   fadeDuration: 1
@@ -2615,7 +2507,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001ST2
   targetSpawnPointID: PTGYM0125001SB2
   fadeDuration: 1
@@ -2736,7 +2628,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001SB1
   targetSpawnPointID: PTGYM0125001ST1
   fadeDuration: 1
@@ -2962,37 +2854,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &826686416
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 826686417}
-  m_Layer: 0
-  m_Name: Base
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &826686417
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 826686416}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.57, y: -0.05, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1734946285}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &943966283
 GameObject:
   m_ObjectHideFlags: 0
@@ -3441,7 +3302,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.RopeAnchorPassiveItem
   interactionPrompt: Press E to interact
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   ropeLength: 5
   ropePrefab: {fileID: 8185215522908943105, guid: b52d7180719d5aa46bd6acdb59a89c1f, type: 3}
   spawnPoint: {fileID: 197621032}
@@ -3478,7 +3339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1158379279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3687,60 +3548,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   showDebug: 1
---- !u!1 &1196614020
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1196614021}
-  - component: {fileID: 1196614022}
-  m_Layer: 0
-  m_Name: LightManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1196614021
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1196614020}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1572299998}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1196614022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1196614020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a42d97c9f39c224ab43c933e58c55d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Lighting.LightManager
-  onLightRegistered: {fileID: 11400000, guid: 25cb1198bd8ea6a4fb9b4031d6c415ee, type: 2}
-  onLightUnregistered: {fileID: 11400000, guid: 941ab6d4be443cc4892e73a62ad9f72f, type: 2}
-  onGlobalLightCommand: {fileID: 11400000, guid: a081b4b949964064487ee82285e87969, type: 2}
-  autoRegisterLights: 1
-  maxActiveLights: 15
-  useCulling: 1
-  cullingDistance: 20
-  globalLightsEnabled: 1
-  globalIntensityMultiplier: 1
-  showDebugInfo: 1
 --- !u!1 &1221334659
 GameObject:
   m_ObjectHideFlags: 0
@@ -3957,37 +3764,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1 &1277584044
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1277584045}
-  m_Layer: 0
-  m_Name: DuskLightb
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1277584045
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277584044}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 35.33, y: -40.35, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1424696170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4049,289 +3825,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68559b787cd83284eb9fdadc9dfd8277, type: 3}
---- !u!1 &1425370143
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1425370144}
-  - component: {fileID: 1425370145}
-  - component: {fileID: 1425370146}
-  m_Layer: 0
-  m_Name: DayNightSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1425370144
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1425370143}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1572299998}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1425370145
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1425370143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab4436bbd8ca6324e88655cce9bf30a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Lighting.DayNightCycle
-  onGlobalLightCommand: {fileID: 11400000, guid: a081b4b949964064487ee82285e87969, type: 2}
-  enableCycle: 1
-  cycleDuration: 60
-  currentTime: 0.5
-  timeSpeed: 1
-  globalLight: {fileID: 1801271993}
-  controlGlobalLight: 1
-  dayNightGradient:
-    serializedVersion: 2
-    key0: {r: 1, g: 1, b: 1, a: 1}
-    key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0, g: 0, b: 0, a: 0}
-    key3: {r: 0, g: 0, b: 0, a: 0}
-    key4: {r: 0, g: 0, b: 0, a: 0}
-    key5: {r: 0, g: 0, b: 0, a: 0}
-    key6: {r: 0, g: 0, b: 0, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 0
-    ctime1: 65535
-    ctime2: 0
-    ctime3: 0
-    ctime4: 0
-    ctime5: 0
-    ctime6: 0
-    ctime7: 0
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 0
-    m_ColorSpace: -1
-    m_NumColorKeys: 2
-    m_NumAlphaKeys: 2
-  intensityCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.05
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.21
-      value: 0.05
-      inSlope: 0
-      outSlope: 0.5
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.25
-      value: 0.15
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.31
-      value: 0.5
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.375
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 1.2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.67
-      value: 1.1
-      inSlope: 0
-      outSlope: -0.5
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.75
-      value: 0.8
-      inSlope: -1
-      outSlope: -1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.8125
-      value: 0.4
-      inSlope: -1.5
-      outSlope: -1.5
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.875
-      value: 0.15
-      inSlope: -1
-      outSlope: -0.5
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.92
-      value: 0.08
-      inSlope: -0.3
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.96
-      value: 0.05
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0.05
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 1
-    m_PostInfinity: 1
-    m_RotationOrder: 4
-  dayColor: {r: 1, g: 0.98, b: 0.9, a: 1}
-  dayIntensity: 1.2
-  dawnColor: {r: 1, g: 0.6, b: 0.4, a: 1}
-  duskColor: {r: 1, g: 0.4, b: 0.2, a: 1}
-  transitionDuration: 0.2
-  colorTransitionSpeed: 1
-  intensityTransitionSpeed: 1
-  nightColor: {r: 0.05, g: 0.05, b: 0.15, a: 1}
-  nightIntensity: 0.05
-  dawnStart: 0.25
-  dayStart: 0.375
-  duskStart: 0.75
-  nightStart: 0.875
-  debugMode: 1
-  onPeriodChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onTimeChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  autoControlArtificialLights: 0
---- !u!114 &1425370146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1425370143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e03e2848cdeedc94ca10b0d1780da899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Lighting.Examples.DayNightCycleTester
-  dayNightCycle: {fileID: 1425370145}
-  pauseKey: 112
-  speedUpKey: 43
-  slowDownKey: 45
-  testModeKey: 116
-  setDawnKey: 49
-  setDayKey: 50
-  setDuskKey: 51
-  setNightKey: 52
-  skipPeriodKey: 32
---- !u!1 &1572299997
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1572299998}
-  m_Layer: 0
-  m_Name: LightStructure
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1572299998
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1572299997}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 32.90633, y: -14.58458, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1196614021}
-  - {fileID: 1801271991}
-  - {fileID: 1734946285}
-  - {fileID: 1425370144}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1584767904
 GameObject:
   m_ObjectHideFlags: 0
@@ -4822,7 +4315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9f9bee9c4a78d04a956f5e579c061c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.Ladder
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   requireInteractionInput: 0
   interactionKey: 101
   topExitPoint: {fileID: 0}
@@ -5155,228 +4648,25 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &1734946283
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1734946285}
-  - component: {fileID: 1734946284}
-  - component: {fileID: 1734946286}
-  m_Layer: 0
-  m_Name: DuskLight
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1734946284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734946283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.Light2D
-  m_ComponentVersion: 2
-  m_LightType: 1
-  m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.092
-  m_Color: {r: 0.9433962, g: 0.6003642, b: 0.19876568, a: 0.7137255}
-  m_Intensity: 5.89
-  m_LightVolumeIntensity: 0.02
-  m_LightVolumeEnabled: 1
-  m_ApplyToSortingLayers: 00000000a77b3f39932dace2
-  m_LightCookieSprite: {fileID: 0}
-  m_DeprecatedPointLightCookieSprite: {fileID: 0}
-  m_LightOrder: 0
-  m_AlphaBlendOnOverlap: 0
-  m_OverlapOperation: 1
-  m_NormalMapDistance: 3
-  m_NormalMapQuality: 2
-  m_UseNormalMap: 0
-  m_ShadowsEnabled: 1
-  m_ShadowIntensity: 0.459
-  m_ShadowSoftness: 0.311
-  m_ShadowSoftnessFalloffIntensity: 0.686
-  m_ShadowVolumeIntensityEnabled: 1
-  m_ShadowVolumeIntensity: 0.733
-  m_LocalBounds:
-    m_Center: {x: 3.0121999, y: 2.61875, z: 0}
-    m_Extent: {x: 10.1429, y: 16.90645, z: 0}
-  m_PointLightInnerAngle: 360
-  m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 11.391794
-  m_ShapeLightParametricSides: 5
-  m_ShapeLightParametricAngleOffset: 0
-  m_ShapeLightParametricRadius: 1
-  m_ShapeLightFalloffSize: 5.95
-  m_ShapeLightFalloffOffset: {x: 0, y: 0}
-  m_ShapePath:
-  - {x: -1.1815857, y: -2.5031648, z: 0}
-  - {x: 7.206182, y: -8.339442, z: 0}
-  - {x: 6.4286036, y: 1.6163111, z: 0}
-  - {x: 4.0152106, y: 11.443117, z: 0}
-  - {x: 1.8116338, y: 13.576573, z: 0}
---- !u!4 &1734946285
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734946283}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.74687684, w: 0.6649624}
-  m_LocalPosition: {x: 1.33, y: 20.59, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 826686417}
-  m_Father: {fileID: 1572299998}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1734946286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1734946283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2d3fc9bbc271604a9105f431ccc3d2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Lighting.DuskLightMover
-  dayNightCycle: {fileID: 1425370145}
-  lightTransform: {fileID: 1734946285}
-  baseReference: {fileID: 1572299998}
-  positionA: {fileID: 145324728}
-  positionCentral: {fileID: 107367867}
-  positionB: {fileID: 1277584045}
-  moveSpeed: 0.3
-  centralPauseDuration: 5
-  movementCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  intensityAtA: 0
-  intensityAtCentral: 5.89
-  intensityAtB: 0
-  intensityCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 3
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.8
-      value: 0.8
-      inSlope: -0.3
-      outSlope: -0.3
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.9
-      value: 0.5
-      inSlope: -0.5
-      outSlope: -0.5
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  targetLight: {fileID: 1734946284}
-  showDebugLogs: 1
 --- !u!1001 &1801271990
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1572299998}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2458370594153904164, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_Name
       value: GlobalLight
       objectReference: {fileID: 0}
-    - target: {fileID: 4896162556592498597, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4896162556592498597, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4896162556592498597, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6810277111039423795, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-      propertyPath: light2D
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.0285606
+      value: 29.87777
       objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.6037703
+      value: -16.18835
       objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5388,15 +4678,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5413,54 +4703,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2458370594153904164, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1801271994}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
---- !u!4 &1801271991 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7485797108591261436, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-  m_PrefabInstance: {fileID: 1801271990}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1801271992 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2458370594153904164, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-  m_PrefabInstance: {fileID: 1801271990}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1801271993 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4896162556592498597, guid: e6ea12338afc3c54eb13ebd12cc97551, type: 3}
-  m_PrefabInstance: {fileID: 1801271990}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1801271992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.2D.Runtime::UnityEngine.Rendering.Universal.Light2D
---- !u!114 &1801271994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1801271992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84097653a43b83e4cb2d8db32b64b0f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Lighting.BaseLightController
-  onLightRegistered: {fileID: 11400000, guid: d670f68903b12cb4c88e54d1c55f686e, type: 2}
-  onLightUnregistered: {fileID: 11400000, guid: c1d4b0feaeb1cfd44845730f2a5968d6, type: 2}
-  light2D: {fileID: 1801271993}
-  startEnabled: 1
-  baseIntensity: 1
-  behavior: 0
-  flickerSpeed: 5
-  flickerAmount: 0.2
-  castsShadows: 1
-  shadowQuality: 1
 --- !u!1 &1986384022
 GameObject:
   m_ObjectHideFlags: 0
@@ -5494,7 +4738,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001SRB1
   targetSpawnPointID: PTGYM0125001SRT1
   fadeDuration: 1
@@ -5615,7 +4859,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
   interactionPrompt: Press E to climb
   isInteractable: 1
-  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  screenFadeEvent: {fileID: 0}
   spawnPointID: PTGYM0125001SB2
   targetSpawnPointID: PTGYM0125001ST2
   fadeDuration: 1
@@ -5966,6 +5210,7 @@ SceneRoots:
   - {fileID: 1584767907}
   - {fileID: 210321500}
   - {fileID: 646381409}
+  - {fileID: 1801271990}
   - {fileID: 1692758892}
   - {fileID: 7778233530631162610}
   - {fileID: 1134974314}
@@ -5986,8 +5231,3 @@ SceneRoots:
   - {fileID: 2690519101077386739}
   - {fileID: 599643543}
   - {fileID: 148316771}
-  - {fileID: 1572299998}
-  - {fileID: 174167675}
-  - {fileID: 145324728}
-  - {fileID: 107367867}
-  - {fileID: 1277584045}

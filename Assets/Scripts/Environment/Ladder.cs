@@ -1,10 +1,14 @@
 using UnityEngine;
+using TheHunt.Events;
 
 namespace TheHunt.Environment
 {
     [RequireComponent(typeof(Collider2D))]
     public class Ladder : MonoBehaviour
     {
+        [Header("Events")]
+        [SerializeField] private ScreenFadeEvent screenFadeEvent;
+
         [Header("Settings")]
         [SerializeField] private bool requireInteractionInput = false;
         [SerializeField] private KeyCode interactionKey = KeyCode.W;
@@ -98,11 +102,20 @@ namespace TheHunt.Environment
             playerInRange.SetVelocityZero();
             playerInRange.RB.gravityScale = 0f;
 
-            ScreenFadeManager.Instance.FadeToBlackAndTeleport(
-                topExitPoint.position,
-                playerInRange.gameObject,
-                fadeDuration
-            );
+            if (screenFadeEvent != null)
+            {
+                screenFadeEvent.RaiseFadeToBlackAndTeleport(
+                    fadeDuration,
+                    topExitPoint.position,
+                    playerInRange.transform,
+                    null
+                );
+            }
+            else
+            {
+                Debug.LogWarning("[LADDER] ScreenFadeEvent not assigned!");
+                playerInRange.transform.position = topExitPoint.position;
+            }
 
             Debug.Log("<color=green>[LADDER] Teleporting player to top exit point</color>");
         }

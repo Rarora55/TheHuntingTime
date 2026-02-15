@@ -7,6 +7,8 @@ namespace TheHunt.Lighting.Editor
     [CustomEditor(typeof(BaseLightController), true)]
     public class BaseLightControllerEditor : UnityEditor.Editor
     {
+        private SerializedProperty onLightRegisteredProp;
+        private SerializedProperty onLightUnregisteredProp;
         private SerializedProperty light2DProp;
         private SerializedProperty startEnabledProp;
         private SerializedProperty baseIntensityProp;
@@ -21,6 +23,8 @@ namespace TheHunt.Lighting.Editor
 
         private void OnEnable()
         {
+            onLightRegisteredProp = serializedObject.FindProperty("onLightRegistered");
+            onLightUnregisteredProp = serializedObject.FindProperty("onLightUnregistered");
             light2DProp = serializedObject.FindProperty("light2D");
             startEnabledProp = serializedObject.FindProperty("startEnabled");
             baseIntensityProp = serializedObject.FindProperty("baseIntensity");
@@ -39,6 +43,9 @@ namespace TheHunt.Lighting.Editor
             serializedObject.Update();
 
             DrawHeader();
+            EditorGUILayout.Space(5);
+
+            DrawEventsSection();
             EditorGUILayout.Space(5);
 
             DrawReferencesSection();
@@ -80,6 +87,29 @@ namespace TheHunt.Lighting.Editor
 
                 string info = $"Type: {light2D.lightType} | Intensity: {light2D.intensity:F2}";
                 EditorGUILayout.LabelField(info, infoStyle);
+            }
+
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawEventsSection()
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("🔔 Events", EditorStyles.boldLabel);
+
+            EditorGUILayout.PropertyField(onLightRegisteredProp, new GUIContent("On Light Registered"));
+            EditorGUILayout.PropertyField(onLightUnregisteredProp, new GUIContent("On Light Unregistered"));
+
+            bool hasEvents = onLightRegisteredProp.objectReferenceValue != null && 
+                           onLightUnregisteredProp.objectReferenceValue != null;
+
+            if (!hasEvents)
+            {
+                EditorGUILayout.HelpBox("⚠️ Events not assigned! This light won't be registered with LightManager.\n\nAssign LightRegisteredEvent and LightUnregisteredEvent from Assets/SO/Events/", MessageType.Warning);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("✓ Events configured. This light will auto-register with LightManager.", MessageType.Info);
             }
 
             EditorGUILayout.EndVertical();

@@ -1,24 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TheHunt.Events;
 
 public class ScreenFadeManager : MonoBehaviour
 {
-    private static ScreenFadeManager instance;
-    public static ScreenFadeManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                GameObject go = new GameObject("ScreenFadeManager");
-                instance = go.AddComponent<ScreenFadeManager>();
-                DontDestroyOnLoad(go);
-                instance.Initialize();
-            }
-            return instance;
-        }
-    }
+    [Header("Events")]
+    [SerializeField] private ScreenFadeEvent screenFadeEvent;
+
+    [Header("Settings")]
+    [SerializeField] private bool createCanvasOnAwake = true;
 
     private Canvas fadeCanvas;
     private Image fadeImage;
@@ -26,15 +17,48 @@ public class ScreenFadeManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (createCanvasOnAwake)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
             Initialize();
         }
-        else if (instance != this)
+    }
+
+    private void OnEnable()
+    {
+        if (screenFadeEvent != null)
         {
-            Destroy(gameObject);
+            screenFadeEvent.AddListener(HandleFadeRequest);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (screenFadeEvent != null)
+        {
+            screenFadeEvent.RemoveListener(HandleFadeRequest);
+        }
+    }
+
+    private void HandleFadeRequest(FadeRequest request)
+    {
+        switch (request.fadeType)
+        {
+            case FadeType.ToBlack:
+                StartCoroutine(FadeToBlackCoroutine(request.duration, request.onFadeComplete));
+                break;
+            
+            case FadeType.FromBlack:
+                StartCoroutine(FadeFromBlackCoroutine(request.duration, request.onFadeComplete));
+                break;
+            
+            case FadeType.ToBlackAndTeleport:
+                StartCoroutine(FadeToBlackAndTeleportCoroutine(
+                    request.teleportPosition, 
+                    request.teleportTarget, 
+                    request.duration, 
+                    request.onTeleportComplete
+                ));
+                break;
         }
     }
 
@@ -68,19 +92,26 @@ public class ScreenFadeManager : MonoBehaviour
         isInitialized = true;
     }
 
-    public void FadeToBlackAndTeleport(Vector3 targetPosition, GameObject playerObject, float fadeDuration = 0.5f)
+    private IEnumerator FadeToBlackAndTeleportCoroutine(Vector3 targetPosition, Transform targetTransform, float fadeDuration, System.Action onComplete)
     {
-        StartCoroutine(FadeToBlackAndTeleportCoroutine(targetPosition, playerObject, fadeDuration));
-    }
-    
-    public void FadeToBlack(float fadeDuration, System.Action onComplete = null)
-    {
-        StartCoroutine(FadeToBlackCoroutine(fadeDuration, onComplete));
-    }
-    
-    public void FadeFromBlack(float fadeDuration, System.Action onComplete = null)
-    {
-        StartCoroutine(FadeFromBlackCoroutine(fadeDuration, onComplete));
+        if (!isInitialized) Initialize();
+        
+        fadeCanvas.gameObject.SetActive(true);
+        
+        yield return StartCoroutine(FadeToBlackInternal(fadeDuration));
+        
+        if (targetTransform != null)
+        {
+            targetTransform.position = targetPosition;
+        }
+        
+        yield return new WaitForSeconds(0.1f);
+        
+        yield return StartCoroutine(FadeFromBlackInternal(fadeDuration));
+        
+        fadeCanvas.gameObject.SetActive(false);
+        
+        onComplete?.Invoke();
     }
     
     private IEnumerator FadeToBlackCoroutine(float fadeDuration, System.Action onComplete)
@@ -103,26 +134,6 @@ public class ScreenFadeManager : MonoBehaviour
         fadeCanvas.gameObject.SetActive(false);
         
         onComplete?.Invoke();
-    }
-
-    private IEnumerator FadeToBlackAndTeleportCoroutine(Vector3 targetPosition, GameObject playerObject, float fadeDuration)
-    {
-        if (!isInitialized) Initialize();
-        
-        fadeCanvas.gameObject.SetActive(true);
-        
-        yield return StartCoroutine(FadeToBlackInternal(fadeDuration));
-        
-        if (playerObject != null)
-        {
-            playerObject.transform.position = targetPosition;
-        }
-        
-        yield return new WaitForSeconds(0.1f);
-        
-        yield return StartCoroutine(FadeFromBlackInternal(fadeDuration));
-        
-        fadeCanvas.gameObject.SetActive(false);
     }
 
     private IEnumerator FadeToBlackInternal(float duration)

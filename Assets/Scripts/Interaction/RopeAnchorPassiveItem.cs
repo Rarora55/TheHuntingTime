@@ -2,6 +2,7 @@ using UnityEngine;
 using TheHunt.Inventory;
 using TheHunt.Environment;
 using TheHunt.UI;
+using TheHunt.Events;
 using System;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -11,6 +12,9 @@ namespace TheHunt.Interaction
 {
     public class RopeAnchorPassiveItem : PassiveItem
     {
+        [Header("Events")]
+        [SerializeField] private ScreenFadeEvent screenFadeEvent;
+
         [Header("Rope Settings")]
         [SerializeField] private float ropeLength = 5f;
         [SerializeField] private GameObject ropePrefab;
@@ -188,14 +192,14 @@ namespace TheHunt.Interaction
         {
             Debug.Log("<color=green>[ROPE ANCHOR] Retraction confirmed, starting fade...</color>");
             
-            if (ScreenFadeManager.Instance != null)
+            if (screenFadeEvent != null)
             {
-                ScreenFadeManager.Instance.FadeToBlack(fadeDuration, () =>
+                screenFadeEvent.RaiseFadeToBlack(fadeDuration, () =>
                 {
                     RetractRopeInternal();
                     ReturnRopeToInventory();
                     
-                    ScreenFadeManager.Instance.FadeFromBlack(fadeDuration, () =>
+                    screenFadeEvent.RaiseFadeFromBlack(fadeDuration, () =>
                     {
                         ClearPending();
                     });
@@ -203,7 +207,7 @@ namespace TheHunt.Interaction
             }
             else
             {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeManager not found, retracting without fade</color>");
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeEvent not assigned, retracting without fade</color>");
                 RetractRopeInternal();
                 ReturnRopeToInventory();
                 ClearPending();
@@ -214,14 +218,14 @@ namespace TheHunt.Interaction
         {
             Debug.Log("<color=green>[ROPE ANCHOR] Deployment confirmed, starting fade...</color>");
             
-            if (ScreenFadeManager.Instance != null)
+            if (screenFadeEvent != null)
             {
-                ScreenFadeManager.Instance.FadeToBlack(fadeDuration, () =>
+                screenFadeEvent.RaiseFadeToBlack(fadeDuration, () =>
                 {
                     ConsumeRopeFromInventory();
                     DeployRope();
                     
-                    ScreenFadeManager.Instance.FadeFromBlack(fadeDuration, () =>
+                    screenFadeEvent.RaiseFadeFromBlack(fadeDuration, () =>
                     {
                         ClearPending();
                     });
@@ -229,7 +233,7 @@ namespace TheHunt.Interaction
             }
             else
             {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeManager not found, deploying without fade</color>");
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeEvent not assigned, deploying without fade</color>");
                 ConsumeRopeFromInventory();
                 DeployRope();
                 ClearPending();

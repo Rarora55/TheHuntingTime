@@ -1,12 +1,16 @@
 using UnityEngine;
 using System.Collections;
 using TheHunt.Interaction;
+using TheHunt.Events;
 
 namespace TheHunt.Environment
 {
     [RequireComponent(typeof(Collider2D))]
     public class ClimbSpawnPoint : InteractableObject
     {
+        [Header("Events")]
+        [SerializeField] private ScreenFadeEvent screenFadeEvent;
+
         [Header("Spawn Point Settings")]
         [SerializeField] private string spawnPointID;
         [SerializeField] private string targetSpawnPointID;
@@ -117,11 +121,20 @@ namespace TheHunt.Environment
             float originalGravity = player.RB.gravityScale;
             player.RB.gravityScale = 0f;
             
-            ScreenFadeManager.Instance.FadeToBlackAndTeleport(
-                targetSpawn.transform.position,
-                player.gameObject,
-                fadeDuration
-            );
+            if (screenFadeEvent != null)
+            {
+                screenFadeEvent.RaiseFadeToBlackAndTeleport(
+                    fadeDuration,
+                    targetSpawn.transform.position,
+                    player.transform,
+                    null
+                );
+            }
+            else
+            {
+                Debug.LogWarning("[CLIMB SPAWN] ScreenFadeEvent not assigned!");
+                player.transform.position = targetSpawn.transform.position;
+            }
             
             float totalDuration = (fadeDuration * 2) + 0.1f + cooldownAfterTeleport;
             yield return new WaitForSeconds(totalDuration);

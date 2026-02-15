@@ -1,10 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TheHunt.Events;
 
 namespace TheHunt.Lighting
 {
     public class LightManager : MonoBehaviour
     {
+        [Header("Events")]
+        [SerializeField] private LightControlEvent onLightRegistered;
+        [SerializeField] private LightControlEvent onLightUnregistered;
+        [SerializeField] private GlobalLightCommandEvent onGlobalLightCommand;
+
         [Header("Settings")]
         [SerializeField] private bool autoRegisterLights = true;
         [SerializeField] private int maxActiveLights = 15;
@@ -22,21 +28,10 @@ namespace TheHunt.Lighting
         private UnityEngine.Camera mainCamera;
         private Transform cameraTransform;
 
-        private static LightManager instance;
-        public static LightManager Instance => instance;
-
         public int ActiveLightCount => registeredLights.Count;
 
         private void Awake()
         {
-            if (instance != null && instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            instance = this;
-
             mainCamera = UnityEngine.Camera.main;
             if (mainCamera != null)
             {
@@ -47,6 +42,30 @@ namespace TheHunt.Lighting
             {
                 RegisterAllLightsInScene();
             }
+        }
+
+        private void OnEnable()
+        {
+            if (onLightRegistered != null)
+                onLightRegistered.AddListener(RegisterLight);
+            
+            if (onLightUnregistered != null)
+                onLightUnregistered.AddListener(UnregisterLight);
+            
+            if (onGlobalLightCommand != null)
+                onGlobalLightCommand.AddListener(HandleGlobalLightCommand);
+        }
+
+        private void OnDisable()
+        {
+            if (onLightRegistered != null)
+                onLightRegistered.RemoveListener(RegisterLight);
+            
+            if (onLightUnregistered != null)
+                onLightUnregistered.RemoveListener(UnregisterLight);
+            
+            if (onGlobalLightCommand != null)
+                onGlobalLightCommand.RemoveListener(HandleGlobalLightCommand);
         }
 
         private void Start()
@@ -65,7 +84,7 @@ namespace TheHunt.Lighting
             }
         }
 
-        public void RegisterLight(BaseLightController light)
+        private void RegisterLight(BaseLightController light)
         {
             if (light == null || registeredLights.Contains(light))
                 return;
@@ -78,7 +97,7 @@ namespace TheHunt.Lighting
             }
         }
 
-        public void UnregisterLight(BaseLightController light)
+        private void UnregisterLight(BaseLightController light)
         {
             if (light == null)
                 return;
@@ -121,7 +140,25 @@ namespace TheHunt.Lighting
             }
         }
 
-        public void SetGlobalLightsEnabled(bool enabled)
+        private void HandleGlobalLightCommand(LightCommand command, float value)
+        {
+            switch (command)
+            {
+                case LightCommand.TurnOnAll:
+                    TurnOnAllLights();
+                    break;
+                
+                case LightCommand.TurnOffAll:
+                    TurnOffAllLights();
+                    break;
+                
+                case LightCommand.SetGlobalIntensity:
+                    SetGlobalIntensityMultiplier(value);
+                    break;
+            }
+        }
+
+        private void SetGlobalLightsEnabled(bool enabled)
         {
             globalLightsEnabled = enabled;
 
@@ -139,10 +176,13 @@ namespace TheHunt.Lighting
                 }
             }
 
-            Debug.Log($"<color=cyan>[LIGHT MANAGER] Global lights {(enabled ? "ENABLED" : "DISABLED")}</color>");
+            if (showDebugInfo)
+            {
+                Debug.Log($"<color=cyan>[LIGHT MANAGER] Global lights {(enabled ? "ENABLED" : "DISABLED")}</color>");
+            }
         }
 
-        public void SetGlobalIntensityMultiplier(float multiplier)
+        private void SetGlobalIntensityMultiplier(float multiplier)
         {
             globalIntensityMultiplier = Mathf.Max(0f, multiplier);
 
@@ -154,10 +194,13 @@ namespace TheHunt.Lighting
                 light.SetIntensity(baseIntensity * globalIntensityMultiplier);
             }
 
-            Debug.Log($"<color=cyan>[LIGHT MANAGER] Global intensity multiplier set to {globalIntensityMultiplier}</color>");
+            if (showDebugInfo)
+            {
+                Debug.Log($"<color=cyan>[LIGHT MANAGER] Global intensity multiplier set to {globalIntensityMultiplier}</color>");
+            }
         }
 
-        public void TurnOnAllLights()
+        private void TurnOnAllLights()
         {
             foreach (var light in registeredLights)
             {
@@ -166,9 +209,14 @@ namespace TheHunt.Lighting
                     light.TurnOn();
                 }
             }
+
+            if (showDebugInfo)
+            {
+                Debug.Log($"<color=cyan>[LIGHT MANAGER] All lights turned ON</color>");
+            }
         }
 
-        public void TurnOffAllLights()
+        private void TurnOffAllLights()
         {
             foreach (var light in registeredLights)
             {
@@ -176,6 +224,11 @@ namespace TheHunt.Lighting
                 {
                     light.TurnOff();
                 }
+            }
+
+            if (showDebugInfo)
+            {
+                Debug.Log($"<color=cyan>[LIGHT MANAGER] All lights turned OFF</color>");
             }
         }
 
@@ -206,12 +259,5 @@ namespace TheHunt.Lighting
             Gizmos.DrawWireSphere(cameraTransform.position, cullingDistance);
         }
 
-        private void OnDestroy()
-        {
-            if (instance == this)
-            {
-                instance = null;
-            }
-        }
     }
 }
