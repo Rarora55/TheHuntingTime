@@ -68,6 +68,11 @@ namespace TheHunt.Inventory
 
         public bool TryAddItem(ItemData itemData)
         {
+            return TryAddItemWithMetadata(itemData, Vector3.one);
+        }
+
+        public bool TryAddItemWithMetadata(ItemData itemData, Vector3 originalScale)
+        {
             if (itemData == null)
             {
                 Debug.LogWarning("[INVENTORY] Cannot add null item");
@@ -125,6 +130,10 @@ namespace TheHunt.Inventory
                 int stackSize = itemData.IsStackable ? Mathf.Min(quantityToAdd, itemData.MaxStackSize) : 1;
                 
                 ItemInstance newItem = new ItemInstance(itemData, stackSize);
+                
+                // Guardar escala original en metadata
+                newItem.metadata["originalScale"] = originalScale;
+                
                 inventoryData.SetItem(emptySlot, newItem);
                 OnItemAdded?.Invoke(emptySlot, newItem);
                 
@@ -262,13 +271,14 @@ namespace TheHunt.Inventory
             if (CurrentItem == null)
                 return;
 
-            ItemData droppedItemData = CurrentItem.itemData;
+            ItemInstance droppedItem = CurrentItem;
+            ItemData droppedItemData = droppedItem.itemData;
             
             Debug.Log($"<color=cyan>[INVENTORY] Dropped {droppedItemData.ItemName}</color>");
             
             RemoveItem(inventoryData.SelectedIndex, 1);
             
-            dropHandler?.DropItem(droppedItemData);
+            dropHandler?.DropItem(droppedItemData, droppedItem);
         }
 
         public void ExamineCurrentItem()

@@ -18,15 +18,16 @@ namespace TheHunt.Inventory
         [SerializeField] private TextMeshProUGUI ammoText;
 
         [Header("Visual States")]
-        [SerializeField] private Color emptySlotColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
-        [SerializeField] private Color equippedSlotColor = new Color(0.2f, 0.6f, 0.2f, 0.8f);
-        [SerializeField] private Color selectedSlotColor = new Color(0.8f, 0.8f, 0.2f, 1f);
+        [SerializeField] private Color emptySlotColor = new Color(0.2f, 0.2f, 0.2f, 1f);
+        [SerializeField] private Color equippedSlotColor = new Color(0.2f, 0.6f, 0.2f, 1f);
+        [SerializeField] private Color selectedSlotColor = new Color(1f, 1f, 1f, 1f);
         [SerializeField] private Sprite emptyWeaponSprite;
 
         private WeaponItemData equippedWeapon;
         private bool isSelected;
         private int magazineAmmo;
         private int reserveAmmo;
+        private Outline selectionOutline;
 
         public EquipSlot SlotType => slotType;
         public WeaponItemData EquippedWeapon => equippedWeapon;
@@ -35,11 +36,35 @@ namespace TheHunt.Inventory
 
         private void Awake()
         {
+            // Asegurar que slotBackground existe
+            if (slotBackground == null)
+            {
+                Debug.LogError($"<color=red>[WEAPON SLOT UI] {slotType} - slotBackground is NOT assigned in Inspector!</color>");
+            }
+            
+            // Añadir Outline component para highlight de selección
+            selectionOutline = slotBackground?.gameObject.GetComponent<Outline>();
+            if (selectionOutline == null && slotBackground != null)
+            {
+                selectionOutline = slotBackground.gameObject.AddComponent<Outline>();
+                selectionOutline.effectColor = new Color(1f, 1f, 1f, 1f); // BLANCO brillante
+                selectionOutline.effectDistance = new Vector2(8f, 8f); // Outline MUY grueso
+                selectionOutline.enabled = false; // Desactivado por defecto
+                
+                Debug.Log($"<color=green>[WEAPON SLOT UI] {slotType} - Outline component added successfully!</color>");
+            }
+            
             InitializeSlot();
         }
 
         private void InitializeSlot()
         {
+            // Asegurar que el background tenga un color visible desde el inicio
+            if (slotBackground != null && slotBackground.color.a < 0.5f)
+            {
+                slotBackground.color = emptySlotColor;
+            }
+            
             ClearSlot();
             UpdateSlotLabel();
         }
@@ -108,7 +133,19 @@ namespace TheHunt.Inventory
         public void SetSelected(bool selected)
         {
             isSelected = selected;
+            
+            // Activar/desactivar outline para mejor visibilidad
+            if (selectionOutline != null)
+            {
+                selectionOutline.enabled = selected;
+            }
+            
             UpdateVisualState();
+            
+            if (selected)
+            {
+                Debug.Log($"<color=orange>[WEAPON SLOT UI] {slotType} slot SELECTED - Color: {selectedSlotColor}, Outline: {selectionOutline != null && selectionOutline.enabled}</color>");
+            }
         }
 
         private void ClearSlot()
@@ -155,20 +192,32 @@ namespace TheHunt.Inventory
         private void UpdateVisualState()
         {
             if (slotBackground == null)
+            {
+                Debug.LogWarning($"<color=red>[WEAPON SLOT UI] {slotType} - slotBackground is NULL!</color>");
                 return;
+            }
 
+            Color targetColor;
+            Vector3 targetScale = Vector3.one;
+            
             if (isSelected)
             {
-                slotBackground.color = selectedSlotColor;
+                targetColor = selectedSlotColor;
+                targetScale = Vector3.one * 1.3f; // Mucho más grande - 30% más grande
             }
             else if (HasWeapon)
             {
-                slotBackground.color = equippedSlotColor;
+                targetColor = equippedSlotColor;
             }
             else
             {
-                slotBackground.color = emptySlotColor;
+                targetColor = emptySlotColor;
             }
+            
+            slotBackground.color = targetColor;
+            transform.localScale = targetScale;
+            
+            Debug.Log($"<color=cyan>[WEAPON SLOT UI] {slotType} visual updated - Selected: {isSelected}, HasWeapon: {HasWeapon}, Color: {targetColor}, Scale: {targetScale}</color>");
         }
 
         public void Pulse()

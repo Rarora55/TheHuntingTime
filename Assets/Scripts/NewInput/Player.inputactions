@@ -70,6 +70,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "WeaponSlotSelection",
+                    "type": "Button",
+                    "id": "4d04526e-359a-45ef-8887-3112865c8abd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "InventoryInteract",
                     "type": "Button",
                     "id": "a067cce8-9fc9-440f-8109-d6eceb223e18",
@@ -401,7 +410,7 @@
                 {
                     "name": "",
                     "id": "826ebdac-3348-4af6-81a2-1b111a260a19",
-                    "path": "<Keyboard>/upArrow",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "Scale(factor=-1)",
                     "groups": "",
@@ -412,7 +421,7 @@
                 {
                     "name": "",
                     "id": "18df66a5-1206-42ee-abbc-0aedf5798d6d",
-                    "path": "<Keyboard>/downArrow",
+                    "path": "<Keyboard>/upArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -571,6 +580,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Grab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "55f952f7-d52c-4580-9164-717d33b825a4",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WeaponSlotSelection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af240835-5c7c-4784-9916-ead0cb8f75bd",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "WeaponSlotSelection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

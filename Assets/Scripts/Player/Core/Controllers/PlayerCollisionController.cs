@@ -238,30 +238,69 @@ public class PlayerCollisionController : IPlayerCollision
         
         Debug.Log($"<color=orange>[DetermineCornerPosition] ⚠️ No hay marcador, usando RAYCAST | FacingDir: {orientation.FacingDirection}</color>");
         
+        // Raycast horizontal para encontrar la pared MÁS CERCANA
         RaycastHit2D xHit = Physics2D.Raycast(
             wallCheck.position, 
             Vector2.right * orientation.FacingDirection, 
             playerData.WallCheckDistance, 
             playerData.WhatIsGround);
+        
+        // VALIDAR que el raycast golpeó algo
+        if (!xHit)
+        {
+            Debug.LogWarning($"<color=red>[DetermineCornerPosition] ❌ No se detectó pared horizontal! Usando posición de wallCheck</color>");
+            return wallCheck.position;
+        }
+        
         float xDist = xHit.distance;
+        
+        // Verificar que la distancia es razonable (no es una plataforma muy lejana)
+        if (xDist > playerData.WallCheckDistance * 0.9f)
+        {
+            Debug.LogWarning($"<color=yellow>[DetermineCornerPosition] ⚠️ Pared muy lejana ({xDist}), posible detección incorrecta</color>");
+        }
         
         workSpace.Set((xDist + 0.015f) * orientation.FacingDirection, 0f);
         
         Vector3 yRayStart = ledgeCheck.position + (Vector3)workSpace;
         float yRayMaxDist = ledgeCheck.position.y - wallCheck.position.y + 0.015f;
         
+        // Raycast vertical para encontrar el TOP de la pared
         RaycastHit2D yHit = Physics2D.Raycast(yRayStart, Vector2.down, yRayMaxDist, playerData.WhatIsGround);
+        
+        // VALIDAR que el raycast vertical golpeó algo
+        if (!yHit)
+        {
+            Debug.LogWarning($"<color=red>[DetermineCornerPosition] ❌ No se detectó superficie vertical! Usando ledgeCheck.y</color>");
+            // Fallback: usar la posición horizontal encontrada pero mantener la altura del ledgeCheck
+            Vector2 fallbackCorner = new Vector2(
+                wallCheck.position.x + (xDist * orientation.FacingDirection),
+                ledgeCheck.position.y
+            );
+            Debug.DrawLine(fallbackCorner, fallbackCorner + Vector2.up * 0.5f, Color.magenta, 3f);
+            return fallbackCorner;
+        }
+        
         float yDist = yHit.distance;
+        
+        // Verificar que yDist es razonable
+        if (yDist > yRayMaxDist * 0.95f)
+        {
+            Debug.LogWarning($"<color=yellow>[DetermineCornerPosition] ⚠️ Superficie muy baja, posible error de detección</color>");
+        }
         
         Vector2 calculatedCorner = new Vector2(
             wallCheck.position.x + (xDist * orientation.FacingDirection), 
             ledgeCheck.position.y - yDist
         );
         
+        // Debug visual mejorado
         Debug.DrawRay(wallCheck.position, Vector2.right * orientation.FacingDirection * xDist, Color.red, 3f);
         Debug.DrawRay(yRayStart, Vector2.down * yDist, Color.blue, 3f);
         Debug.DrawLine(calculatedCorner, calculatedCorner + Vector2.up * 0.5f, Color.green, 3f);
-        Debug.Log($"<color=orange>[DetermineCornerPosition] Calculado por raycast: {calculatedCorner}</color>");
+        
+        // Log detallado
+        Debug.Log($"<color=green>[DetermineCornerPosition] ✅ Calculado | xDist: {xDist:F3} | yDist: {yDist:F3} | Corner: {calculatedCorner} | xHit: {xHit.collider.name} | yHit: {yHit.collider.name}</color>");
         
         return calculatedCorner;
     }
@@ -273,7 +312,7 @@ public class PlayerCollisionController : IPlayerCollision
         {
             Vector2 markerCorner = marker.GetCornerPosition(orientation.FacingDirection);
             Debug.DrawLine(markerCorner, markerCorner + Vector2.up * 0.5f, Color.yellow, 3f);
-            Debug.Log($"<color=green>[LEDGE MARKER] Usando corner desde arriba: {markerCorner}</color>");
+            Debug.Log($"<color=green>[FROM ABOVE] ✅ Usando MARCADOR: {markerCorner}</color>");
             return markerCorner;
         }
         
@@ -288,6 +327,7 @@ public class PlayerCollisionController : IPlayerCollision
         
         if (!groundEdgeHit)
         {
+            Debug.LogWarning($"<color=red>[FROM ABOVE] ❌ No se detectó borde del suelo</color>");
             return Vector2.zero;
         }
         
@@ -302,6 +342,7 @@ public class PlayerCollisionController : IPlayerCollision
         
         if (!wallHit)
         {
+            Debug.LogWarning($"<color=red>[FROM ABOVE] ❌ No se detectó pared</color>");
             return Vector2.zero;
         }
         
@@ -314,11 +355,14 @@ public class PlayerCollisionController : IPlayerCollision
         Debug.DrawLine(wallHit.point, wallHit.point + Vector2.right * orientation.FacingDirection * 0.3f, Color.cyan, 2f);
         Debug.DrawLine(cornerPos, cornerPos + Vector2.left * orientation.FacingDirection * 0.3f, Color.yellow, 2f);
         
+        Debug.Log($"<color=green>[FROM ABOVE] ✅ Calculado | Corner: {cornerPos} | wallHit: {wallHit.collider.name}</color>");
+        
         return cornerPos;
     }
     
     public bool IsValidLedge(float minHeight)
     {
+        // Raycast horizontal desde wallCheck para detectar pared
         RaycastHit2D xHit = Physics2D.Raycast(
             wallCheck.position, 
             Vector2.right * orientation.FacingDirection, 
@@ -332,12 +376,35 @@ public class PlayerCollisionController : IPlayerCollision
         Vector3 yRayStart = ledgeCheck.position + (Vector3)workSpace;
         float yRayMaxDist = ledgeCheck.position.y - wallCheck.position.y + 0.015f;
         
+        // Raycast vertical hacia abajo desde ledgeCheck para encontrar el top de la pared
         RaycastHit2D yHit = Physics2D.Raycast(yRayStart, Vector2.down, yRayMaxDist, playerData.WhatIsGround);
         
         if (!yHit) return false;
         
         float yDist = yHit.distance;
-        bool isValid = yDist >= minHeight;
+        bool hasMinHeight = yDist >= minHeight;
+        
+        // NUEVA VALIDACIÓN: Verificar que NO hay suelo/pared arriba del ledge
+        // Esto previene detectar esquinas internas como ledges válidos
+        Vector3 aboveLedgeCheckPos = ledgeCheck.position + (Vector3)workSpace;
+        RaycastHit2D aboveCheck = Physics2D.Raycast(
+            aboveLedgeCheckPos,
+            Vector2.up,
+            0.5f, // Verificar 0.5 unidades arriba
+            playerData.WhatIsGround);
+        
+        bool noGroundAbove = !aboveCheck;
+        
+        // Debug visual
+        Color aboveColor = noGroundAbove ? Color.green : Color.red;
+        Debug.DrawRay(aboveLedgeCheckPos, Vector2.up * 0.5f, aboveColor, 0.5f);
+        
+        bool isValid = hasMinHeight && noGroundAbove;
+        
+        if (!isValid && !noGroundAbove)
+        {
+            Debug.Log($"<color=yellow>[VALID LEDGE] Ledge rechazado - hay suelo arriba (esquina interna)</color>");
+        }
         
         return isValid;
     }

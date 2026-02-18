@@ -35,6 +35,8 @@ public class PlayerInputHandler : MonoBehaviour
     private DialogService dialogService;
     private PlayerWeaponController weaponController;
     private SecondaryEquipmentController secondaryEquipmentController;
+    private PlayerInput playerInput;
+    private InputAction weaponSlotSelectionAction;
 
     private void Awake()
     {
@@ -50,6 +52,45 @@ public class PlayerInputHandler : MonoBehaviour
         dialogService = FindFirstObjectByType<DialogService>();
         weaponController = GetComponent<PlayerWeaponController>();
         secondaryEquipmentController = GetComponent<SecondaryEquipmentController>();
+        playerInput = GetComponent<PlayerInput>();
+        
+        TrySetupWeaponSlotSelectionAction();
+    }
+    
+    private void TrySetupWeaponSlotSelectionAction()
+    {
+        if (playerInput != null && playerInput.actions != null)
+        {
+            weaponSlotSelectionAction = playerInput.actions.FindAction("WeaponSlotSelection");
+            
+            if (weaponSlotSelectionAction != null)
+            {
+                weaponSlotSelectionAction.performed += OnWeaponSlotSelectionPerformed;
+                Debug.Log("<color=green>[INPUT HANDLER] WeaponSlotSelection action subscribed successfully!</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[INPUT HANDLER] WeaponSlotSelection action not found in input actions!</color>");
+            }
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        if (weaponSlotSelectionAction != null)
+        {
+            weaponSlotSelectionAction.performed -= OnWeaponSlotSelectionPerformed;
+        }
+    }
+    
+    private void OnWeaponSlotSelectionPerformed(InputAction.CallbackContext context)
+    {
+        Debug.Log($"<color=magenta>[INPUT HANDLER] WeaponSlotSelection performed - controller: {inventoryUIController != null}, isOpen: {inventoryUIController?.IsOpen}</color>");
+        
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            inventoryUIController.ToggleWeaponSlotSelectionMode();
+        }
     }
 
     private void Update()
@@ -251,6 +292,16 @@ public class PlayerInputHandler : MonoBehaviour
         if (context.performed && inventoryUIController != null)
         {
             inventoryUIController.CancelCurrentAction();
+        }
+    }
+    
+    public void OnWeaponSlotSelectionInput(InputAction.CallbackContext context)
+    {
+        Debug.Log($"<color=magenta>[INPUT HANDLER] OnWeaponSlotSelectionInput - performed: {context.performed}, controller: {inventoryUIController != null}, isOpen: {inventoryUIController?.IsOpen}</color>");
+        
+        if (context.performed && inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            inventoryUIController.ToggleWeaponSlotSelectionMode();
         }
     }
     

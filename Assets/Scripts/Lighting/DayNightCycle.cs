@@ -263,20 +263,15 @@ namespace TheHunt.Lighting
             {
                 dayNightGradient = new Gradient();
                 
-                GradientColorKey[] colorKeys = new GradientColorKey[13];
+                GradientColorKey[] colorKeys = new GradientColorKey[8];
                 colorKeys[0] = new GradientColorKey(new Color(0.05f, 0.05f, 0.15f), 0f);
-                colorKeys[1] = new GradientColorKey(new Color(0.05f, 0.05f, 0.15f), 0.21f);
-                colorKeys[2] = new GradientColorKey(new Color(0.3f, 0.25f, 0.4f), 0.25f);
-                colorKeys[3] = new GradientColorKey(new Color(1f, 0.6f, 0.4f), 0.31f);
-                colorKeys[4] = new GradientColorKey(new Color(1f, 0.9f, 0.7f), 0.375f);
-                colorKeys[5] = new GradientColorKey(new Color(1f, 0.98f, 0.9f), 0.5f);
-                colorKeys[6] = new GradientColorKey(new Color(1f, 0.95f, 0.8f), 0.67f);
-                colorKeys[7] = new GradientColorKey(new Color(1f, 0.7f, 0.4f), 0.75f);
-                colorKeys[8] = new GradientColorKey(new Color(1f, 0.4f, 0.2f), 0.8125f);
-                colorKeys[9] = new GradientColorKey(new Color(0.5f, 0.15f, 0.2f), 0.875f);
-                colorKeys[10] = new GradientColorKey(new Color(0.15f, 0.1f, 0.25f), 0.92f);
-                colorKeys[11] = new GradientColorKey(new Color(0.05f, 0.05f, 0.15f), 0.96f);
-                colorKeys[12] = new GradientColorKey(new Color(0.05f, 0.05f, 0.15f), 1f);
+                colorKeys[1] = new GradientColorKey(new Color(0.8f, 0.4f, 0.3f), 0.25f);
+                colorKeys[2] = new GradientColorKey(new Color(1f, 0.9f, 0.7f), 0.375f);
+                colorKeys[3] = new GradientColorKey(new Color(1f, 0.98f, 0.9f), 0.5f);
+                colorKeys[4] = new GradientColorKey(new Color(1f, 0.95f, 0.8f), 0.67f);
+                colorKeys[5] = new GradientColorKey(new Color(1f, 0.4f, 0.2f), 0.8125f);
+                colorKeys[6] = new GradientColorKey(new Color(0.15f, 0.1f, 0.25f), 0.92f);
+                colorKeys[7] = new GradientColorKey(new Color(0.05f, 0.05f, 0.15f), 1f);
 
                 GradientAlphaKey[] alphaKeys = new GradientAlphaKey[2];
                 alphaKeys[0] = new GradientAlphaKey(1f, 0f);
@@ -287,7 +282,7 @@ namespace TheHunt.Lighting
                 
                 if (debugMode)
                 {
-                    Debug.Log("<color=green>[DAY/NIGHT] Gradiente inicializado con 13 puntos de color</color>");
+                    Debug.Log("<color=green>[DAY/NIGHT] Gradiente inicializado con 8 puntos de color (Unity max)</color>");
                 }
             }
         }

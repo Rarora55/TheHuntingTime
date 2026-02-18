@@ -136,6 +136,81 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &725832031494679853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7823767511149487173}
+  - component: {fileID: 8367807936674961687}
+  - component: {fileID: 3355070238746836867}
+  m_Layer: 0
+  m_Name: SlotBackground
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7823767511149487173
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725832031494679853}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3245052341805435509}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -231.66714, y: 181.66714}
+  m_SizeDelta: {x: 88.6657, y: 88.6657}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8367807936674961687
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725832031494679853}
+  m_CullTransparentMesh: 1
+--- !u!114 &3355070238746836867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725832031494679853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &780327588113523329
 GameObject:
   m_ObjectHideFlags: 0
@@ -383,6 +458,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.InventoryPanelUI
   inventorySystem: {fileID: 0}
   uiController: {fileID: 0}
+  weaponManager: {fileID: 0}
   slotsContainer: {fileID: 1388856213016868824}
   slotPrefab: {fileID: 4489163799388428205, guid: dddef70c535d4ee4b8b56491cc74f918, type: 3}
   canvasGroup: {fileID: 2464779582162576359}
@@ -830,6 +906,59 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &2396213289614066710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3245052341805435509}
+  - component: {fileID: 8234985799866180866}
+  m_Layer: 0
+  m_Name: RadioSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3245052341805435509
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396213289614066710}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 498.24713, y: -391.58606, z: 0}
+  m_LocalScale: {x: 2.1500564, y: 2.1500564, z: 2.1500564}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7823767511149487173}
+  m_Father: {fileID: 7436219061260153406}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8234985799866180866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396213289614066710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c338afcc5989344fa8f76d999e017ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Radio.UI.RadioSlotUI
+  slotBackground: {fileID: 3355070238746836867}
+  radioIcon: {fileID: 0}
+  radioNameText: {fileID: 0}
+  slotLabel: {fileID: 0}
+  emptySlotColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  equippedSlotColor: {r: 0.2, g: 0.6, b: 0.6, a: 1}
+  selectedSlotColor: {r: 1, g: 1, b: 1, a: 1}
+  emptyRadioSprite: {fileID: 0}
 --- !u!1 &2424623764780215058
 GameObject:
   m_ObjectHideFlags: 0
@@ -1041,6 +1170,82 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &3108725553268199902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7436219061260153406}
+  - component: {fileID: 7674450599155263815}
+  - component: {fileID: 4693792036623863653}
+  m_Layer: 5
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7436219061260153406
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108725553268199902}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3245052341805435509}
+  m_Father: {fileID: 2439339109494861224}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &7674450599155263815
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108725553268199902}
+  m_CullTransparentMesh: 1
+--- !u!114 &4693792036623863653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108725553268199902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3347004232694085825
 GameObject:
   m_ObjectHideFlags: 0
@@ -1284,6 +1489,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3132866502344346934}
+  - {fileID: 2439339109494861224}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1745,7 +1951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 0.78431374}
+  m_Color: {r: 0.3, g: 0.3, b: 0.3, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1774,15 +1980,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a99be971a361194e8c06a5e44d9e185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Inventory.WeaponSlotUI
-  slotType: 0
+  slotType: 1
   slotBackground: {fileID: 6068460065883329260}
   weaponIcon: {fileID: 310602104577269}
   weaponNameText: {fileID: 7510429604098445035}
   slotLabel: {fileID: 2801499118370039889}
   ammoText: {fileID: 0}
-  emptySlotColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
-  equippedSlotColor: {r: 0.2, g: 0.6, b: 0.2, a: 0.8}
-  selectedSlotColor: {r: 0.8, g: 0.8, b: 0.2, a: 1}
+  emptySlotColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.7}
+  equippedSlotColor: {r: 0.15, g: 0.5, b: 0.15, a: 0.9}
+  selectedSlotColor: {r: 1, g: 0.5, b: 0, a: 1}
   emptyWeaponSprite: {fileID: 0}
 --- !u!1 &5320821321818351755
 GameObject:
@@ -2107,7 +2313,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.23529412, g: 0.23529412, b: 0.23529412, a: 0.78431374}
+  m_Color: {r: 0.3, g: 0.3, b: 0.3, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2142,9 +2348,9 @@ MonoBehaviour:
   weaponNameText: {fileID: 343120758758143149}
   slotLabel: {fileID: 2914430451633564915}
   ammoText: {fileID: 1125444963029144480}
-  emptySlotColor: {r: 0.9622642, g: 0.104396604, b: 0.104396604, a: 0.5}
-  equippedSlotColor: {r: 0.2, g: 0.6, b: 0.2, a: 0.8}
-  selectedSlotColor: {r: 0.8, g: 0.8, b: 0.2, a: 1}
+  emptySlotColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.7}
+  equippedSlotColor: {r: 0.15, g: 0.5, b: 0.15, a: 0.9}
+  selectedSlotColor: {r: 1, g: 0.5, b: 0, a: 1}
   emptyWeaponSprite: {fileID: 0}
 --- !u!1 &7191909131545297325
 GameObject:
@@ -2631,6 +2837,63 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8333357456423258396
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2439339109494861224}
+  - component: {fileID: 1540640444382285509}
+  m_Layer: 5
+  m_Name: RadioEquipamentPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2439339109494861224
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8333357456423258396}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7436219061260153406}
+  m_Father: {fileID: 4794484765001079237}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -842.225, y: 203.225}
+  m_SizeDelta: {x: 187.549, y: 187.549}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1540640444382285509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8333357456423258396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 946a879cbdbfbb247affc0cbddc6ac35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Radio.UI.RadioEquipmentPanel
+  radioEquipmentData: {fileID: 11400000, guid: c4c78826e7dd68e469c9d4fa71bcd821, type: 2}
+  onRadioEquipped: {fileID: 11400000, guid: 0c8859d4c7010cb4f8bbc0e2ab917454, type: 2}
+  onRadioUnequipped: {fileID: 11400000, guid: 0c8859d4c7010cb4f8bbc0e2ab917454, type: 2}
+  radioManager: {fileID: 0}
+  uiController: {fileID: 0}
+  radioSlot: {fileID: 8234985799866180866}
+  autoHideWhenEmpty: 0
+  canvasGroup: {fileID: 0}
 --- !u!1 &8612224686872014898
 GameObject:
   m_ObjectHideFlags: 0

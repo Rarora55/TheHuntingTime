@@ -19,6 +19,10 @@ namespace TheHunt.Inventory
         [SerializeField] private CanvasGroup canvasGroup;
         
         private ComponentAutoAssigner autoAssigner;
+        private EquipSlot currentSelectedSlot = EquipSlot.Primary;
+        private bool isWeaponSlotSelectionMode = false;
+        
+        public bool IsInWeaponSlotSelectionMode => isWeaponSlotSelectionMode;
 
         private void Awake()
         {
@@ -237,6 +241,63 @@ namespace TheHunt.Inventory
         {
             WeaponSlotUI slotUI = GetSlotUI(slot);
             return slotUI?.EquippedWeapon;
+        }
+        
+        public void EnterWeaponSlotSelectionMode()
+        {
+            isWeaponSlotSelectionMode = true;
+            currentSelectedSlot = EquipSlot.Primary;
+            SelectSlot(currentSelectedSlot);
+            Debug.Log("<color=green>[WEAPON EQUIPMENT PANEL] ✓ ENTERED weapon slot selection mode - Primary slot selected</color>");
+        }
+        
+        public void ExitWeaponSlotSelectionMode()
+        {
+            isWeaponSlotSelectionMode = false;
+            ClearSelection();
+            Debug.Log("<color=yellow>[WEAPON EQUIPMENT PANEL] ✗ EXITED weapon slot selection mode</color>");
+        }
+        
+        public void NavigateWeaponSlots(float direction)
+        {
+            if (!isWeaponSlotSelectionMode)
+                return;
+            
+            EquipSlot previousSlot = currentSelectedSlot;
+            
+            if (direction > 0)
+            {
+                currentSelectedSlot = currentSelectedSlot == EquipSlot.Primary ? EquipSlot.Secondary : EquipSlot.Primary;
+            }
+            else if (direction < 0)
+            {
+                currentSelectedSlot = currentSelectedSlot == EquipSlot.Primary ? EquipSlot.Secondary : EquipSlot.Primary;
+            }
+            
+            if (previousSlot != currentSelectedSlot)
+            {
+                SelectSlot(currentSelectedSlot);
+                Debug.Log($"<color=cyan>[WEAPON EQUIPMENT PANEL] ▶ Selected {currentSelectedSlot} slot</color>");
+            }
+        }
+        
+        public void UnequipCurrentSelectedWeapon()
+        {
+            if (!isWeaponSlotSelectionMode || weaponManager == null)
+                return;
+            
+            WeaponItemData weaponInSlot = GetWeaponInSlot(currentSelectedSlot);
+            
+            if (weaponInSlot == null)
+            {
+                Debug.Log($"<color=yellow>[WEAPON EQUIPMENT PANEL] No weapon in {currentSelectedSlot} slot to unequip</color>");
+                return;
+            }
+            
+            Debug.Log($"<color=green>[WEAPON EQUIPMENT PANEL] Unequipping {weaponInSlot.ItemName} from {currentSelectedSlot} slot</color>");
+            weaponManager.UnequipWeapon(currentSelectedSlot);
+            
+            ExitWeaponSlotSelectionMode();
         }
     }
 }

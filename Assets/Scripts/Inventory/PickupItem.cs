@@ -37,9 +37,12 @@ namespace TheHunt.Inventory
                 return;
             }
 
-            if (inventory.TryAddItem(itemData))
+            // Guardar escala original antes de añadir al inventario
+            Vector3 originalScale = transform.localScale;
+            
+            if (inventory.TryAddItemWithMetadata(itemData, originalScale))
             {
-                Debug.Log($"<color=green>[PICKUP] Picked up {itemData.ItemName}</color>");
+                Debug.Log($"<color=green>[PICKUP] Picked up {itemData.ItemName} with scale {originalScale}</color>");
 
                 if (destroyOnPickup)
                 {

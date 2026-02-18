@@ -1,5 +1,6 @@
 using UnityEngine;
 using TheHunt.Inventory;
+using TheHunt.Lighting;
 
 public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooting, IWeaponReloading
 {
@@ -9,6 +10,9 @@ public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooti
     [SerializeField] private InventorySystem inventorySystem;
     [SerializeField] private BulletPool bulletPool;
     [SerializeField] private PlayerAimController aimController;
+    
+    [Header("VFX")]
+    [SerializeField] private ShotLightFlash shotLightFlash;
     
     [Header("Shooting Settings")]
     [SerializeField] private Transform firePoint;
@@ -199,6 +203,12 @@ public class PlayerWeaponController : MonoBehaviour, IWeaponState, IWeaponShooti
         if (bullet != null)
         {
             Debug.Log($"<color=green>[WEAPON CONTROLLER] Fired {ActiveWeapon.ItemName} - {ActiveWeapon.BulletData.bulletName}</color>");
+            
+            // Activar flash de luz de disparo
+            if (shotLightFlash != null)
+            {
+                shotLightFlash.TriggerFlash();
+            }
         }
         else
         {

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using TheHunt.Lighting;
 
 public class Weapon : MonoBehaviour, IWeaponShooting
 {
@@ -7,6 +8,9 @@ public class Weapon : MonoBehaviour, IWeaponShooting
     [SerializeField] private BulletData bulletData;
     [SerializeField] private Transform firePoint;
     [SerializeField] private BulletPool bulletPool;
+    
+    [Header("VFX")]
+    [SerializeField] private ShotLightFlash shotLightFlash;
     
     [Header("Fire Rate")]
     [SerializeField] private float fireRate = 0.2f;
@@ -84,6 +88,12 @@ public class Weapon : MonoBehaviour, IWeaponShooting
                 currentAmmo--;
             
             OnWeaponFired?.Invoke();
+            
+            // Activar flash de luz de disparo
+            if (shotLightFlash != null)
+            {
+                shotLightFlash.TriggerFlash();
+            }
             
             Debug.Log($"<color=green>[WEAPON] Fired {bulletData.bulletName}. Ammo: {currentAmmo}/{maxAmmo}</color>");
         }

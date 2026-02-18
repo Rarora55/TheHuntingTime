@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TheHunt.Radio.UI;
 
 namespace TheHunt.Inventory
 {
@@ -12,7 +13,10 @@ namespace TheHunt.Inventory
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private WeaponInventoryManager weaponManager;
+        [SerializeField] private RadioEquipmentManager radioManager;
         [SerializeField] private CombinationManager combinationManager;
+        [SerializeField] private WeaponEquipmentPanel weaponEquipmentPanel;
+        [SerializeField] private RadioEquipmentPanel radioEquipmentPanel;
 
         [Header("Runtime UI References")]
         private GameObject canvasInstance;
@@ -45,9 +49,21 @@ namespace TheHunt.Inventory
                 canvasInstance.name = "InventoryCanvas (Runtime)";
                 
                 examinationPanel = canvasInstance.GetComponentInChildren<ItemExaminationPanel>(true);
+                weaponEquipmentPanel = canvasInstance.GetComponentInChildren<WeaponEquipmentPanel>(true);
+                radioEquipmentPanel = canvasInstance.GetComponentInChildren<RadioEquipmentPanel>(true);
                 
                 if (examinationPanel == null)
                     Debug.LogWarning("[INVENTORY UI] ItemExaminationPanel not found in prefab!");
+                
+                if (weaponEquipmentPanel == null)
+                    Debug.LogWarning("<color=yellow>[INVENTORY UI] WeaponEquipmentPanel not found in prefab!</color>");
+                else
+                    Debug.Log("<color=green>[INVENTORY UI] WeaponEquipmentPanel found and assigned!</color>");
+                
+                if (radioEquipmentPanel == null)
+                    Debug.LogWarning("<color=yellow>[INVENTORY UI] RadioEquipmentPanel not found in prefab!</color>");
+                else
+                    Debug.Log("<color=green>[INVENTORY UI] RadioEquipmentPanel found and assigned!</color>");
             }
             
             if (inventorySystem == null)
@@ -55,9 +71,18 @@ namespace TheHunt.Inventory
 
             if (weaponManager == null)
                 weaponManager = GetComponent<WeaponInventoryManager>();
+            
+            if (radioManager == null)
+                radioManager = GetComponent<RadioEquipmentManager>();
 
             if (combinationManager == null)
                 combinationManager = GetComponent<CombinationManager>();
+            
+            if (weaponEquipmentPanel == null)
+                weaponEquipmentPanel = FindFirstObjectByType<WeaponEquipmentPanel>();
+            
+            if (radioEquipmentPanel == null)
+                radioEquipmentPanel = FindFirstObjectByType<RadioEquipmentPanel>();
 
             if (examinationPanel == null)
                 examinationPanel = FindFirstObjectByType<ItemExaminationPanel>();
@@ -97,6 +122,27 @@ namespace TheHunt.Inventory
             if (currentState == InventoryState.Closed)
                 return;
 
+            // Cerrar panel de examen si está abierto
+            if (examinationPanel != null && examinationPanel.IsVisible)
+            {
+                examinationPanel.Hide();
+                Debug.Log("<color=cyan>[INVENTORY UI] Examination panel closed when closing inventory</color>");
+            }
+
+            // Salir del modo de selección de armas si está activo
+            if (weaponEquipmentPanel != null && weaponEquipmentPanel.IsInWeaponSlotSelectionMode)
+            {
+                weaponEquipmentPanel.ExitWeaponSlotSelectionMode();
+                Debug.Log("<color=cyan>[INVENTORY UI] Weapon slot selection mode exited when closing inventory</color>");
+            }
+
+            // Cancelar modo combine si está activo
+            if (isCombineMode)
+            {
+                CancelCombineMode();
+                Debug.Log("<color=cyan>[INVENTORY UI] Combine mode cancelled when closing inventory</color>");
+            }
+
             if (currentState == InventoryState.ContextMenu)
             {
                 CloseContextMenu();
@@ -110,6 +156,12 @@ namespace TheHunt.Inventory
         {
             if (currentState != InventoryState.Open)
                 return;
+            
+            if (weaponEquipmentPanel != null && weaponEquipmentPanel.IsInWeaponSlotSelectionMode)
+            {
+                weaponEquipmentPanel.NavigateWeaponSlots(direction);
+                return;
+            }
 
             if (direction > 0)
             {
@@ -123,6 +175,12 @@ namespace TheHunt.Inventory
 
         public void InteractWithCurrentItem()
         {
+            if (weaponEquipmentPanel != null && weaponEquipmentPanel.IsInWeaponSlotSelectionMode)
+            {
+                weaponEquipmentPanel.UnequipCurrentSelectedWeapon();
+                return;
+            }
+            
             if (isCombineMode)
             {
                 HandleCombineInput();
@@ -141,6 +199,12 @@ namespace TheHunt.Inventory
 
         public void CancelCurrentAction()
         {
+            if (weaponEquipmentPanel != null && weaponEquipmentPanel.IsInWeaponSlotSelectionMode)
+            {
+                weaponEquipmentPanel.ExitWeaponSlotSelectionMode();
+                return;
+            }
+            
             if (examinationPanel != null && examinationPanel.IsVisible)
             {
                 examinationPanel.Hide();
@@ -202,6 +266,11 @@ namespace TheHunt.Inventory
             {
                 availableActions.Add(ItemContextAction.EquipPrimary);
                 availableActions.Add(ItemContextAction.EquipSecondary);
+            }
+
+            if (currentItem.itemData is RadioItemData)
+            {
+                availableActions.Add(ItemContextAction.EquipRadio);
             }
 
             if (currentItem.itemData.CanBeCombined && combinationManager != null)
@@ -303,6 +372,14 @@ namespace TheHunt.Inventory
                     CloseContextMenu();
                     break;
 
+                case ItemContextAction.EquipRadio:
+                    if (currentItem.itemData is RadioItemData radio && radioManager != null)
+                    {
+                        radioManager.TryEquipRadio(radio);
+                    }
+                    CloseContextMenu();
+                    break;
+
                 case ItemContextAction.Combine:
                     StartCombineMode();
                     CloseContextMenu();
@@ -396,6 +473,34 @@ namespace TheHunt.Inventory
             if (isCombineMode)
             {
                 TryCombineWithSelected();
+            }
+        }
+        
+        public void ToggleWeaponSlotSelectionMode()
+        {
+            Debug.Log($"<color=magenta>[INVENTORY UI] ToggleWeaponSlotSelectionMode called - State: {currentState}, WeaponPanel: {weaponEquipmentPanel != null}</color>");
+            
+            if (currentState != InventoryState.Open)
+            {
+                Debug.Log("<color=yellow>[INVENTORY UI] Inventory not open, cannot toggle weapon slot selection</color>");
+                return;
+            }
+            
+            if (weaponEquipmentPanel == null)
+            {
+                Debug.LogWarning("<color=red>[INVENTORY UI] WeaponEquipmentPanel not found! Cannot toggle weapon slot selection</color>");
+                return;
+            }
+            
+            if (weaponEquipmentPanel.IsInWeaponSlotSelectionMode)
+            {
+                weaponEquipmentPanel.ExitWeaponSlotSelectionMode();
+                Debug.Log("<color=cyan>[INVENTORY UI] Exited weapon slot selection mode</color>");
+            }
+            else
+            {
+                weaponEquipmentPanel.EnterWeaponSlotSelectionMode();
+                Debug.Log("<color=cyan>[INVENTORY UI] Entered weapon slot selection mode</color>");
             }
         }
     }

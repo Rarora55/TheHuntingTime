@@ -280,59 +280,43 @@ namespace TheHunt.Lighting
         {
             if (targetLight == null) return;
 
-            // Usar progreso total continuo del recorrido completo
-            float totalProgress = GetTotalProgress();
-            
-            // El recorrido se divide en:
-            // 0.0 - 0.4: A → Central (40%)
-            // 0.4 - 0.6: Pausa en Central (20%)
-            // 0.6 - 1.0: Central → B (40%)
-            
             float intensity = 0f;
-            
-            if (totalProgress < 0.4f)
+
+            switch (currentPhase)
             {
-                // Fase A → Central (movimiento SOLAMENTE)
-                // Normalizar progreso de 0 a 1
-                float normalizedProgress = Mathf.Clamp01(totalProgress / 0.4f);
-                float curvedProgress = intensityCurve.Evaluate(normalizedProgress);
-                intensity = Mathf.Lerp(intensityAtA, intensityAtCentral, curvedProgress);
-            }
-            else if (totalProgress <= 0.6f)
-            {
-                // Pausa en Central - MANTENER intensidad máxima sin evaluaciones
-                intensity = intensityAtCentral;
-            }
-            else
-            {
-                // Fase Central → B (movimiento SOLAMENTE)
-                // Normalizar progreso de 0 a 1
-                float normalizedProgress = Mathf.Clamp01((totalProgress - 0.6f) / 0.4f);
-                
-                // Fade out MUY gradual
-                // Mantener alto más tiempo, luego bajar suavemente
-                float customProgress;
-                if (normalizedProgress <= 0.3f)
-                {
-                    // Mantener máximo durante el primer 30%
-                    customProgress = 0f;
-                }
-                else
-                {
-                    // Bajar gradualmente en el último 70%
-                    customProgress = (normalizedProgress - 0.3f) / 0.7f;
-                    // Curva cúbica para fade aún más gradual
-                    customProgress = Mathf.Pow(customProgress, 3f);
-                }
-                
-                intensity = Mathf.Lerp(intensityAtCentral, intensityAtB, customProgress);
+                case MovementPhase.Inactive:
+                    intensity = intensityAtA;
+                    break;
+
+                case MovementPhase.MovingToCentral:
+                    // Fade in de A a Central usando la curva directamente
+                    float progressToCentral = Mathf.Clamp01(movementProgress);
+                    float curveToCentral = intensityCurve.Evaluate(progressToCentral);
+                    intensity = Mathf.Lerp(intensityAtA, intensityAtCentral, curveToCentral);
+                    break;
+
+                case MovementPhase.PauseAtCentral:
+                    // Mantener intensidad máxima durante la pausa
+                    intensity = intensityAtCentral;
+                    break;
+
+                case MovementPhase.MovingToEnd:
+                    // Fade out de Central a B usando la curva directamente
+                    float progressToB = Mathf.Clamp01(movementProgress);
+                    float curveToB = intensityCurve.Evaluate(progressToB);
+                    intensity = Mathf.Lerp(intensityAtCentral, intensityAtB, curveToB);
+                    break;
+
+                case MovementPhase.Completed:
+                    intensity = intensityAtB;
+                    break;
             }
 
             targetLight.intensity = intensity;
 
             if (showDebugLogs && Time.frameCount % 30 == 0)
             {
-                Debug.Log($"<color=gray>[DUSK MOVER] Phase: {currentPhase}, Total: {totalProgress:F3}, Intensity: {intensity:F2}, movementProgress: {movementProgress:F3}, pauseTimer: {centralPauseTimer:F3}</color>");
+                Debug.Log($"<color=gray>[DUSK MOVER] Phase: {currentPhase}, Intensity: {intensity:F2}, movementProgress: {movementProgress:F3}</color>");
             }
         }
 
