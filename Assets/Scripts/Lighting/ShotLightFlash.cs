@@ -39,6 +39,22 @@ namespace TheHunt.Lighting
 
             currentIntensity = 0f;
             shotLight.intensity = 0f;
+            
+            Debug.Log($"<color=green>[SHOT LIGHT] Awake - Intensity set to 0, MaxIntensity: {maxIntensity}</color>");
+        }
+
+        private void Start()
+        {
+            if (shotLight != null)
+            {
+                Debug.Log($"<color=cyan>[SHOT LIGHT] Start - Current intensity: {shotLight.intensity}</color>");
+                
+                // Forzar intensidad a 0 en Start por si algo lo cambió
+                shotLight.intensity = 0f;
+                currentIntensity = 0f;
+                
+                Debug.Log($"<color=green>[SHOT LIGHT] Start - Forced intensity to 0</color>");
+            }
         }
 
         private void Update()
@@ -73,6 +89,15 @@ namespace TheHunt.Lighting
                 }
 
                 shotLight.intensity = currentIntensity;
+            }
+            else
+            {
+                // FORZAR intensidad a 0 cuando no está flashing
+                if (shotLight.intensity != 0f)
+                {
+                    shotLight.intensity = 0f;
+                    currentIntensity = 0f;
+                }
             }
         }
 

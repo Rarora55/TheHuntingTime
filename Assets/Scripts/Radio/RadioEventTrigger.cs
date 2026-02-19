@@ -31,33 +31,45 @@ namespace TheHunt.Radio
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log($"<color=magenta>[RADIO EVENT] {eventID} - OnTriggerEnter2D with {other.gameObject.name} (Layer: {LayerMask.LayerToName(other.gameObject.layer)})</color>");
+            
             if (hasTriggered && triggerOnce)
+            {
+                Debug.Log($"<color=yellow>[RADIO EVENT] {eventID} - Already triggered, ignoring</color>");
                 return;
+            }
 
             if (((1 << other.gameObject.layer) & playerLayer) == 0)
+            {
+                Debug.Log($"<color=yellow>[RADIO EVENT] {eventID} - Layer mismatch. Expected Player layer, got {LayerMask.LayerToName(other.gameObject.layer)}</color>");
                 return;
+            }
+
+            Debug.Log($"<color=cyan>[RADIO EVENT] {eventID} - Player detected!</color>");
 
             if (radioEquipmentData == null)
             {
-                Debug.LogError($"[RADIO EVENT] RadioEquipmentData reference is missing on {eventID}");
+                Debug.LogError($"<color=red>[RADIO EVENT] {eventID} - RadioEquipmentData reference is missing!</color>");
                 return;
             }
 
             if (!radioEquipmentData.HasRadioEquipped)
             {
-                Debug.Log($"<color=yellow>[RADIO EVENT] Player needs radio to receive signal: {eventID}</color>");
+                Debug.Log($"<color=yellow>[RADIO EVENT] {eventID} - Player needs radio to receive signal</color>");
                 return;
             }
+
+            Debug.Log($"<color=green>[RADIO EVENT] {eventID} - Player has radio equipped! Triggering dialog...</color>");
 
             if (onDialogRequested != null)
             {
                 onDialogRequested.Raise(dialogMessage);
                 hasTriggered = true;
-                Debug.Log($"<color=cyan>[RADIO EVENT] Triggered: {eventID}</color>");
+                Debug.Log($"<color=cyan>[RADIO EVENT] {eventID} - Dialog event raised successfully!</color>");
             }
             else
             {
-                Debug.LogError($"[RADIO EVENT] RadioDialogEvent reference is missing on {eventID}");
+                Debug.LogError($"<color=red>[RADIO EVENT] {eventID} - RadioDialogEvent reference is missing!</color>");
             }
         }
 

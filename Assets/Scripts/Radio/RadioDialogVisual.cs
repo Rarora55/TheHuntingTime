@@ -1,9 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 namespace TheHunt.Radio
 {
-    [RequireComponent(typeof(SpriteRenderer))]
     public class RadioDialogVisual : MonoBehaviour
     {
         [Header("Visual Settings")]
@@ -20,17 +20,57 @@ namespace TheHunt.Radio
         [SerializeField] private float displayDuration = 3f;
         [SerializeField] private float colorChangeInterval = 0.5f;
 
-        private SpriteRenderer spriteRenderer;
+        private Image imageComponent;
         private Coroutine currentAnimation;
 
         private void Awake()
         {
-            spriteRenderer = GetComponent<SpriteRenderer>();
-            gameObject.SetActive(false);
+            TryGetImageComponent();
+            
+            // Don't deactivate GameObject - instead keep it active with alpha 0
+            if (imageComponent != null)
+            {
+                Color c = imageComponent.color;
+                c.a = 0;
+                imageComponent.color = c;
+                Debug.Log("<color=green>[RADIO DIALOG VISUAL] Image initialized with alpha 0</color>");
+            }
+            
+            Debug.Log($"<color=cyan>[RADIO DIALOG VISUAL] Awake complete - GameObject stays active</color>");
+        }
+
+        private void TryGetImageComponent()
+        {
+            if (imageComponent == null)
+            {
+                imageComponent = GetComponent<Image>();
+                
+                if (imageComponent == null)
+                {
+                    Debug.LogError("<color=red>[RADIO DIALOG VISUAL] No UI.Image component found!</color>");
+                }
+                else
+                {
+                    Debug.Log($"<color=green>[RADIO DIALOG VISUAL] UI.Image found! Current color: {imageComponent.color}</color>");
+                }
+            }
         }
 
         public void ShowDialog()
         {
+            Debug.Log("<color=cyan>[RADIO DIALOG VISUAL] ShowDialog called!</color>");
+            
+            // Try to get the component again if it's null
+            TryGetImageComponent();
+            
+            if (imageComponent == null)
+            {
+                Debug.LogError("<color=red>[RADIO DIALOG VISUAL] Cannot show dialog - Image component is null!</color>");
+                return;
+            }
+            
+            Debug.Log("<color=green>[RADIO DIALOG VISUAL] Starting dialog animation!</color>");
+            
             if (currentAnimation != null)
             {
                 StopCoroutine(currentAnimation);
@@ -41,7 +81,8 @@ namespace TheHunt.Radio
 
         private IEnumerator DialogAnimationSequence()
         {
-            gameObject.SetActive(true);
+            Debug.Log("<color=green>[RADIO DIALOG VISUAL] Starting animation sequence...</color>");
+            // GameObject stays active throughout - we just change alpha
             
             yield return StartCoroutine(FadeIn());
             
@@ -55,8 +96,13 @@ namespace TheHunt.Radio
                 {
                     colorIndex = (colorIndex + 1) % greenColors.Length;
                     Color targetColor = greenColors[colorIndex];
-                    targetColor.a = spriteRenderer.color.a;
-                    spriteRenderer.color = targetColor;
+                    
+                    if (imageComponent != null)
+                    {
+                        targetColor.a = imageComponent.color.a;
+                        imageComponent.color = targetColor;
+                    }
+                    
                     lastColorChange = elapsed;
                 }
 
@@ -66,16 +112,24 @@ namespace TheHunt.Radio
             
             yield return StartCoroutine(FadeOut());
             
-            gameObject.SetActive(false);
+            Debug.Log("<color=yellow>[RADIO DIALOG VISUAL] Animation sequence finished</color>");
             currentAnimation = null;
         }
 
         private IEnumerator FadeIn()
         {
+            Debug.Log("<color=cyan>[RADIO DIALOG VISUAL] Fade In...</color>");
+            
+            if (imageComponent == null)
+            {
+                Debug.LogError("<color=red>[RADIO DIALOG VISUAL] Image component is null!</color>");
+                yield break;
+            }
+            
             float elapsed = 0f;
             Color startColor = greenColors[0];
             startColor.a = 0f;
-            spriteRenderer.color = startColor;
+            imageComponent.color = startColor;
 
             Color targetColor = greenColors[0];
 
@@ -84,22 +138,29 @@ namespace TheHunt.Radio
                 elapsed += Time.deltaTime;
                 float t = elapsed / fadeInDuration;
                 
-                Color currentColor = spriteRenderer.color;
+                Color currentColor = imageComponent.color;
                 currentColor.a = Mathf.Lerp(0f, targetColor.a, t);
-                spriteRenderer.color = currentColor;
+                imageComponent.color = currentColor;
 
                 yield return null;
             }
 
-            Color finalColor = spriteRenderer.color;
+            Color finalColor = imageComponent.color;
             finalColor.a = targetColor.a;
-            spriteRenderer.color = finalColor;
+            imageComponent.color = finalColor;
+            
+            Debug.Log($"<color=green>[RADIO DIALOG VISUAL] Fade In complete. Color: {imageComponent.color}</color>");
         }
 
         private IEnumerator FadeOut()
         {
+            Debug.Log("<color=cyan>[RADIO DIALOG VISUAL] Fade Out...</color>");
+            
+            if (imageComponent == null)
+                yield break;
+                
             float elapsed = 0f;
-            Color startColor = spriteRenderer.color;
+            Color startColor = imageComponent.color;
             float startAlpha = startColor.a;
 
             while (elapsed < fadeOutDuration)
@@ -107,16 +168,16 @@ namespace TheHunt.Radio
                 elapsed += Time.deltaTime;
                 float t = elapsed / fadeOutDuration;
                 
-                Color currentColor = spriteRenderer.color;
+                Color currentColor = imageComponent.color;
                 currentColor.a = Mathf.Lerp(startAlpha, 0f, t);
-                spriteRenderer.color = currentColor;
+                imageComponent.color = currentColor;
 
                 yield return null;
             }
 
-            Color finalColor = spriteRenderer.color;
+            Color finalColor = imageComponent.color;
             finalColor.a = 0f;
-            spriteRenderer.color = finalColor;
+            imageComponent.color = finalColor;
         }
 
         public void SetFadeInDuration(float duration) => fadeInDuration = duration;

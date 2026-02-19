@@ -43,14 +43,26 @@ namespace TheHunt.Radio.UI
 
         private void OnEnable()
         {
+            Debug.Log("<color=cyan>[RADIO EQUIPMENT PANEL] OnEnable</color>");
+            
             if (onRadioEquipped != null)
             {
                 onRadioEquipped.AddListener(OnRadioEquipped);
+                Debug.Log("<color=green>[RADIO EQUIPMENT PANEL] Subscribed to onRadioEquipped event</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[RADIO EQUIPMENT PANEL] onRadioEquipped event is NULL!</color>");
             }
             
             if (onRadioUnequipped != null)
             {
                 onRadioUnequipped.AddListener(OnRadioUnequipped);
+                Debug.Log("<color=green>[RADIO EQUIPMENT PANEL] Subscribed to onRadioUnequipped event</color>");
+            }
+            else
+            {
+                Debug.LogWarning("<color=yellow>[RADIO EQUIPMENT PANEL] onRadioUnequipped event is NULL!</color>");
             }
 
             RefreshSlot();
@@ -79,9 +91,16 @@ namespace TheHunt.Radio.UI
 
         private void OnRadioEquipped(RadioItemData radio)
         {
+            Debug.Log($"<color=cyan>[RADIO EQUIPMENT PANEL] OnRadioEquipped EVENT received! Radio: {(radio != null ? radio.ItemName : "NULL")}</color>");
+            
             if (radioSlot != null)
             {
+                Debug.Log("<color=green>[RADIO EQUIPMENT PANEL] Calling radioSlot.EquipRadio...</color>");
                 radioSlot.EquipRadio(radio);
+            }
+            else
+            {
+                Debug.LogError("<color=red>[RADIO EQUIPMENT PANEL] radioSlot is NULL!</color>");
             }
 
             UpdateVisibility();
@@ -99,15 +118,32 @@ namespace TheHunt.Radio.UI
 
         public void RefreshSlot()
         {
-            if (radioEquipmentData == null || radioSlot == null)
-                return;
-
-            if (radioEquipmentData.HasRadioEquipped)
+            Debug.Log("<color=cyan>[RADIO EQUIPMENT PANEL] RefreshSlot called</color>");
+            
+            if (radioEquipmentData == null)
             {
-                radioSlot.EquipRadio(radioEquipmentData.EquippedRadio);
+                Debug.LogError("<color=red>[RADIO EQUIPMENT PANEL] radioEquipmentData is NULL!</color>");
+                return;
+            }
+            
+            if (radioSlot == null)
+            {
+                Debug.LogError("<color=red>[RADIO EQUIPMENT PANEL] radioSlot is NULL!</color>");
+                return;
+            }
+
+            bool hasRadio = radioEquipmentData.HasRadioEquipped;
+            Debug.Log($"<color=yellow>[RADIO EQUIPMENT PANEL] HasRadioEquipped: {hasRadio}</color>");
+            
+            if (hasRadio)
+            {
+                RadioItemData equippedRadio = radioEquipmentData.EquippedRadio;
+                Debug.Log($"<color=green>[RADIO EQUIPMENT PANEL] Equipped radio: {(equippedRadio != null ? equippedRadio.ItemName : "NULL")}</color>");
+                radioSlot.EquipRadio(equippedRadio);
             }
             else
             {
+                Debug.Log("<color=yellow>[RADIO EQUIPMENT PANEL] No radio equipped, unequipping slot</color>");
                 radioSlot.UnequipRadio();
             }
 

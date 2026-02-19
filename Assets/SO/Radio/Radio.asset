@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Radio
   itemID: 4b151c97-e874-42e5-b231-631f502f72eb
   description: 
-  itemIcon: {fileID: 6555488645484901506, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
+  itemIcon: {fileID: -5317242072105370732, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   itemDetailImage: {fileID: 6035682160318506979, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   pickupPrefab: {fileID: 0}
   itemType: 3

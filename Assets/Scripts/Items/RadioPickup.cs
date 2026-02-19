@@ -1,50 +1,172 @@
 using UnityEngine;
 using TheHunt.Inventory;
+using TheHunt.Interaction;
 
 namespace TheHunt.Items
 {
-    public class RadioPickup : MonoBehaviour
+    [RequireComponent(typeof(SpriteRenderer))]
+    [RequireComponent(typeof(Collider2D))]
+    public class RadioPickup : MonoBehaviour, IInteractable
     {
-        [Header("Radio Data")]
+        [Header("Item Data")]
         [SerializeField] private RadioItemData radioData;
 
-        [Header("Pickup Settings")]
-        [SerializeField] private LayerMask playerLayer;
+        [Header("Visual Settings")]
+        [SerializeField] private bool useItemIcon = true;
+        [SerializeField] private Sprite customSprite;
+        [SerializeField] private Vector2 spriteSize = new Vector2(1f, 1f);
 
-        private bool hasBeenPickedUp;
+        [Header("Interaction Settings")]
+        [SerializeField] private float interactionRadius = 2f;
+        [SerializeField] private string pickupMessage = "Press E to pick up";
 
-        private void OnTriggerEnter2D(Collider2D other)
+        [Header("Animation")]
+        [SerializeField] private bool enableFloating = true;
+        [SerializeField] private float floatSpeed = 1f;
+        [SerializeField] private float floatHeight = 0.3f;
+        
+        [Header("Debug")]
+        [SerializeField] private bool enableDebugLogs = true;
+
+        private SpriteRenderer spriteRenderer;
+        private Vector3 startPosition;
+        private bool wasPickedUp = false;
+
+        public bool IsInteractable => !wasPickedUp && radioData != null;
+        public string InteractionPrompt => GetPickupMessage();
+
+        public bool CanInteract(GameObject interactor)
         {
-            if (hasBeenPickedUp)
+            bool canInteract = !wasPickedUp && radioData != null && interactor.GetComponent<InventorySystem>() != null;
+            
+            if (enableDebugLogs)
+            {
+                Debug.Log($"<color=cyan>[RADIO PICKUP] CanInteract called by {interactor.name} - Result: {canInteract}</color>");
+            }
+            
+            return canInteract;
+        }
+
+        private void Awake()
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            SetupVisuals();
+            SetupCollider();
+        }
+
+        private void Start()
+        {
+            startPosition = transform.position;
+            
+            if (radioData == null)
+            {
+                Debug.LogWarning($"<color=yellow>[RADIO PICKUP] {gameObject.name} has no RadioItemData assigned!</color>");
+            }
+            else if (enableDebugLogs)
+            {
+                Debug.Log($"<color=green>[RADIO PICKUP] {gameObject.name} initialized - Layer: {LayerMask.LayerToName(gameObject.layer)}, IsInteractable: {IsInteractable}</color>");
+            }
+        }
+
+        private void Update()
+        {
+            if (wasPickedUp)
                 return;
 
-            if (((1 << other.gameObject.layer) & playerLayer) == 0)
+            AnimateItem();
+        }
+
+        private void SetupVisuals()
+        {
+            if (spriteRenderer == null)
                 return;
 
-            InventorySystem inventory = other.GetComponent<InventorySystem>();
+            if (radioData != null && useItemIcon)
+            {
+                spriteRenderer.sprite = radioData.ItemIcon;
+            }
+            else if (customSprite != null)
+            {
+                spriteRenderer.sprite = customSprite;
+            }
+
+            transform.localScale = new Vector3(spriteSize.x, spriteSize.y, 1f);
+        }
+
+        private void SetupCollider()
+        {
+            Collider2D collider = GetComponent<Collider2D>();
+            
+            if (collider != null)
+            {
+                collider.isTrigger = true;
+            }
+        }
+
+        private void AnimateItem()
+        {
+            if (enableFloating)
+            {
+                float newY = startPosition.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
+                transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+            }
+        }
+
+        private string GetPickupMessage()
+        {
+            if (radioData == null)
+                return "???";
+
+            return $"{pickupMessage} {radioData.ItemName}";
+        }
+
+        public void Interact(GameObject interactor)
+        {
+            if (enableDebugLogs)
+            {
+                Debug.Log($"<color=magenta>[RADIO PICKUP] Interact called by {interactor.name}</color>");
+            }
+            
+            if (wasPickedUp || radioData == null)
+            {
+                if (enableDebugLogs)
+                    Debug.LogWarning($"<color=yellow>[RADIO PICKUP] Cannot interact - WasPickedUp: {wasPickedUp}, RadioData: {(radioData != null ? "OK" : "NULL")}</color>");
+                return;
+            }
+
+            InventorySystem inventory = interactor.GetComponent<InventorySystem>();
+            
             if (inventory == null)
             {
-                Debug.LogWarning("[RADIO PICKUP] Player does not have InventorySystem");
+                Debug.LogWarning($"<color=yellow>[RADIO PICKUP] {interactor.name} has no InventorySystem!</color>");
                 return;
             }
 
-            if (inventory.TryAddItem(radioData))
+            bool success = inventory.TryAddItem(radioData);
+            
+            if (success)
             {
-                Debug.Log($"<color=green>[RADIO PICKUP] Added {radioData.ItemName} to inventory. Open inventory to equip it in the Radio slot!</color>");
-                hasBeenPickedUp = true;
-                gameObject.SetActive(false);
+                OnPickedUp(interactor);
             }
+            else
+            {
+                Debug.Log($"<color=yellow>[RADIO PICKUP] Inventory full! Cannot pick up {radioData.ItemName}</color>");
+            }
+        }
+
+        private void OnPickedUp(GameObject picker)
+        {
+            wasPickedUp = true;
+            
+            Debug.Log($"<color=green>[RADIO PICKUP] {picker.name} picked up {radioData.ItemName}. Open inventory to equip it!</color>");
+            
+            Destroy(gameObject);
         }
 
         private void OnDrawGizmosSelected()
         {
-            BoxCollider2D col = GetComponent<BoxCollider2D>();
-            if (col != null)
-            {
-                Gizmos.color = hasBeenPickedUp ? Color.gray : Color.yellow;
-                Vector3 center = (Vector2)transform.position + col.offset;
-                Gizmos.DrawWireCube(center, col.size);
-            }
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(transform.position, interactionRadius);
         }
     }
 }

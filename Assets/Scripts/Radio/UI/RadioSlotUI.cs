@@ -15,7 +15,7 @@ namespace TheHunt.Radio.UI
 
         [Header("Visual States")]
         [SerializeField] private Color emptySlotColor = new Color(0.2f, 0.2f, 0.2f, 1f);
-        [SerializeField] private Color equippedSlotColor = new Color(0.2f, 0.6f, 0.6f, 1f);
+        [SerializeField] private Color equippedSlotColor = new Color(0f, 0.8f, 0f, 1f);  // Verde cuando está equipada
         [SerializeField] private Color selectedSlotColor = new Color(1f, 1f, 1f, 1f);
         [SerializeField] private Sprite emptyRadioSprite;
 
@@ -63,23 +63,51 @@ namespace TheHunt.Radio.UI
         {
             if (radio == null)
             {
+                Debug.LogWarning("[RADIO SLOT UI] Trying to equip null radio!");
                 ClearSlot();
                 return;
             }
 
             equippedRadio = radio;
+            
+            Debug.Log($"<color=cyan>[RADIO SLOT UI] Equipping radio: {radio.ItemName}</color>");
 
             if (radioIcon != null)
             {
-                radioIcon.sprite = radio.ItemIcon;
-                radioIcon.enabled = true;
-                radioIcon.color = Color.white;
+                if (radio.ItemIcon != null)
+                {
+                    radioIcon.sprite = radio.ItemIcon;
+                    radioIcon.enabled = true;
+                    radioIcon.color = Color.white;
+                    Debug.Log($"<color=green>[RADIO SLOT UI] Icon assigned: {radio.ItemIcon.name}</color>");
+                }
+                else
+                {
+                    Debug.LogWarning($"<color=yellow>[RADIO SLOT UI] {radio.ItemName} has no ItemIcon!</color>");
+                    radioIcon.enabled = false;
+                }
+            }
+            else
+            {
+                Debug.LogError("<color=red>[RADIO SLOT UI] radioIcon reference is NULL!</color>");
             }
 
             if (radioNameText != null)
             {
                 radioNameText.text = radio.ItemName;
                 radioNameText.enabled = true;
+                Debug.Log($"<color=green>[RADIO SLOT UI] Name text set to: {radio.ItemName}</color>");
+            }
+            else
+            {
+                Debug.LogError("<color=red>[RADIO SLOT UI] radioNameText reference is NULL!</color>");
+            }
+
+            // Force background color change immediately
+            if (slotBackground != null)
+            {
+                Debug.Log($"<color=magenta>[RADIO SLOT UI] FORCING background to GREEN: {equippedSlotColor}</color>");
+                slotBackground.color = equippedSlotColor;
             }
 
             UpdateVisualState();
@@ -158,20 +186,23 @@ namespace TheHunt.Radio.UI
             {
                 targetColor = selectedSlotColor;
                 targetScale = Vector3.one * 1.3f;
+                Debug.Log($"<color=white>[RADIO SLOT UI] State: SELECTED - Color: {selectedSlotColor}</color>");
             }
             else if (HasRadio)
             {
                 targetColor = equippedSlotColor;
+                Debug.Log($"<color=green>[RADIO SLOT UI] State: EQUIPPED - Color: {equippedSlotColor}</color>");
             }
             else
             {
                 targetColor = emptySlotColor;
+                Debug.Log($"<color=gray>[RADIO SLOT UI] State: EMPTY - Color: {emptySlotColor}</color>");
             }
             
             slotBackground.color = targetColor;
             transform.localScale = targetScale;
             
-            Debug.Log($"<color=cyan>[RADIO SLOT UI] Visual updated - Selected: {isSelected}, HasRadio: {HasRadio}</color>");
+            Debug.Log($"<color=cyan>[RADIO SLOT UI] ✓ Visual updated - HasRadio: {HasRadio}, Background Color SET to: {targetColor}</color>");
         }
     }
 }
