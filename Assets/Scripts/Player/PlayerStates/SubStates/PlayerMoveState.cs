@@ -174,6 +174,12 @@ public class PlayerMoveState : PlayerGroundState
     
     bool CheckGrabLedgeFromAbove()
     {
+        // Solo permitir auto-grab si NO está corriendo (evita bucle de run + ledge)
+        if (runInput)
+        {
+            return false;
+        }
+        
         if (player.Collision.ShouldAutoGrabLedge())
         {
             Debug.Log("<color=yellow>[AUTO LEDGE MOVE] Entrando automáticamente en LedgeState!</color>");

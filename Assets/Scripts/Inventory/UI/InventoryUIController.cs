@@ -52,6 +52,26 @@ namespace TheHunt.Inventory
                 weaponEquipmentPanel = canvasInstance.GetComponentInChildren<WeaponEquipmentPanel>(true);
                 radioEquipmentPanel = canvasInstance.GetComponentInChildren<RadioEquipmentPanel>(true);
                 
+                // ✅ NUEVO: Conectar HealthBarUI con HealthController
+                TheHunt.Health.HealthBarUI healthBarUI = canvasInstance.GetComponentInChildren<TheHunt.Health.HealthBarUI>(true);
+                if (healthBarUI != null)
+                {
+                    global::HealthController healthController = GetComponent<global::HealthController>();
+                    if (healthController != null)
+                    {
+                        healthBarUI.ConnectToHealthController(healthController);
+                        Debug.Log("<color=green>[INVENTORY UI] ✓ HealthBarUI connected to HealthController via public method</color>");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("<color=yellow>[INVENTORY UI] HealthController not found on Player!</color>");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("<color=yellow>[INVENTORY UI] HealthBarUI not found in inventory prefab!</color>");
+                }
+                
                 if (examinationPanel == null)
                     Debug.LogWarning("[INVENTORY UI] ItemExaminationPanel not found in prefab!");
                 

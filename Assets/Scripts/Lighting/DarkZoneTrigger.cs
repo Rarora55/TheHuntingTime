@@ -21,6 +21,16 @@ namespace TheHunt.Lighting
             if (globalLight == null)
             {
                 globalLight = FindFirstObjectByType<Light2D>();
+                Debug.LogWarning("<color=yellow>[DARK ZONE] GlobalLight not assigned, attempting to find automatically...</color>");
+            }
+            
+            if (globalLight != null)
+            {
+                Debug.Log($"<color=green>[DARK ZONE] Initialized - GlobalLight found: {globalLight.name}, Normal Intensity: {normalIntensity}, Dark Intensity: {darkZoneIntensity}</color>");
+            }
+            else
+            {
+                Debug.LogError("<color=red>[DARK ZONE] Failed to find GlobalLight! Dark zone will not work.</color>");
             }
             
             targetIntensity = normalIntensity;
@@ -40,11 +50,13 @@ namespace TheHunt.Lighting
         
         void OnTriggerEnter2D(Collider2D other)
         {
+            Debug.Log($"<color=cyan>[DARK ZONE] OnTriggerEnter2D - Object: {other.gameObject.name}, Tag: {other.tag}</color>");
+            
             if (other.CompareTag("Player"))
             {
                 playerInDarkZone = true;
                 targetIntensity = darkZoneIntensity;
-                Debug.Log($"<color=yellow>[DARK ZONE] Player entered dark zone</color>");
+                Debug.Log($"<color=yellow>[DARK ZONE] Player entered dark zone - Target intensity: {darkZoneIntensity}</color>");
             }
         }
         

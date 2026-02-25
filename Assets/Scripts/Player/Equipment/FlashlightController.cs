@@ -35,12 +35,21 @@ namespace TheHunt.Equipment
         {
             if (flashlightLight == null)
             {
-                flashlightLight = GetComponentInChildren<Light2D>();
+                flashlightLight = GetComponent<Light2D>();  // ✅ Buscar en el mismo GameObject
+                
+                if (flashlightLight == null)
+                {
+                    flashlightLight = GetComponentInChildren<Light2D>();  // Fallback: buscar en hijos
+                }
             }
             
             if (flashlightLight == null)
             {
                 Debug.LogError($"<color=red>[FLASHLIGHT] No Light2D found on {gameObject.name}!</color>");
+            }
+            else
+            {
+                Debug.Log($"<color=green>[FLASHLIGHT] Light2D found on {flashlightLight.gameObject.name}</color>");
             }
             
             currentBattery = maxBatteryLife;

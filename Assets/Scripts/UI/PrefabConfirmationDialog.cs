@@ -27,19 +27,51 @@ namespace TheHunt.UI
         
         void Awake()
         {
+            Debug.Log($"<color=magenta>[PREFAB DIALOG] Awake() called</color>");
+            
             if (inputContextManager == null)
             {
+                Debug.Log($"<color=yellow>[PREFAB DIALOG] inputContextManager is NULL, searching...</color>");
                 inputContextManager = FindFirstObjectByType<InputContextManager>();
+                
+                if (inputContextManager != null)
+                {
+                    Debug.Log($"<color=green>[PREFAB DIALOG] ✓ Found InputContextManager!</color>");
+                }
+                else
+                {
+                    Debug.LogError($"<color=red>[PREFAB DIALOG] ✗ InputContextManager NOT FOUND in scene!</color>");
+                }
+            }
+            else
+            {
+                Debug.Log($"<color=green>[PREFAB DIALOG] inputContextManager already assigned</color>");
             }
             
             if (yesButton != null)
+            {
                 yesButton.onClick.AddListener(OnYesClicked);
+                Debug.Log($"<color=cyan>[PREFAB DIALOG] YesButton listener added</color>");
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[PREFAB DIALOG] YesButton is NULL!</color>");
+            }
             
             if (noButton != null)
+            {
                 noButton.onClick.AddListener(OnNoClicked);
+                Debug.Log($"<color=cyan>[PREFAB DIALOG] NoButton listener added</color>");
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[PREFAB DIALOG] NoButton is NULL!</color>");
+            }
             
             SetupButtonNavigation();
             Hide();
+            
+            Debug.Log($"<color=magenta>[PREFAB DIALOG] Awake() complete</color>");
         }
         
         void SetupButtonNavigation()
@@ -171,7 +203,15 @@ namespace TheHunt.UI
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(yesButton.gameObject);
             
-            inputContextManager?.PushContext(InputContext.Dialog);
+            if (inputContextManager != null)
+            {
+                inputContextManager.PushContext(InputContext.Dialog);
+                Debug.Log($"<color=green>[PREFAB DIALOG] ✓ Pushed Dialog context</color>");
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[PREFAB DIALOG] ✗ inputContextManager is NULL! Cannot push Dialog context!</color>");
+            }
             
             Debug.Log($"<color=green>[PREFAB DIALOG] ========== SHOWN ==========</color>");
             Debug.Log($"<color=green>[PREFAB DIALOG] Title: {title}</color>");

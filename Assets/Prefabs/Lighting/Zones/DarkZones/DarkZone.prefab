@@ -172,6 +172,6 @@ MonoBehaviour:
   findLightsAutomatically: 1
   activateOnStart: 1
   intensityMultiplier: 1
-  zoneColorTint: {r: 1, g: 1, b: 1, a: 1}
+  zoneColorTint: {r: 0, g: 0, b: 0, a: 1}
   usePlayerTrigger: 0
   toggleOnTrigger: 0

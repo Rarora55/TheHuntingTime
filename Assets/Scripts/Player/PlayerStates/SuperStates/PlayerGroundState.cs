@@ -59,6 +59,7 @@ public class PlayerGroundState : PlayerState
         JumpInput = player.InputHandler.JumpInput;
         grabInput = player.InputHandler.GrabInput;
         AimInput = player.InputHandler.AimInput;
+        bool runInput = player.InputHandler.RunInput;
 
         // DESHABILITADO - Sistema de escalada con input grab anulado
         // if (player.IsOnLadder() && grabInput && (yInput == 1 || yInput == -1))
@@ -75,7 +76,7 @@ public class PlayerGroundState : PlayerState
             player.InputHandler.JumpEnded();
             stateMachine.ChangeState(player.JumpState);
         }
-        else if (isTouchingWall && grabInput && !isTouchingCeiling)
+        else if (isTouchingWall && grabInput && !isTouchingCeiling && !runInput)  // ✅ NO agarrar ledge si está corriendo
         {
             bool hasClimbable = player.CanClimbHere();
             bool isValidLedge = player.Collision.IsValidLedge(0.2f);

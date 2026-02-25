@@ -23,12 +23,24 @@ namespace TheHunt.Equipment
             
             if (flashlight == null)
             {
-                flashlight = GetComponentInChildren<FlashlightController>();
+                // Buscar primero en el mismo GameObject
+                flashlight = GetComponent<FlashlightController>();
+                
+                // Si no está, buscar en hijos (activados o desactivados)
+                if (flashlight == null)
+                {
+                    flashlight = GetComponentInChildren<FlashlightController>(true);  // ✅ includeInactive = true
+                }
             }
             
             if (flashlight != null)
             {
+                Debug.Log($"<color=green>[SECONDARY EQUIPMENT] FlashlightController found: {flashlight.gameObject.name}</color>");
                 flashlight.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogError($"<color=red>[SECONDARY EQUIPMENT] FlashlightController NOT found! Check hierarchy.</color>");
             }
         }
         
@@ -52,6 +64,8 @@ namespace TheHunt.Equipment
         
         void HandleWeaponEquipped(EquipSlot slot, WeaponItemData weapon)
         {
+            Debug.Log($"<color=cyan>[SECONDARY EQUIPMENT] Weapon equipped - Slot: {slot}, Weapon: {weapon?.ItemName}, IsFlashlight: {IsFlashlightWeapon(weapon)}</color>");
+            
             if (slot != EquipSlot.Secondary)
                 return;
             
@@ -76,10 +90,15 @@ namespace TheHunt.Equipment
         bool IsFlashlightWeapon(WeaponItemData weapon)
         {
             if (weapon == null)
+            {
+                Debug.Log($"<color=gray>[SECONDARY EQUIPMENT] IsFlashlightWeapon: weapon is NULL</color>");
                 return false;
+            }
             
-            return weapon.WeaponType == WeaponType.Tool && 
-                   weapon.ToolType == ToolType.Flashlight;
+            bool result = weapon.WeaponType == WeaponType.Tool && weapon.ToolType == ToolType.Flashlight;
+            Debug.Log($"<color=cyan>[SECONDARY EQUIPMENT] IsFlashlightWeapon: {weapon.ItemName} - WeaponType: {weapon.WeaponType}, ToolType: {weapon.ToolType}, Result: {result}</color>");
+            
+            return result;
         }
         
         void EquipFlashlight()

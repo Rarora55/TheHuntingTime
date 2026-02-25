@@ -582,6 +582,7 @@ MonoBehaviour:
   descriptionText: {fileID: 7409252507376585688}
   yesButton: {fileID: 1152036857772115370}
   noButton: {fileID: 7354578499174636062}
+  inputContextManager: {fileID: 0}
 --- !u!1 &6002624298670358389
 GameObject:
   m_ObjectHideFlags: 0

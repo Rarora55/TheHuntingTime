@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3288009506721937073
+--- !u!1 &4356407494620959196
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5021006255549762893}
-  - component: {fileID: 7084494569383914883}
-  - component: {fileID: 4125653769043481342}
-  m_Layer: 0
-  m_Name: RespawnPoint
+  - component: {fileID: 6869618615313416470}
+  - component: {fileID: 5208257158098321199}
+  - component: {fileID: 2178892776393190351}
+  - component: {fileID: 7436091924942846331}
+  m_Layer: 9
+  m_Name: ClimbSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5021006255549762893
+  m_IsActive: 0
+--- !u!4 &6869618615313416470
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3288009506721937073}
+  m_GameObject: {fileID: 4356407494620959196}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: -3, z: 0}
+  m_LocalPosition: {x: 62.41, y: -11.54, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &7084494569383914883
+--- !u!61 &5208257158098321199
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3288009506721937073}
+  m_GameObject: {fileID: 4356407494620959196}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -77,22 +78,44 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2, y: 2}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &4125653769043481342
+--- !u!114 &2178892776393190351
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3288009506721937073}
+  m_GameObject: {fileID: 4356407494620959196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c819cd25812b32e45a9c54f598f97d36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Environment.ClimbSpawnPoint
+  interactionPrompt: Press E to climb
+  isInteractable: 1
+  screenFadeEvent: {fileID: 11400000, guid: ba62da9de136ee4468a5e6faf3ffafcb, type: 2}
+  spawnPointID: PTGYM0125001SRT1
+  targetSpawnPointID: PTGYM0125001SRB1
+  fadeDuration: 1
+  cooldownAfterTeleport: 0.5
+  visual: {fileID: 0}
+  availableColor: {r: 0, g: 1, b: 1, a: 1}
+  inUseColor: {r: 1, g: 0.92, b: 0.02, a: 1}
+--- !u!114 &7436091924942846331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4356407494620959196}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0b90d987cf24f674d83ed61b2d067220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Respawn.RespawnPoint
-  onRespawnActivated: {fileID: 0}
-  respawnID: Respawn_01
+  onRespawnActivated: {fileID: 11400000, guid: 0b11faf0315b7c44a9e822fd1cd954b9, type: 2}
+  respawnID: PTGYM0125001SRT1
   requiresInput: 1
   gizmoColor: {r: 0, g: 1, b: 0, a: 1}
   gizmoRadius: 0.5

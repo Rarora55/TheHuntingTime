@@ -51,10 +51,46 @@ namespace TheHunt.Health
 
             if (healthController == null)
             {
-                Debug.LogWarning("<color=yellow>[HEALTH BAR UI] No HealthController found!</color>");
-                enabled = false;
+                Debug.LogWarning("<color=yellow>[HEALTH BAR UI] No HealthController found in Awake - will wait for external assignment</color>");
+                // No desactivar el componente, esperar asignación externa
                 return;
             }
+            else
+            {
+                Debug.Log($"<color=green>[HEALTH BAR UI] HealthController found in Awake</color>");
+            }
+        }
+        
+        /// <summary>
+        /// Conecta este HealthBarUI con un HealthController específico.
+        /// Usado cuando el HealthBarUI se instancia dinámicamente.
+        /// </summary>
+        public void ConnectToHealthController(HealthController controller)
+        {
+            if (controller == null)
+            {
+                Debug.LogError("<color=red>[HEALTH BAR UI] Cannot connect to null HealthController!</color>");
+                return;
+            }
+            
+            // Desuscribirse del controller anterior si existe
+            if (healthController != null)
+            {
+                healthController.OnHealthChanged -= OnHealthChanged;
+                healthController.OnDeath -= OnDeath;
+            }
+            
+            // Asignar nuevo controller
+            healthController = controller;
+            
+            // Suscribirse a eventos
+            healthController.OnHealthChanged += OnHealthChanged;
+            healthController.OnDeath += OnDeath;
+            
+            // Inicializar la barra con el estado actual
+            InitializeHealthBar();
+            
+            Debug.Log($"<color=green>[HEALTH BAR UI] ✓ Connected to HealthController - Current HP: {healthController.CurrentHealth:F0}/{healthController.MaxHealth:F0}</color>");
         }
 
         private void Start()
@@ -64,10 +100,18 @@ namespace TheHunt.Health
 
         private void OnEnable()
         {
+            // Solo suscribirse si healthController existe y aún no está suscrito
             if (healthController != null)
             {
+                // Desuscribirse primero para evitar duplicados
+                healthController.OnHealthChanged -= OnHealthChanged;
+                healthController.OnDeath -= OnDeath;
+                
+                // Suscribirse
                 healthController.OnHealthChanged += OnHealthChanged;
                 healthController.OnDeath += OnDeath;
+                
+                Debug.Log("<color=cyan>[HEALTH BAR UI] Subscribed to health events in OnEnable</color>");
             }
         }
 

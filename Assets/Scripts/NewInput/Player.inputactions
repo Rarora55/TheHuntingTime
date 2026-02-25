@@ -509,7 +509,18 @@
                 {
                     "name": "",
                     "id": "3ca9e5e6-9486-4b3a-8f28-fe64d09c7447",
-                    "path": "<Keyboard>/r",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f02eacfc-ad27-4878-a1d3-17c59e56b249",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -22,8 +22,8 @@ namespace TheHunt.Interaction
         [SerializeField] private float fadeDuration = 0.5f;
         
         [Header("Spawn Points")]
-        [SerializeField] private ClimbSpawnPoint topSpawnPoint;
-        [SerializeField] private ClimbSpawnPoint bottomSpawnPoint;
+        [SerializeField] private GameObject topSpawnPoint;
+        [SerializeField] private GameObject bottomSpawnPoint;
         
         [Header("Visual Feedback")]
         [SerializeField] private SpriteRenderer anchorSprite;
@@ -107,6 +107,8 @@ namespace TheHunt.Interaction
         
         protected override void ExecutePassiveAction(GameObject interactor)
         {
+            Debug.Log($"<color=magenta>[ROPE ANCHOR] ===== ExecutePassiveAction() CALLED ===== isDeployed: {isDeployed}</color>");
+            
             global::Player player = interactor.GetComponent<global::Player>();
             if (player == null)
             {
@@ -118,21 +120,36 @@ namespace TheHunt.Interaction
             
             if (isDeployed)
             {
-                ShowRetractConfirmation();
+                // SEGUNDA INTERACCIÓN: Cuerda ya colocada
+                Debug.Log("<color=cyan>[ROPE ANCHOR] Rope already deployed - showing pickup/use options</color>");
+                ShowRopeOptionsDialog();
             }
             else
             {
+                // PRIMERA INTERACCIÓN: Colocar cuerda
+                Debug.Log("<color=cyan>[ROPE ANCHOR] Rope NOT deployed - attempting to deploy</color>");
                 ShowDeployConfirmation(player);
             }
+            
+            Debug.Log($"<color=magenta>[ROPE ANCHOR] ===== ExecutePassiveAction() COMPLETE =====</color>");
         }
         
         private void ShowDeployConfirmation(global::Player player)
         {
+            Debug.Log("<color=magenta>[ROPE ANCHOR] === ShowDeployConfirmation() called ===</color>");
+            
             bool hasRope = HasRopeInInventory(player);
             
             if (hasRope)
             {
                 usedRopeItem = ropeItemData;
+            }
+            
+            // ✅ CRÍTICO: Cerrar cualquier diálogo abierto antes de desplegar
+            if (dialogService != null && dialogService.IsDialogOpen)
+            {
+                Debug.Log("<color=yellow>[ROPE ANCHOR] Closing any open dialog before deployment</color>");
+                dialogService.HideDialog();
             }
             
             if (dialogService == null)
@@ -148,14 +165,31 @@ namespace TheHunt.Interaction
             
             if (hasRope)
             {
-                dialogService.ShowConfirmation(
-                    confirmationTitle,
-                    confirmationMessage,
-                    OnConfirmedWithRope,
-                    OnCancelled
-                );
+                // ✅ PRIMERA VEZ: Colocar cuerda directamente SIN PREGUNTAR
+                Debug.Log("<color=green>[ROPE ANCHOR] Player has rope, deploying directly (no confirmation on first deployment)</color>");
                 
-                Debug.Log("<color=cyan>[ROPE ANCHOR] Showing confirmation dialog (player has rope)</color>");
+                if (screenFadeEvent != null)
+                {
+                    screenFadeEvent.RaiseFadeToBlack(fadeDuration, () =>
+                    {
+                        Debug.Log("<color=cyan>[ROPE ANCHOR] Inside fade callback - deploying rope now</color>");
+                        ConsumeRopeFromInventory();
+                        DeployRope();
+                        
+                        screenFadeEvent.RaiseFadeFromBlack(fadeDuration, () =>
+                        {
+                            Debug.Log("<color=cyan>[ROPE ANCHOR] Fade complete - clearing pending</color>");
+                            ClearPending();
+                        });
+                    });
+                }
+                else
+                {
+                    Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeEvent not assigned, deploying without fade</color>");
+                    ConsumeRopeFromInventory();
+                    DeployRope();
+                    ClearPending();
+                }
             }
             else
             {
@@ -167,30 +201,35 @@ namespace TheHunt.Interaction
                 
                 Debug.Log("<color=yellow>[ROPE ANCHOR] Showing 'no rope' message</color>");
             }
+            
+            Debug.Log("<color=magenta>[ROPE ANCHOR] === ShowDeployConfirmation() complete ===</color>");
         }
         
-        private void ShowRetractConfirmation()
+        private void ShowRopeOptionsDialog()
         {
+            Debug.Log("<color=cyan>[ROPE ANCHOR] === ShowRopeOptionsDialog() called ===</color>");
+            
             if (dialogService == null)
             {
-                Debug.LogError("<color=red>[ROPE ANCHOR] DialogService is null! Cannot show confirmation.</color>");
-                RetractRopeInternal();
+                Debug.LogError("<color=red>[ROPE ANCHOR] DialogService is null!</color>");
+                ClearPending();
                 return;
             }
             
+            // Pregunta: ¿Coger cuerda o Usar cuerda?
             dialogService.ShowConfirmation(
-                "Retract Rope",
-                "Do you want to retrieve the rope?",
-                OnConfirmedRetract,
-                OnCancelled
+                "Rope",
+                "Pickup rope (YES) or Use rope (NO)?",
+                OnConfirmedPickupRope,  // YES → Coger cuerda del anchor
+                OnConfirmedUseRope      // NO → Usar spawn points (cierra diálogo)
             );
             
-            Debug.Log("<color=cyan>[ROPE ANCHOR] Showing retract confirmation dialog</color>");
+            Debug.Log("<color=cyan>[ROPE ANCHOR] Showing rope options: Pickup (YES) or Use (NO)</color>");
         }
         
-        private void OnConfirmedRetract()
+        private void OnConfirmedPickupRope()
         {
-            Debug.Log("<color=green>[ROPE ANCHOR] Retraction confirmed, starting fade...</color>");
+            Debug.Log("<color=green>[ROPE ANCHOR] === OnConfirmedPickupRope() - Picking up rope from anchor ===</color>");
             
             if (screenFadeEvent != null)
             {
@@ -207,49 +246,70 @@ namespace TheHunt.Interaction
             }
             else
             {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeEvent not assigned, retracting without fade</color>");
                 RetractRopeInternal();
                 ReturnRopeToInventory();
                 ClearPending();
             }
         }
         
-        private void OnConfirmedWithRope()
+        private void OnConfirmedUseRope()
         {
-            Debug.Log("<color=green>[ROPE ANCHOR] Deployment confirmed, starting fade...</color>");
+            Debug.Log("<color=green>[ROPE ANCHOR] === OnConfirmedUseRope() - Using respawn system ===</color>");
             
-            if (screenFadeEvent != null)
-            {
-                screenFadeEvent.RaiseFadeToBlack(fadeDuration, () =>
-                {
-                    ConsumeRopeFromInventory();
-                    DeployRope();
-                    
-                    screenFadeEvent.RaiseFadeFromBlack(fadeDuration, () =>
-                    {
-                        ClearPending();
-                    });
-                });
-            }
-            else
-            {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ScreenFadeEvent not assigned, deploying without fade</color>");
-                ConsumeRopeFromInventory();
-                DeployRope();
-                ClearPending();
-            }
+            // En lugar de teletransportar directamente, simplemente cancelar el diálogo
+            // El jugador debe usar los ClimbSpawnPoint normales (topSpawnPoint o bottomSpawnPoint)
+            Debug.Log("<color=cyan>[ROPE ANCHOR] Dialog closed - Player can now interact with spawn points</color>");
+            ClearPending();
         }
         
         private void OnCancelled()
         {
-            Debug.Log("<color=yellow>[ROPE ANCHOR] Action cancelled</color>");
+            Debug.Log("<color=yellow>[ROPE ANCHOR] Action cancelled - Clearing pending and re-enabling player control</color>");
             ClearPending();
+            
+            // ✅ NUEVO: Asegurar que el input del jugador se libere
+            if (pendingInteractor != null)
+            {
+                var simpleConfirmable = pendingInteractor.GetComponent<TheHunt.Interaction.SimpleConfirmableInteraction>();
+                if (simpleConfirmable != null)
+                {
+                    // Forzar reset del estado de confirmación
+                    var field = simpleConfirmable.GetType().GetField("isWaitingForConfirmation", 
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if (field != null)
+                    {
+                        field.SetValue(simpleConfirmable, false);
+                        Debug.Log("<color=green>[ROPE ANCHOR] ✓ Forced reset of confirmation state</color>");
+                    }
+                }
+            }
         }
         
         private void ClearPending()
         {
+            Debug.Log("<color=cyan>[ROPE ANCHOR] === ClearPending() called ===</color>");
+            
+            // Liberar el InputContext si está bloqueado
+            if (pendingInteractor != null)
+            {
+                var inputContextManager = pendingInteractor.GetComponent<TheHunt.Input.InputContextManager>();
+                if (inputContextManager != null)
+                {
+                    Debug.Log($"<color=cyan>[ROPE ANCHOR] Current InputContext: {inputContextManager.CurrentContext}</color>");
+                    
+                    // Forzar vuelta a Gameplay si está en Dialog
+                    if (inputContextManager.CurrentContext == TheHunt.Input.InputContext.Dialog)
+                    {
+                        inputContextManager.PopContext();
+                        Debug.Log("<color=green>[ROPE ANCHOR] ✓ Popped Dialog context back to Gameplay</color>");
+                    }
+                }
+            }
+            
             pendingInteractor = null;
             usedRopeItem = null;
+            
+            Debug.Log("<color=cyan>[ROPE ANCHOR] === ClearPending() complete ===</color>");
         }
         
         private void DeployRope()
@@ -395,45 +455,45 @@ namespace TheHunt.Interaction
         
         private void DisableSpawnPoints()
         {
+            Debug.Log("<color=orange>[ROPE ANCHOR] === DisableSpawnPoints() - Deactivating spawn points ===</color>");
+            
             if (topSpawnPoint != null)
             {
-                topSpawnPoint.gameObject.SetActive(false);
-                Debug.Log("<color=cyan>[ROPE ANCHOR] Top spawn point disabled</color>");
+                topSpawnPoint.SetActive(false);
+                Debug.Log($"<color=orange>[ROPE ANCHOR] ✓ TOP spawn point '{topSpawnPoint.name}' DEACTIVATED</color>");
             }
             
             if (bottomSpawnPoint != null)
             {
-                bottomSpawnPoint.gameObject.SetActive(false);
-                Debug.Log("<color=cyan>[ROPE ANCHOR] Bottom spawn point disabled</color>");
+                bottomSpawnPoint.SetActive(false);
+                Debug.Log($"<color=orange>[ROPE ANCHOR] ✓ BOTTOM spawn point '{bottomSpawnPoint.name}' DEACTIVATED</color>");
             }
+            
+            Debug.Log("<color=orange>[ROPE ANCHOR] === DisableSpawnPoints() completed ===</color>");
         }
         
         private void EnableSpawnPoints()
         {
-            Debug.Log("<color=cyan>[ROPE ANCHOR] === EnableSpawnPoints() called ===</color>");
+            Debug.Log("<color=cyan>[ROPE ANCHOR] === EnableSpawnPoints() - Activating spawn points ===</color>");
             
             if (topSpawnPoint != null)
             {
-                Debug.Log($"<color=cyan>[ROPE ANCHOR] Top spawn point found: {topSpawnPoint.gameObject.name}</color>");
-                Debug.Log($"<color=cyan>[ROPE ANCHOR]   - Current active state: {topSpawnPoint.gameObject.activeSelf}</color>");
-                topSpawnPoint.gameObject.SetActive(true);
-                Debug.Log($"<color=green>[ROPE ANCHOR]   - ✓ Set to ACTIVE</color>");
+                topSpawnPoint.SetActive(true);
+                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ TOP spawn point '{topSpawnPoint.name}' ACTIVATED</color>");
             }
             else
             {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ Top spawn point is NULL!</color>");
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ topSpawnPoint is NULL!</color>");
             }
             
             if (bottomSpawnPoint != null)
             {
-                Debug.Log($"<color=cyan>[ROPE ANCHOR] Bottom spawn point found: {bottomSpawnPoint.gameObject.name}</color>");
-                Debug.Log($"<color=cyan>[ROPE ANCHOR]   - Current active state: {bottomSpawnPoint.gameObject.activeSelf}</color>");
-                bottomSpawnPoint.gameObject.SetActive(true);
-                Debug.Log($"<color=green>[ROPE ANCHOR]   - ✓ Set to ACTIVE</color>");
+                bottomSpawnPoint.SetActive(true);
+                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ BOTTOM spawn point '{bottomSpawnPoint.name}' ACTIVATED</color>");
             }
             else
             {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ Bottom spawn point is NULL!</color>");
+                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ bottomSpawnPoint is NULL!</color>");
             }
             
             Debug.Log("<color=green>[ROPE ANCHOR] === EnableSpawnPoints() completed ===</color>");

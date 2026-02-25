@@ -41,12 +41,14 @@ namespace TheHunt.Equipment
         {
             if (UnityEngine.InputSystem.Keyboard.current.lKey.wasPressedThisFrame)
             {
+                Debug.Log("<color=cyan>[FLASHLIGHT INPUT] L key pressed - Toggling flashlight</color>");
                 ToggleFlashlightManual();
             }
         }
         
         void OnToggleFlashlight(InputAction.CallbackContext context)
         {
+            Debug.Log("<color=cyan>[FLASHLIGHT INPUT] Input action performed</color>");
             if (equipmentController != null)
             {
                 equipmentController.ToggleFlashlight();
@@ -55,9 +57,14 @@ namespace TheHunt.Equipment
         
         public void ToggleFlashlightManual()
         {
+            Debug.Log($"<color=cyan>[FLASHLIGHT INPUT] Manual toggle - equipmentController: {equipmentController != null}</color>");
             if (equipmentController != null)
             {
                 equipmentController.ToggleFlashlight();
+            }
+            else
+            {
+                Debug.LogError("<color=red>[FLASHLIGHT INPUT] equipmentController is NULL!</color>");
             }
         }
     }
