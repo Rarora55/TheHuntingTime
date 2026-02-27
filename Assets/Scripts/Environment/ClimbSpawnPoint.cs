@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using TheHunt.Interaction;
 using TheHunt.Events;
@@ -28,6 +29,12 @@ namespace TheHunt.Environment
         private static bool anyPointTeleporting = false;
         
         public string SpawnPointID => spawnPointID;
+
+        /// <summary>
+        /// Raised before executing a teleport. Subscribers can intercept the interaction.
+        /// Call the provided Action to proceed with the teleport, or omit it to cancel.
+        /// </summary>
+        public event Action<GameObject, Action> OnInteractRequested;
         
         private void Awake()
         {
@@ -83,7 +90,20 @@ namespace TheHunt.Environment
             }
             
             Debug.Log($"<color=magenta>[CLIMB SPAWN] OnInteract called on {gameObject.name} by {interactor.name}</color>");
-            
+
+            // If any subscriber intercepts, delegate control to them
+            if (OnInteractRequested != null)
+            {
+                OnInteractRequested.Invoke(interactor, () => ProceedWithTeleport(interactor));
+                return;
+            }
+
+            ProceedWithTeleport(interactor);
+        }
+
+        /// <summary>Executes the teleport logic directly, bypassing interception.</summary>
+        public void ProceedWithTeleport(GameObject interactor)
+        {
             global::Player player = interactor.GetComponent<global::Player>();
             if (player == null)
             {

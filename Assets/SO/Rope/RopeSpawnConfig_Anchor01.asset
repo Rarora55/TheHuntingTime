@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62d9d8300ab619244bd59ffbf0e5308d, type: 3}
+  m_Name: RopeSpawnConfig_Anchor01
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.Rope.RopeSpawnConfig
+  maxUses: 10
+  showLastUseWarning: 1
+  lastUseWarningTitle: Rope
+  lastUseWarningMessage: This is the last use of the rope!
+  dialogEntries:
+  - triggerOnUse: 2
+    title: Rope
+    message: Pick up rope (YES) or use respawn (NO)?
+    yesLabel: Pick up rope
+    yesAction: 1
+    noLabel: Use respawn
+    noAction: 0
+  - triggerOnUse: 9
+    title: Rope
+    message: Looks weak, Pick up rope (YES) or use respawn (NO)?
+    yesLabel: Pick up rope
+    yesAction: 1
+    noLabel: Use respawn
+    noAction: 0

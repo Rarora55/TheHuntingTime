@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08848c71b3d1d154a8f6dd8a32ffbfe1, type: 3}
   m_Name: RadioEquipmentData
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Radio.RadioEquipmentData
-  equippedRadio: {fileID: 0}
+  equippedRadio: {fileID: 11400000, guid: 26032f8e0f5f2d843aa8a607243c950e, type: 2}

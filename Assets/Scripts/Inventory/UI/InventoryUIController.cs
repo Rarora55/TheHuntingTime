@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TheHunt.Radio;
+using TheHunt.Radio.Events;
 using TheHunt.Radio.UI;
 
 namespace TheHunt.Inventory
@@ -106,6 +108,24 @@ namespace TheHunt.Inventory
 
             if (examinationPanel == null)
                 examinationPanel = FindFirstObjectByType<ItemExaminationPanel>();
+
+            // Inject runtime SO references into the panel so it uses the same
+            // RadioEquipmentData and RadioEquipEvent instances as the manager.
+            if (radioEquipmentPanel != null && radioManager != null)
+            {
+                radioEquipmentPanel.Setup(
+                    radioManager,
+                    radioManager.EquipmentData,
+                    radioManager.OnRadioEquippedEvent,
+                    radioManager.OnRadioUnequippedEvent);
+            }
+            else
+            {
+                if (radioEquipmentPanel == null)
+                    Debug.LogWarning("<color=yellow>[INVENTORY UI] Cannot inject radio references - RadioEquipmentPanel not found</color>");
+                if (radioManager == null)
+                    Debug.LogWarning("<color=yellow>[INVENTORY UI] Cannot inject radio references - RadioEquipmentManager not found</color>");
+            }
         }
         
         private void OnDestroy()
@@ -395,7 +415,21 @@ namespace TheHunt.Inventory
                 case ItemContextAction.EquipRadio:
                     if (currentItem.itemData is RadioItemData radio && radioManager != null)
                     {
-                        radioManager.TryEquipRadio(radio);
+                        bool equipped = radioManager.TryEquipRadio(radio);
+                        if (equipped)
+                        {
+                            // Direct slot update as fallback — bypasses the event chain
+                            // in case the SO event listener was not wired correctly at runtime.
+                            if (radioEquipmentPanel != null)
+                            {
+                                Debug.Log("<color=cyan>[INVENTORY UI] Calling RadioEquipmentPanel.RefreshSlot() directly after equip</color>");
+                                radioEquipmentPanel.RefreshSlot();
+                            }
+                            else
+                            {
+                                Debug.LogWarning("<color=yellow>[INVENTORY UI] radioEquipmentPanel is NULL — cannot refresh slot!</color>");
+                            }
+                        }
                     }
                     CloseContextMenu();
                     break;
@@ -435,6 +469,7 @@ namespace TheHunt.Inventory
                 case ItemContextAction.Drop: return "Drop";
                 case ItemContextAction.EquipPrimary: return "Equip Primary";
                 case ItemContextAction.EquipSecondary: return "Equip Secondary";
+                case ItemContextAction.EquipRadio: return "Equip Radio";
                 case ItemContextAction.Combine: return "Combine";
                 default: return action.ToString();
             }

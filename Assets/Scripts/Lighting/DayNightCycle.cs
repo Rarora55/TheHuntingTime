@@ -60,6 +60,11 @@ namespace TheHunt.Lighting
         private Color targetLightColor;
         private float targetLightIntensity;
 
+        // Dark zone injection: set by DarkZoneTrigger, applied on top of the cycle's calculated intensity.
+        private float darkZoneIntensityOffset = 0f;
+        private float currentDarkZoneOffset = 0f;
+        private float darkZoneTransitionSpeed = 2f;
+
         public float CurrentTime => currentTime;
         public bool IsNight => isNight;
         public bool IsDay => !isNight;
@@ -142,8 +147,10 @@ namespace TheHunt.Lighting
             currentLightColor = Color.Lerp(currentLightColor, targetLightColor, Time.deltaTime * colorTransitionSpeed);
             currentLightIntensity = Mathf.Lerp(currentLightIntensity, targetLightIntensity, Time.deltaTime * intensityTransitionSpeed);
 
+            currentDarkZoneOffset = Mathf.Lerp(currentDarkZoneOffset, darkZoneIntensityOffset, Time.deltaTime * darkZoneTransitionSpeed);
+
             globalLight.color = currentLightColor;
-            globalLight.intensity = currentLightIntensity;
+            globalLight.intensity = Mathf.Max(0f, currentLightIntensity - currentDarkZoneOffset);
 
             bool wasNight = isNight;
             isNight = currentTime >= nightStart || currentTime < dawnStart;
@@ -338,6 +345,13 @@ namespace TheHunt.Lighting
         public void SetCycleSpeed(float speed)
         {
             timeSpeed = Mathf.Max(0f, speed);
+        }
+
+        /// <summary>Registers a dark zone intensity reduction. Call with the desired offset on enter, and 0f on exit.</summary>
+        public void SetDarkZoneOffset(float offset, float transitionSpeed = 2f)
+        {
+            darkZoneIntensityOffset = Mathf.Max(0f, offset);
+            darkZoneTransitionSpeed = Mathf.Max(0.01f, transitionSpeed);
         }
 
         public string GetFormattedTime()

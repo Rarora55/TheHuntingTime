@@ -16,6 +16,10 @@ namespace TheHunt.Inventory
         [Header("References")]
         [SerializeField] private InventorySystem inventorySystem;
 
+        public RadioEquipmentData EquipmentData => radioEquipmentData;
+        public RadioEquipEvent OnRadioEquippedEvent => onRadioEquipped;
+        public RadioEquipEvent OnRadioUnequippedEvent => onRadioUnequipped;
+
         private void Awake()
         {
             if (inventorySystem == null)

@@ -7,67 +7,92 @@ namespace TheHunt.Lighting
     {
         [Header("References")]
         [SerializeField] private Light2D globalLight;
-        
-        [Header("Light Settings")]
-        [SerializeField] private float normalIntensity = 1f;
-        [SerializeField] private float darkZoneIntensity = 0.1f;
+
+        [Header("Dark Zone Settings")]
+        [Tooltip("Amount of intensity subtracted from the current global light when the player enters this zone.")]
+        [SerializeField] private float intensityReduction = 0.8f;
         [SerializeField] private float transitionSpeed = 2f;
-        
+
+        private DayNightCycle dayNightCycle;
+        private float normalIntensity;
         private float targetIntensity;
-        private bool playerInDarkZone = false;
-        
-        void Start()
+        private bool useCycleFallback;
+
+        private void Start()
         {
+            dayNightCycle = FindFirstObjectByType<DayNightCycle>();
+
+            if (dayNightCycle != null)
+            {
+                // DayNightCycle owns globalLight.intensity — inject via offset.
+                useCycleFallback = false;
+                return;
+            }
+
+            // No DayNightCycle present: control globalLight directly.
+            useCycleFallback = true;
+            if (globalLight == null)
+                globalLight = FindFirstObjectByType<Light2D>();
+
             if (globalLight == null)
             {
-                globalLight = FindFirstObjectByType<Light2D>();
-                Debug.LogWarning("<color=yellow>[DARK ZONE] GlobalLight not assigned, attempting to find automatically...</color>");
+                Debug.LogError($"[DarkZoneTrigger] No Light2D or DayNightCycle found on '{name}'. Dark zone will not work.");
+                return;
             }
-            
-            if (globalLight != null)
-            {
-                Debug.Log($"<color=green>[DARK ZONE] Initialized - GlobalLight found: {globalLight.name}, Normal Intensity: {normalIntensity}, Dark Intensity: {darkZoneIntensity}</color>");
-            }
-            else
-            {
-                Debug.LogError("<color=red>[DARK ZONE] Failed to find GlobalLight! Dark zone will not work.</color>");
-            }
-            
+
+            normalIntensity = globalLight.intensity;
             targetIntensity = normalIntensity;
         }
-        
-        void Update()
+
+        private void Update()
         {
-            if (globalLight != null)
+            if (!useCycleFallback || globalLight == null) return;
+
+            globalLight.intensity = Mathf.Lerp(
+                globalLight.intensity,
+                targetIntensity,
+                Time.deltaTime * transitionSpeed
+            );
+        }
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!other.CompareTag("Player")) return;
+
+            if (!useCycleFallback)
             {
-                globalLight.intensity = Mathf.Lerp(
-                    globalLight.intensity, 
-                    targetIntensity, 
-                    Time.deltaTime * transitionSpeed
-                );
+                dayNightCycle.SetDarkZoneOffset(intensityReduction, transitionSpeed);
+            }
+            else if (globalLight != null)
+            {
+                normalIntensity = globalLight.intensity;
+                targetIntensity = Mathf.Max(0f, normalIntensity - intensityReduction);
             }
         }
-        
-        void OnTriggerEnter2D(Collider2D other)
+
+        private void OnTriggerExit2D(Collider2D other)
         {
-            Debug.Log($"<color=cyan>[DARK ZONE] OnTriggerEnter2D - Object: {other.gameObject.name}, Tag: {other.tag}</color>");
-            
-            if (other.CompareTag("Player"))
+            if (!other.CompareTag("Player")) return;
+
+            if (!useCycleFallback)
             {
-                playerInDarkZone = true;
-                targetIntensity = darkZoneIntensity;
-                Debug.Log($"<color=yellow>[DARK ZONE] Player entered dark zone - Target intensity: {darkZoneIntensity}</color>");
+                dayNightCycle.SetDarkZoneOffset(0f, transitionSpeed);
             }
-        }
-        
-        void OnTriggerExit2D(Collider2D other)
-        {
-            if (other.CompareTag("Player"))
+            else if (globalLight != null)
             {
-                playerInDarkZone = false;
                 targetIntensity = normalIntensity;
-                Debug.Log($"<color=green>[DARK ZONE] Player exited dark zone</color>");
             }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = new Color(0.05f, 0.05f, 0.2f, 0.4f);
+            BoxCollider2D box = GetComponent<BoxCollider2D>();
+            if (box == null) return;
+
+            Gizmos.matrix = transform.localToWorldMatrix;
+            Gizmos.DrawCube(box.offset, box.size);
+            Gizmos.DrawWireCube(box.offset, box.size);
         }
     }
 }

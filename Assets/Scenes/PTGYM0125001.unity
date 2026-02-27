@@ -485,11 +485,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1956745472562975839, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60.95
+      value: 20.72
       objectReference: {fileID: 0}
     - target: {fileID: 1956745472562975839, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.41
+      value: -15.88
       objectReference: {fileID: 0}
     - target: {fileID: 1956745472562975839, guid: 9288c9120186b074599ad462e4cd61b2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1767,6 +1767,7 @@ GameObject:
   - component: {fileID: 426362266}
   - component: {fileID: 426362268}
   - component: {fileID: 426362267}
+  - component: {fileID: 426362269}
   m_Layer: 9
   m_Name: ReSpawnBottomAnchorDown
   m_TagString: Untagged
@@ -1857,6 +1858,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &426362269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426362265}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d396e52cb0dd1d468e1610e5799249e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.Rope.RopeClimbSpawnPoint
+  config: {fileID: 11400000, guid: 16ce058280cd9024ea013279807c1a42, type: 2}
+  ownerAnchor: {fileID: 1134974316}
 --- !u!1001 &455033440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1871,11 +1886,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6130760010072393389, guid: 70a7c55286ad76b4091aba10f371b120, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 60.95
+      value: 20.72
       objectReference: {fileID: 0}
     - target: {fileID: 6130760010072393389, guid: 70a7c55286ad76b4091aba10f371b120, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -10.41
+      value: -15.88
       objectReference: {fileID: 0}
     - target: {fileID: 6130760010072393389, guid: 70a7c55286ad76b4091aba10f371b120, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2474,7 +2489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Items.RadioPickup
   radioData: {fileID: 11400000, guid: 26032f8e0f5f2d843aa8a607243c950e, type: 2}
   useItemIcon: 0
-  customSprite: {fileID: 0}
+  customSprite: {fileID: 6035682160318506979, guid: 906fe28b67147564bb51afb155f1b3b8, type: 3}
   spriteSize: {x: 3, y: 3}
   interactionRadius: 2
   pickupMessage: Press E to pick up
@@ -3636,84 +3651,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &808002043
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 808002045}
-  - component: {fileID: 808002044}
-  m_Layer: 0
-  m_Name: EventRadio
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!61 &808002044
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 808002043}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: -0.23786592, y: -0.64650965}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.96340656, y: 4.098365}
-  m_EdgeRadius: 0
---- !u!4 &808002045
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 808002043}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.74, y: -14.4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &826686416
 GameObject:
   m_ObjectHideFlags: 0
@@ -4338,6 +4275,7 @@ MonoBehaviour:
   fadeDuration: 2
   topSpawnPoint: {fileID: 1358844357}
   bottomSpawnPoint: {fileID: 426362265}
+  ropeSpawnConfig: {fileID: 11400000, guid: 16ce058280cd9024ea013279807c1a42, type: 2}
   anchorSprite: {fileID: 1134974317}
   deployedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   confirmationTitle: Deploy Rope
@@ -5322,6 +5260,7 @@ GameObject:
   - component: {fileID: 1358844358}
   - component: {fileID: 1358844360}
   - component: {fileID: 1358844359}
+  - component: {fileID: 1358844361}
   m_Layer: 9
   m_Name: ReSpawnTopAnchorUp
   m_TagString: Untagged
@@ -5412,6 +5351,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1358844361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358844357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d396e52cb0dd1d468e1610e5799249e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Interaction.Rope.RopeClimbSpawnPoint
+  config: {fileID: 11400000, guid: 16ce058280cd9024ea013279807c1a42, type: 2}
+  ownerAnchor: {fileID: 1134974316}
 --- !u!1 &1372741734
 GameObject:
   m_ObjectHideFlags: 0
@@ -6574,7 +6527,7 @@ Transform:
   m_GameObject: {fileID: 1640248086}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 60.95, y: -10.41, z: -10}
+  m_LocalPosition: {x: 20.72, y: -15.88, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6656,84 +6609,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!1 &1656890660
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1656890662}
-  - component: {fileID: 1656890661}
-  m_Layer: 0
-  m_Name: EventRadio (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!61 &1656890661
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1656890660}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: -0.23786592, y: -0.64650965}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.96340656, y: 4.098365}
-  m_EdgeRadius: 0
---- !u!4 &1656890662
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1656890660}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.74, y: -14.4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1662256263
 GameObject:
   m_ObjectHideFlags: 0
@@ -8208,13 +8083,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6144464487177530443, guid: 95ca6a6271fe2c9409d68ba62fd29a42, type: 3}
+      propertyPath: intensityMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7234925288531298337, guid: 95ca6a6271fe2c9409d68ba62fd29a42, type: 3}
+      propertyPath: globalLight
+      value: 
+      objectReference: {fileID: 1801271993}
     - target: {fileID: 7234925288531298337, guid: 95ca6a6271fe2c9409d68ba62fd29a42, type: 3}
       propertyPath: normalIntensity
       value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7234925288531298337, guid: 95ca6a6271fe2c9409d68ba62fd29a42, type: 3}
+      propertyPath: transitionSpeed
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7234925288531298337, guid: 95ca6a6271fe2c9409d68ba62fd29a42, type: 3}
       propertyPath: darkZoneIntensity
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7234925288531298337, guid: 95ca6a6271fe2c9409d68ba62fd29a42, type: 3}
+      propertyPath: intensityReduction
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8737,8 +8628,6 @@ SceneRoots:
   - {fileID: 107367867}
   - {fileID: 1277584045}
   - {fileID: 1738189100}
-  - {fileID: 808002045}
-  - {fileID: 1656890662}
   - {fileID: 614958090}
   - {fileID: 286568897}
   - {fileID: 7778233530631162610}

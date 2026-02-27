@@ -34,11 +34,53 @@ namespace TheHunt.Radio.UI
         {
             autoAssigner = new ComponentAutoAssigner();
             
-            radioManager = autoAssigner.GetOrFindComponent(radioManager);
             uiController = autoAssigner.GetOrFindComponent(uiController);
             canvasGroup = canvasGroup != null ? canvasGroup : GetComponent<CanvasGroup>();
 
             ValidateSlot();
+        }
+
+        /// <summary>
+        /// Injects runtime references from InventoryUIController after canvas instantiation,
+        /// ensuring this panel uses the exact same ScriptableObject assets as the manager.
+        /// Called after Instantiate(), so OnEnable may have already fired with null references.
+        /// This method re-subscribes events to guarantee correct wiring.
+        /// </summary>
+        public void Setup(
+            RadioEquipmentManager manager,
+            RadioEquipmentData equipmentData,
+            RadioEquipEvent equippedEvent,
+            RadioEquipEvent unequippedEvent)
+        {
+            // Remove stale listeners from any previously assigned events (null-safe).
+            if (onRadioEquipped != null)
+                onRadioEquipped.RemoveListener(OnRadioEquipped);
+            if (onRadioUnequipped != null)
+                onRadioUnequipped.RemoveListener(OnRadioUnequipped);
+
+            radioManager = manager;
+            radioEquipmentData = equipmentData;
+            onRadioEquipped = equippedEvent;
+            onRadioUnequipped = unequippedEvent;
+
+            // Re-subscribe now that references are correct.
+            // OnEnable fired before Setup() was called, so the panel missed its subscription window.
+            if (gameObject.activeInHierarchy)
+            {
+                if (onRadioEquipped != null)
+                    onRadioEquipped.AddListener(OnRadioEquipped);
+                else
+                    Debug.LogWarning("<color=yellow>[RADIO EQUIPMENT PANEL] onRadioEquipped is NULL after Setup!</color>");
+
+                if (onRadioUnequipped != null)
+                    onRadioUnequipped.AddListener(OnRadioUnequipped);
+                else
+                    Debug.LogWarning("<color=yellow>[RADIO EQUIPMENT PANEL] onRadioUnequipped is NULL after Setup!</color>");
+
+                RefreshSlot();
+            }
+
+            Debug.Log("<color=cyan>[RADIO EQUIPMENT PANEL] Setup complete - references injected and events re-subscribed</color>");
         }
 
         private void OnEnable()

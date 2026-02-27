@@ -1228,7 +1228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TheHunt.Radio.UI.RadioEquipmentPanel
   radioEquipmentData: {fileID: 11400000, guid: c4c78826e7dd68e469c9d4fa71bcd821, type: 2}
   onRadioEquipped: {fileID: 11400000, guid: 0c8859d4c7010cb4f8bbc0e2ab917454, type: 2}
-  onRadioUnequipped: {fileID: 11400000, guid: 0c8859d4c7010cb4f8bbc0e2ab917454, type: 2}
+  onRadioUnequipped: {fileID: 11400000, guid: e0c8e7ccf00401842a0bd6ca383f1579, type: 2}
   radioManager: {fileID: 0}
   uiController: {fileID: 0}
   radioSlot: {fileID: 1892059186134652754}
@@ -3105,7 +3105,8 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:

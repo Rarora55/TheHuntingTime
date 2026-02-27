@@ -3,6 +3,7 @@ using TheHunt.Inventory;
 using TheHunt.Environment;
 using TheHunt.UI;
 using TheHunt.Events;
+using TheHunt.Interaction.Rope;
 using System;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -24,6 +25,8 @@ namespace TheHunt.Interaction
         [Header("Spawn Points")]
         [SerializeField] private GameObject topSpawnPoint;
         [SerializeField] private GameObject bottomSpawnPoint;
+        [Tooltip("Configuration for rope spawn point dialogs and usage.")]
+        [SerializeField] private RopeSpawnConfig ropeSpawnConfig;
         
         [Header("Visual Feedback")]
         [SerializeField] private SpriteRenderer anchorSprite;
@@ -476,27 +479,32 @@ namespace TheHunt.Interaction
         {
             Debug.Log("<color=cyan>[ROPE ANCHOR] === EnableSpawnPoints() - Activating spawn points ===</color>");
             
-            if (topSpawnPoint != null)
-            {
-                topSpawnPoint.SetActive(true);
-                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ TOP spawn point '{topSpawnPoint.name}' ACTIVATED</color>");
-            }
-            else
-            {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ topSpawnPoint is NULL!</color>");
-            }
-            
-            if (bottomSpawnPoint != null)
-            {
-                bottomSpawnPoint.SetActive(true);
-                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ BOTTOM spawn point '{bottomSpawnPoint.name}' ACTIVATED</color>");
-            }
-            else
-            {
-                Debug.LogWarning("<color=yellow>[ROPE ANCHOR] ✗ bottomSpawnPoint is NULL!</color>");
-            }
+            InitializeRopeSpawnPoint(topSpawnPoint, "TOP");
+            InitializeRopeSpawnPoint(bottomSpawnPoint, "BOTTOM");
             
             Debug.Log("<color=green>[ROPE ANCHOR] === EnableSpawnPoints() completed ===</color>");
+        }
+
+        private void InitializeRopeSpawnPoint(GameObject spawnPointGO, string label)
+        {
+            if (spawnPointGO == null)
+            {
+                Debug.LogWarning($"<color=yellow>[ROPE ANCHOR] ✗ {label} spawn point is NULL!</color>");
+                return;
+            }
+
+            spawnPointGO.SetActive(true);
+
+            var ropeSpawnController = spawnPointGO.GetComponent<RopeClimbSpawnPoint>();
+            if (ropeSpawnController != null && ropeSpawnConfig != null)
+            {
+                ropeSpawnController.Initialize(this, ropeSpawnConfig);
+                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ {label} '{spawnPointGO.name}' ACTIVATED + RopeClimbSpawnPoint initialized</color>");
+            }
+            else
+            {
+                Debug.Log($"<color=green>[ROPE ANCHOR] ✓ {label} '{spawnPointGO.name}' ACTIVATED (no RopeClimbSpawnPoint found)</color>");
+            }
         }
         
         private void RetractRopeInternal()
