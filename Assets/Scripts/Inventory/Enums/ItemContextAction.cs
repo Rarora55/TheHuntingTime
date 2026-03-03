@@ -7,6 +7,7 @@ namespace TheHunt.Inventory
         Drop,
         EquipPrimary,
         EquipSecondary,
+        EquipFlashlight,
         EquipRadio,
         Combine
     }

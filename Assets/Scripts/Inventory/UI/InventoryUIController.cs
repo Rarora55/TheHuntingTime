@@ -302,10 +302,20 @@ namespace TheHunt.Inventory
                 availableActions.Add(ItemContextAction.Examine);
             }
 
-            if (currentItem.itemData is WeaponItemData)
+            if (currentItem.itemData is WeaponItemData weaponData2)
             {
-                availableActions.Add(ItemContextAction.EquipPrimary);
-                availableActions.Add(ItemContextAction.EquipSecondary);
+                bool isFlashlight = weaponData2.WeaponType == WeaponType.Tool &&
+                                    weaponData2.ToolType == ToolType.Flashlight;
+
+                if (isFlashlight)
+                {
+                    availableActions.Add(ItemContextAction.EquipFlashlight);
+                }
+                else
+                {
+                    availableActions.Add(ItemContextAction.EquipPrimary);
+                    availableActions.Add(ItemContextAction.EquipSecondary);
+                }
             }
 
             if (currentItem.itemData is RadioItemData)
@@ -412,6 +422,14 @@ namespace TheHunt.Inventory
                     CloseContextMenu();
                     break;
 
+                case ItemContextAction.EquipFlashlight:
+                    if (currentItem.itemData is WeaponItemData flashlight && weaponManager != null)
+                    {
+                        weaponManager.EquipWeapon(flashlight, EquipSlot.Secondary);
+                    }
+                    CloseContextMenu();
+                    break;
+
                 case ItemContextAction.EquipRadio:
                     if (currentItem.itemData is RadioItemData radio && radioManager != null)
                     {
@@ -469,6 +487,7 @@ namespace TheHunt.Inventory
                 case ItemContextAction.Drop: return "Drop";
                 case ItemContextAction.EquipPrimary: return "Equip Primary";
                 case ItemContextAction.EquipSecondary: return "Equip Secondary";
+                case ItemContextAction.EquipFlashlight: return "Equip Flashlight";
                 case ItemContextAction.EquipRadio: return "Equip Radio";
                 case ItemContextAction.Combine: return "Combine";
                 default: return action.ToString();

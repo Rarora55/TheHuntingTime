@@ -23,6 +23,7 @@ namespace TheHunt.Inventory
         private bool isHighlighted = false;
         private bool isDisabled = false;
         private WeaponInventoryManager weaponManager;
+        private RadioEquipmentManager radioEquipmentManager;
         private CanvasGroup canvasGroup;
 
         public int SlotIndex => slotIndex;
@@ -34,6 +35,7 @@ namespace TheHunt.Inventory
             if (player != null)
             {
                 weaponManager = player.GetComponent<WeaponInventoryManager>();
+                radioEquipmentManager = player.GetComponent<RadioEquipmentManager>();
             }
 
             canvasGroup = GetComponent<CanvasGroup>();
@@ -60,11 +62,17 @@ namespace TheHunt.Inventory
             }
 
             bool isWeapon = item.itemData is WeaponItemData;
+            bool isRadio = item.itemData is RadioItemData;
             bool isEquipped = false;
 
             if (isWeapon && weaponManager != null)
             {
                 isEquipped = weaponManager.IsWeaponEquipped(item.itemData as WeaponItemData);
+            }
+            else if (isRadio && radioEquipmentManager != null)
+            {
+                isEquipped = radioEquipmentManager.EquipmentData != null &&
+                             radioEquipmentManager.EquipmentData.EquippedRadio == item.itemData as RadioItemData;
             }
 
             if (isEquipped)

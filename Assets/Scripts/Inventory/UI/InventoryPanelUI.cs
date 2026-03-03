@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TheHunt.Inventory;
+using TheHunt.Radio.Events;
 
 namespace TheHunt.Inventory
 {
@@ -10,6 +12,11 @@ namespace TheHunt.Inventory
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private InventoryUIController uiController;
         [SerializeField] private WeaponInventoryManager weaponManager;
+        [SerializeField] private RadioEquipmentManager radioEquipmentManager;
+
+        [Header("Radio Events")]
+        [SerializeField] private RadioEquipEvent onRadioEquipped;
+        [SerializeField] private RadioEquipEvent onRadioUnequipped;
 
         [Header("Slot Settings")]
         [SerializeField] private Transform slotsContainer;
@@ -58,6 +65,15 @@ namespace TheHunt.Inventory
                 }
             }
 
+            if (radioEquipmentManager == null)
+            {
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
+                {
+                    radioEquipmentManager = player.GetComponent<RadioEquipmentManager>();
+                }
+            }
+
             if (canvasGroup == null)
                 canvasGroup = GetComponent<CanvasGroup>();
 
@@ -83,6 +99,12 @@ namespace TheHunt.Inventory
                 weaponManager.OnWeaponEquipped += OnWeaponEquipped;
                 weaponManager.OnWeaponUnequipped += OnWeaponUnequipped;
             }
+
+            if (onRadioEquipped != null)
+                onRadioEquipped.AddListener(OnRadioEquipped);
+
+            if (onRadioUnequipped != null)
+                onRadioUnequipped.AddListener(OnRadioUnequipped);
         }
 
         private void OnDisable()
@@ -104,6 +126,12 @@ namespace TheHunt.Inventory
                 weaponManager.OnWeaponEquipped -= OnWeaponEquipped;
                 weaponManager.OnWeaponUnequipped -= OnWeaponUnequipped;
             }
+
+            if (onRadioEquipped != null)
+                onRadioEquipped.RemoveListener(OnRadioEquipped);
+
+            if (onRadioUnequipped != null)
+                onRadioUnequipped.RemoveListener(OnRadioUnequipped);
         }
 
         private void Start()
@@ -195,6 +223,18 @@ namespace TheHunt.Inventory
         {
             RefreshAllSlots();
             Debug.Log($"<color=cyan>[INVENTORY PANEL] Refreshed slots after unequipping weapon from {slot}</color>");
+        }
+
+        private void OnRadioEquipped(RadioItemData radio)
+        {
+            RefreshAllSlots();
+            Debug.Log($"<color=cyan>[INVENTORY PANEL] Refreshed slots after equipping radio {radio?.ItemName}</color>");
+        }
+
+        private void OnRadioUnequipped(RadioItemData radio)
+        {
+            RefreshAllSlots();
+            Debug.Log($"<color=cyan>[INVENTORY PANEL] Refreshed slots after unequipping radio {radio?.ItemName}</color>");
         }
 
         private void UpdateHighlight(int slotIndex)

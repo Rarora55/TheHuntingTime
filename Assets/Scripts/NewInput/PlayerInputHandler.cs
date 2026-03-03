@@ -18,6 +18,7 @@ public class PlayerInputHandler : MonoBehaviour
     public bool ReloadInput { get; private set; }
     public bool AimInput { get; private set; }
     public bool PushPullInput { get; private set; }
+    public bool RadioInput { get; private set; }
 
     [SerializeField] private float inputHoldTime = 0.2f;
     [SerializeField] private float jumpInputStartTime;
@@ -402,8 +403,7 @@ public class PlayerInputHandler : MonoBehaviour
         }
     }
     
-    public void OnPushPullInput(InputAction.CallbackContext context)
-    {
+    public void OnPushPullInput(InputAction.CallbackContext context)    {
         if (IsDialogOpen())
         {
             PushPullInput = false;
@@ -447,6 +447,27 @@ public class PlayerInputHandler : MonoBehaviour
         {
             JumpInput = false;
         }
+    }
+
+    public void OnRadioInput(InputAction.CallbackContext context)
+    {
+        if (IsDialogOpen())
+        {
+            RadioInput = false;
+            return;
+        }
+
+        if (inventoryUIController != null && inventoryUIController.IsOpen)
+        {
+            RadioInput = false;
+            return;
+        }
+
+        if (context.started)
+            RadioInput = true;
+
+        if (context.canceled)
+            RadioInput = false;
     }
 
 
