@@ -54,6 +54,10 @@ public class PlayerData: ScriptableObject
     [Range(0f, 0.5f)]
     public float shotDelay = 0.15f;
 
+    [Header("Tired State")]
+    [Tooltip("Duration in seconds the player is locked in the Tired state before recovering.")]
+    public float tiredDuration = 5f;
+
     [Header("Push & Pull System")]
     [Tooltip("Multiplicador de velocidad base al empujar/tirar (0.75 = 75% de velocidad)")]
     public float basePushPullSpeedMultiplier = 0.75f;

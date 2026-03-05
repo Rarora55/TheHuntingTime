@@ -206,11 +206,48 @@ namespace TheHunt.Inventory
             if (direction > 0)
             {
                 inventorySystem.SelectNext();
+                SkipEquippedSlots(1);
             }
             else if (direction < 0)
             {
                 inventorySystem.SelectPrevious();
+                SkipEquippedSlots(-1);
             }
+        }
+
+        /// <summary>
+        /// Advances selection in the given direction until a non-equipped slot is found,
+        /// or all slots have been checked (avoids infinite loops when all are equipped).
+        /// </summary>
+        private void SkipEquippedSlots(int direction)
+        {
+            int slots = InventorySystem.MAX_SLOTS;
+            for (int i = 0; i < slots; i++)
+            {
+                if (!IsCurrentSlotEquipped())
+                    break;
+
+                if (direction > 0)
+                    inventorySystem.SelectNext();
+                else
+                    inventorySystem.SelectPrevious();
+            }
+        }
+
+        private bool IsCurrentSlotEquipped()
+        {
+            ItemInstance item = inventorySystem.CurrentItem;
+            if (item == null || item.itemData == null)
+                return false;
+
+            if (item.itemData is WeaponItemData weapon && weaponManager != null)
+                return weaponManager.IsWeaponEquipped(weapon);
+
+            if (item.itemData is RadioItemData radio && radioManager != null)
+                return radioManager.EquipmentData != null &&
+                       radioManager.EquipmentData.EquippedRadio == radio;
+
+            return false;
         }
 
         public void InteractWithCurrentItem()
@@ -282,6 +319,16 @@ namespace TheHunt.Inventory
                 if (weaponManager.IsWeaponEquipped(weaponData))
                 {
                     Debug.Log("<color=yellow>[INVENTORY UI] Cannot interact with equipped weapon</color>");
+                    return;
+                }
+            }
+
+            if (currentItem.itemData is RadioItemData radioData && radioManager != null)
+            {
+                if (radioManager.EquipmentData != null &&
+                    radioManager.EquipmentData.EquippedRadio == radioData)
+                {
+                    Debug.Log("<color=yellow>[INVENTORY UI] Cannot interact with equipped radio</color>");
                     return;
                 }
             }

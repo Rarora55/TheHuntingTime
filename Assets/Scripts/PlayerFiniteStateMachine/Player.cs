@@ -28,6 +28,7 @@ public class Player : MonoBehaviour
     
     public PlayerPushState PushState { get; private set; }
     public PlayerPullState PullState { get; private set; }
+    public PlayerTiredState TiredState { get; private set; }
 
 
     [SerializeField] private PlayerData PlayerData;
@@ -118,6 +119,7 @@ public class Player : MonoBehaviour
         
         PushState = new PlayerPushState(this, StateMachine, PlayerData, "push");
         PullState = new PlayerPullState(this, StateMachine, PlayerData, "pull");
+        TiredState = new PlayerTiredState(this, StateMachine, PlayerData, "tired");
 
 
     }
