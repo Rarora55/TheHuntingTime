@@ -508,31 +508,47 @@ public class PlayerCollisionController : IPlayerCollision
         collider.offset = newOffset;
     }
     
+    // Maximum vertical distance (world units) between the ledge corner and ledgeCheck
+    // to consider the marker reachable by the player.
+    private const float LEDGE_MARKER_VERTICAL_TOLERANCE = 1.2f;
+
     private LedgeMarker TryGetLedgeMarker()
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(
-            wallCheck.position, 
-            Vector2.right * orientation.FacingDirection, 
-            playerData.WallCheckDistance, 
+            wallCheck.position,
+            Vector2.right * orientation.FacingDirection,
+            playerData.WallCheckDistance,
             playerData.WhatIsGround);
-        
-        if (hits.Length == 0)
-        {
-            return null;
-        }
-        
+
+        if (hits.Length == 0) return null;
+
+        // Sort ascending by hit distance so we always evaluate the closest surface first.
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        float playerCheckY = ledgeCheck.position.y;
+
         foreach (RaycastHit2D hit in hits)
         {
             if (hit.collider == null) continue;
-            
+
             LedgeMarker marker = hit.collider.GetComponent<LedgeMarker>();
-            if (marker != null && marker.HasValidCorners())
+            if (marker == null || !marker.HasValidCorners()) continue;
+
+            // Pick the corner that corresponds to the current facing direction.
+            Vector2 candidateCorner = marker.GetCornerPosition(orientation.FacingDirection);
+
+            // Reject markers whose corner is too far above or below the ledge check point.
+            float verticalDelta = Mathf.Abs(candidateCorner.y - playerCheckY);
+            if (verticalDelta > LEDGE_MARKER_VERTICAL_TOLERANCE)
             {
-                Debug.Log($"<color=yellow>[LEDGE MARKER] Detectado: {hit.collider.name} a distancia {hit.distance:F2}</color>");
-                return marker;
+                Debug.Log($"<color=orange>[LEDGE MARKER] Ignorado: {hit.collider.name} | Δy={verticalDelta:F2} > tolerancia {LEDGE_MARKER_VERTICAL_TOLERANCE}</color>");
+                continue;
             }
+
+            Debug.Log($"<color=yellow>[LEDGE MARKER] Seleccionado: {hit.collider.name} | dist={hit.distance:F2} | Δy={verticalDelta:F2} | corner={candidateCorner}</color>");
+            return marker;
         }
-        
+
         return null;
     }
 }

@@ -17,8 +17,15 @@ MonoBehaviour:
   cooldownDuration: 30
   recoveryRate: 10
   recoveryDelay: 1
-  runningCostPerSecond: 10
+  runningCostPerSecond: 4
   jumpCost: 35
   climbingCostPerSecond: 5
   wallGrapCostPerSecond: 10
   minimumStaminaThreshold: 40
+  fatigueThreshold1: 60
+  fatigueThreshold2: 0
+  fatigueThreshold3: 20
+  speedMultiplierFresh: 1
+  speedMultiplierTired: 0.6
+  speedMultiplierVeryTired: 0.48
+  speedMultiplierExhausted: 0.432

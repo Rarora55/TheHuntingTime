@@ -166,7 +166,10 @@ public class PlayerMoveState : PlayerGroundState
                 staminaIntegration.StopRunning();
             }
             
-            float currentVelocity = shouldRun ? playerData.runVelocity : playerData.movementVelocity;
+            float speedMultiplier = (shouldRun && staminaIntegration != null)
+                ? staminaIntegration.GetRunSpeedMultiplier()
+                : 1f;
+            float currentVelocity = shouldRun ? playerData.runVelocity * speedMultiplier : playerData.movementVelocity;
             player.SetVelocityX(currentVelocity * xInput);
             player.anim.SetBool("isRunning", shouldRun);
         }

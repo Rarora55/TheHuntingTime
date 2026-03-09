@@ -78,6 +78,22 @@ public class PlayerStaminaIntegration : MonoBehaviour
     {
         return staminaController != null && staminaController.CanUseStamina;
     }
+
+    /// <summary>
+    /// Returns a speed multiplier based on the current stamina percentage.
+    /// Thresholds and multipliers are configured in StaminaData.
+    /// </summary>
+    public float GetRunSpeedMultiplier()
+    {
+        if (staminaController == null || staminaData == null) return 1f;
+
+        float percentage = staminaController.StaminaPercentage * 100f;
+
+        if (percentage > staminaData.fatigueThreshold1) return staminaData.speedMultiplierFresh;
+        if (percentage > staminaData.fatigueThreshold2) return staminaData.speedMultiplierTired;
+        if (percentage > staminaData.fatigueThreshold3) return staminaData.speedMultiplierVeryTired;
+        return staminaData.speedMultiplierExhausted;
+    }
     
     public bool CanJump()
     {
