@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
 
 
     [SerializeField] private PlayerData PlayerData;
+    public PlayerData GetPlayerData() => PlayerData;
     #endregion
 
     #region Core Systems

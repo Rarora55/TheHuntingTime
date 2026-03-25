@@ -39,6 +39,8 @@ MonoBehaviour:
   knockbackDuration: 0.4
   minRunSpeedForWallKnockback: 10
   shotDelay: 0.15
+  tiredDuration: 5
+  tiredGracePeriod: 6
   basePushPullSpeedMultiplier: 0.75
   minimumWeight: 1
   weightPenaltyPerUnit: 0.3

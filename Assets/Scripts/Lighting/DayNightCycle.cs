@@ -71,6 +71,9 @@ namespace TheHunt.Lighting
         public DayPeriod CurrentPeriod => currentPeriod;
         public float Hour => currentTime * 24f;
         public DayPeriodEvent PeriodChangedEvent => onPeriodChanged;
+        public TimeChangedEvent OnTimeChanged => onTimeChanged;
+        public float DuskStart => duskStart;
+        public float NightStart => nightStart;
 
         private void Awake()
         {

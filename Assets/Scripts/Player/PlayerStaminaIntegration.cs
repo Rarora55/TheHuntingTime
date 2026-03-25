@@ -12,6 +12,11 @@ public class PlayerStaminaIntegration : MonoBehaviour
 
     // Tracks the previous CanUseStamina value to detect the exact frame it becomes false.
     private bool prevCanUseStamina = true;
+
+    // Grace period state: when stamina depletes, we wait this many seconds before
+    // actually entering TiredState, allowing the current action to finish naturally.
+    private bool isGracePeriodActive = false;
+    private float gracePeriodEndTime = 0f;
     
     void Awake()
     {
@@ -52,7 +57,7 @@ public class PlayerStaminaIntegration : MonoBehaviour
     {
         // Safety net for when stamina reaches exactly 0.
         // The primary detection is in Update() via CanUseStamina tracking.
-        TriggerTiredState();
+        StartGracePeriod();
     }
     
     void HandleStaminaRecovered()
@@ -66,9 +71,27 @@ public class PlayerStaminaIntegration : MonoBehaviour
         if (player.TiredState == null) return;
         if (player.StateMachine.CurrentState == player.TiredState) return;
 
+        isGracePeriodActive = false;
         player.anim.SetBool("isExhausted", true);
         player.StateMachine.ChangeState(player.TiredState);
         Debug.Log("<color=magenta>[STAMINA] Entering TiredState — stamina exhausted.</color>");
+    }
+
+    /// <summary>
+    /// Starts the grace period countdown. TiredState will only trigger once
+    /// the grace period expires, giving the current action time to complete.
+    /// </summary>
+    private void StartGracePeriod()
+    {
+        if (isGracePeriodActive) return;
+        if (player.StateMachine.CurrentState == player.TiredState) return;
+
+        PlayerData playerData = player.GetPlayerData();
+        float gracePeriod = playerData != null ? playerData.tiredGracePeriod : 3f;
+
+        isGracePeriodActive = true;
+        gracePeriodEndTime = Time.time + gracePeriod;
+        Debug.Log($"<color=yellow>[STAMINA] Grace period started — TiredState in {gracePeriod}s.</color>");
     }
     
     void HandleCooldownStarted() { }
@@ -166,14 +189,20 @@ public class PlayerStaminaIntegration : MonoBehaviour
 
         // ── Exhaustion detection ─────────────────────────────────────────────
         // Monitor the exact frame CanUseStamina flips from true → false.
-        // This catches all cases: run cost stuck above residual stamina,
-        // jump cost depleting below threshold, etc.
+        // Instead of triggering TiredState immediately, start a grace period
+        // so the current action (e.g. a jump) can finish naturally.
         bool canUseStamina = staminaController.CanUseStamina;
         if (prevCanUseStamina && !canUseStamina)
         {
-            TriggerTiredState();
+            StartGracePeriod();
         }
         prevCanUseStamina = canUseStamina;
+
+        // ── Grace period countdown ───────────────────────────────────────────
+        if (isGracePeriodActive && Time.time >= gracePeriodEndTime)
+        {
+            TriggerTiredState();
+        }
 
         // ── Stamina consumption ──────────────────────────────────────────────
         if (staminaData == null) return;

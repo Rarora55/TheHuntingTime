@@ -49,5 +49,8 @@ TagManager:
   - name: Envioronment
     uniqueID: 3802934675
     locked: 0
+  - name: Mid-Ground
+    uniqueID: 2412892151
+    locked: 0
   m_RenderingLayers:
   - Default

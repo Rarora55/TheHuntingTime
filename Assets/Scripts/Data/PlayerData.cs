@@ -58,6 +58,9 @@ public class PlayerData: ScriptableObject
     [Tooltip("Duration in seconds the player is locked in the Tired state before recovering.")]
     public float tiredDuration = 5f;
 
+    [Tooltip("Grace period in seconds after stamina depletion before the Tired state is triggered. Allows the current action (e.g. a jump) to complete naturally.")]
+    public float tiredGracePeriod = 3f;
+
     [Header("Push & Pull System")]
     [Tooltip("Multiplicador de velocidad base al empujar/tirar (0.75 = 75% de velocidad)")]
     public float basePushPullSpeedMultiplier = 0.75f;
